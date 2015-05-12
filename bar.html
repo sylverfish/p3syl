@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    
+  <head>
+        
+    <meta charset="utf-8">
+        
+    <title>Mumbai Railway Accidents - Charts</title>
+
+
+    <link type="text/css" rel="stylesheet" href="cal/cal-heatmap.css"/>
+    <link rel="stylesheet" href="d3/rickshaw.css">
+    <script type="text/javascript" src="d3/d3.js"></script>
+    <script type="text/javascript" src="cal/cal-heatmap.js"></script>
+    <script type="text/javascript" src="d3/d3.js"></script>
+    <script type="text/javascript" src="d3/d3.layout.js"></script>
+    <script type="text/javascript" src="d3/rickshaw.min.js"></script>
+    <script type="text/javascript">
+	
+	var CR = true;
+	var WR = false;
+	var Deaths = false;
+	var Male = true;
+	var Female = true;
+	var Day = true;
+	var Night = true;
+
+	var rules = [
+	["1","1","3","3"],
+	["1","1","1","3"],
+	["1","1","3","1"],
+	["1","1","3","2"],
+	["1","1","2","3"],
+	["1","1","1","1"],
+	["1","1","1","2"],
+	["1","1","2","1"],
+	["1","1","2","2"],
+
+	["2","1","3","3"],
+	["2","1","1","3"],
+	["2","1","3","1"],
+	["2","1","3","2"],
+	["2","1","2","3"],
+	["2","1","1","1"],
+	["2","1","1","2"],
+	["2","1","2","1"],
+	["2","1","2","2"],
+
+	["1","2","3","3"],
+	["1","2","1","3"],
+	["1","2","3","1"],
+	["1","2","3","2"],
+	["1","2","2","3"],
+	["1","2","1","1"],
+	["1","2","1","2"],
+	["1","2","2","1"],
+	["1","2","2","2"],
+
+	["2","2","3","3"],
+	["2","2","1","3"],
+	["2","2","3","1"],
+	["2","2","3","2"],
+	["2","2","2","3"],
+	["2","2","1","1"],
+	["2","2","1","2"],
+	["2","2","2","1"],
+	["2","2","2","2"],
+
+	["3","1","3","3"],
+	["3","1","1","3"],
+	["3","1","3","1"],
+	["3","1","3","2"],
+	["3","1","2","3"],
+	["3","1","1","1"],
+	["3","1","1","2"],
+	["3","1","2","1"],
+	["3","1","2","2"],
+
+	["3","2","3","3"],
+	["3","2","1","3"],
+	["3","2","3","1"],
+	["3","2","3","2"],
+	["3","2","2","3"],
+	["3","2","1","1"],
+	["3","2","1","2"],
+	["3","2","2","1"],
+	["3","2","2","2"]
+	]
+	;
+
+	var datas = [
+	"CRAllMFDN.json",
+	"CRAllMDN.json",
+	"CRAllFMD.json",
+	"CRAllFMN.json",
+	"CRAllFDN.json",
+	"CRAllMD.json",
+	"CRAllMN.json",
+	"CRAllFD.json",
+	"CRAllFN.json",
+	"WRAllMFDN.json",
+	"WRAllMDN.json",
+	"WRAllFMD.json",
+	"WRAllFMN.json",
+	"WRAllFDN.json",
+	"WRAllMD.json",
+	"WRAllMN.json",
+	"WRAllFD.json",
+	"WRAllFN.json",
+	"CRDeathsMFDN.json",
+	"CRDeathsMDN.json",
+	"CRDeathsFMD.json",
+	"CRDeathsFMN.json",
+	"CRDeathsFDN.json",
+	"CRDeathsMD.json",
+	"CRDeathsMN.json",
+	"CRDeathsFD.json",
+	"CRDeathsFN.json",
+	"WRDeathsMFDN.json",
+	"WRDeathsMDN.json",
+	"WRDeathsFMD.json",
+	"WRDeathsFMN.json",
+	"WRDeathsFDN.json",
+	"WRDeathsMD.json",
+	"WRDeathsMN.json",
+	"WRDeathsFD.json",
+	"WRDeathsFN.json",
+	"AllAllMFDN.json",
+	"AllAllMDN.json",
+	"AllAllFMD.json",
+	"AllAllFMN.json",
+	"AllAllFDN.json",
+	"AllAllMD.json",
+	"AllAllMN.json",
+	"AllAllFD.json",
+	"AllAllFN.json",
+	"AllDeathsMFDN.json",
+	"AllDeathsMDN.json",
+	"AllDeathsFMD.json",
+	"AllDeathsFMN.json",
+	"AllDeathsFDN.json",
+	"AllDeathsMD.json",
+	"AllDeathsMN.json",
+	"AllDeathsFD.json",
+	"AllDeathsFN.json"
+	];
+
+
+
+	function setData(){
+		var line = document.getElementsByName("line");
+		var death = document.getElementsByName("Death");
+		var gender = document.getElementsByName("gender");
+		var time = document.getElementsByName("time");
+
+		var vLine="1", vDeath="1", vGender="3", vTime="3";
+
+		for (var i = line.length - 1; i >= 0; i--) {
+			if(line[i].checked==true)
+				vLine = line[i].value;
+		}
+
+		if(death[0].checked==true){
+			vDeath = death[0].value;
+		}
+
+		for (var i = gender.length - 1; i >= 0; i--) {
+			if(gender[i].checked==true)
+				vGender = gender[i].value;
+		}
+
+		for (var i = time.length - 1; i >= 0; i--) {
+			if(time[i].checked==true)
+				vTime = time[i].value;
+		}
+		console.log(vLine);
+		console.log(vDeath);
+		console.log(vGender);
+		console.log(vTime);
+
+		for (var i = 0; i < rules.length; i++) {
+			if(rules[i][0] == vLine && rules[i][1]==vDeath && rules[i][2]==vGender && rules[i][3]==vTime){
+				console.log(datas[i]);
+				dataV = "jsons/"+datas[i];
+				break;
+			}
+		};
+
+		for (i = 0; i < 3; i++) {
+	 		calendars[i].update(dataV);
+	 	}
+	}
+
+	function toggleCR(){
+		if(CR){
+			CR = false;
+		}else{
+			CR =true;
+		}
+		changeSource();
+	}
+
+	function toggleWR(){
+		if(WR){
+			WR = false;
+		}else{
+			WR =true;
+		}
+		changeSource();
+	}
+
+	function toggleDeathsOnly(){
+		if(Deaths){
+			Deaths = false;
+		}else{
+			Deaths =true;
+		}
+		changeSource();
+	}
+
+	function toggleMale(){
+		if(Male){
+			Male = false;
+		}else{
+			Male =true;
+		}
+		changeSource();
+	}
+
+	function toggleFemale(){
+		if(Female){
+			Female = false;
+		}else{
+			Female =true;
+		}
+		changeSource();
+	}
+
+	function toggleDay(){
+		if(Day){
+			Day = false;
+		}else{
+			Day =true;
+		}
+		changeSource();
+	}
+
+	function toggleNight(){
+		if(Night){
+			Night = false;
+		}else{
+			Night =true;
+		}
+		changeSource();		
+	}
+
+
+	function highlight(){
+		calendar3.highlight(new Date(2014, 0, 11));
+		//cal.highlight(cal.options.highlight.push(new Date(2000, 0, 5)));
+	}
+    </script>
+
+	<script type="text/javascript" src="timeline/timeline.js"></script>
+	<link rel="stylesheet" type="text/css" href="timeline/timeline.css">
+
+	<script type="text/javascript">
+    var timeline;
+    var data;
+
+    // Called when the Visualization API is loaded.
+    function drawVisualization() {
+        // Create a JSON data table
+        data = [
+            {
+                'start': new Date(2014,0,11),
+                'content': '<strong>Monika More incident: </strong><br/>Girl loses arms by falling into gap. </br/>Media uproar, instigates action.<br>'
+            },
+            {
+                'start': new Date(2014, 1, 2),
+                'content': 'First Monorail starts (Versova-Ghatkopar).<br>'
+			},
+            {
+                'start': new Date(2014, 1, 14),
+                'content': 'HC asks to deal with the gaps.<br>'
+            },
+            {
+                'start': new Date(2014, 1, 18),
+                'content': 'Youth injured at Masjid dies, 6 more track deaths in a day come under trains.<br>'
+            },
+            {
+                'start': new Date(2014, 1, 20),
+                'content': 'MMRDA shelves2nd monorail plans (Thanke Kalyan Bhivandi).<br>'
+            },
+            {
+                'start': new Date(2014, 1, 27),
+                'content': 'Navi Mumbai Passenger Friendly.<br>'
+            },
+            {
+                'start': new Date(2014, 2, 18),
+                'content': 'MRVC-JJCOA Trespass Control Project starts.<br>'
+            },
+            {
+                'start': new Date(2014, 2, 24),
+                'content': 'Justice for Dhaval (Titwala Derailment.<br>'
+            },
+            {
+                'start': new Date(2014, 3, 2),
+                'content': 'BEST Strike.<br>'
+            },
+            {
+                'start': new Date(2014, 3, 12),
+                'content': 'Address proof for season ticket.<br>'
+            },
+            {
+                'start': new Date(2014, 3, 12),
+                'content': 'Elections.<br>'
+            },
+            {
+                'start': new Date(2014, 3, 16),
+                'content': 'Asangaon train derails<br>'
+            },
+            {
+                'start': new Date(2014, 3, 23),
+                'content': 'Ambulance at every station.<br>'
+            },
+            {
+                'start': new Date(2014, 4, 15),
+                'content': 'MRVC-JJCOA Trespass Control (20 stations considered critical).<br>'
+            },
+            {
+                'start': new Date(2014, 4, 16),
+                'content': 'Modi era begins.<br>'
+            },
+            {
+                'start': new Date(2014, 4, 22),
+                'content': 'Prosthetic arms for Monika<br>'
+            },
+            {
+                'start': new Date(2014, 5, 6),
+                'content': 'Metro launched.<br>'
+            },
+             {
+                'start': new Date(2014, 5, 25),
+                'content': 'Fare hike (season ticket doubles).<br>'
+            },
+            {
+                'start': new Date(2014, 6, 2),
+                'content': 'Heavy rains (Andheri closed) Water logging at Dadar, Parel, Chembur, Ghatkopar (LBS).<br>'
+            },
+            {
+                'start': new Date(2014, 6, 11),
+                'content': 'Mumbai suburban network and the rail budget.<br>'
+            },
+            {
+                'start': new Date(2014, 6, 28),
+                'content': '34 stations to get escalators.<br>'
+            },
+             {
+                'start': new Date(2014, 7, 8),
+                'content': 'Railway seeks amendment to compensation laws/accident definition.<br>'
+            },
+            {
+                'start': new Date(2014, 7, 25),
+                'content': 'Foundation stone laid for Colaba-Seepz Metro.<br>'
+            },
+            {
+                'start': new Date(2014, 7, 27),
+                'content': 'Stretchers missing from trains (mystery)<br>'
+            },
+            {
+                'start': new Date(2014, 8, 1),
+                'content': 'GRP unleashes ‘Nirbhaya’ squad on locals to curb crimes against women.<br>'
+            },
+             {
+                'start': new Date(2014, 8, 14),
+                'content': 'Train derails at CST.<br>'
+            },
+            {
+                'start': new Date(2014, 8, 22),
+                'content': 'Airlifting of vicitims (helipads announced)<br>'
+            },
+            {
+                'start': new Date(2014, 8, 23),
+                'content': 'Announce 20 FOBs (MRVC)<br>'
+            },
+            {
+                'start': new Date(2014, 9, 2),
+                'content': 'Cops to test vicitims for alcohol consumption.<br>'
+            },
+            {
+                'start': new Date(2014, 9, 2),
+                'content': 'Swachh Bharat Abhiyan.<br>'
+            },
+            {
+                'start': new Date(2014, 10, 4),
+                'content': 'HC rap for lack of medical centres at station. <br>'
+            },
+            {
+                'start': new Date(2014, 10, 9),
+                'content': 'Service disrupted (3rd day in row), 900 Unclaimed bodies<br>'
+            },
+             {
+                'start': new Date(2014, 10, 9),
+                'content': 'Dengue outbreak.<br>'
+            },
+            {
+                'start': new Date(2014, 10, 9),
+                'content': 'Ramps removed at some statons: lessens accidents.<br>'
+            },
+            {
+                'start': new Date(2014, 10, 18),
+                'content': 'Terrible Tuesday (13 deaths).<br>'
+            },
+            {
+                'start': new Date(2014, 10, 22),
+                'content': '!Railway minister suresh prabhu meets WR/CR.<br>'
+            },
+            {
+                'start': new Date(2014, 11, 12),
+                'content': 'SC raps railway for charging for medical emergencies.<br>'
+            },
+            {
+                'start': new Date(2014, 11, 22),
+                'content': 'Considering setting up Trauma centres at stations (set up in Dadar in 2013).<br>'
+            },
+            {
+                'start': new Date(2014, 11, 29),
+                'content': 'Mobile ticketting (only 7 tickets sold).<br>'
+            },
+            {
+                'start': new Date(2014, 11, 31),
+                'content': 'Special security manpower set up for new years eve.<br>'
+            },
+
+           
+        ];
+
+        // specify options
+        var options = {
+            'width':  '100%',
+            'height': '400px',
+            'editable': false,   // enable dragging and editing events
+            'style': 'box'
+        };
+
+        // Instantiate our timeline object.
+        timeline = new links.Timeline(document.getElementById('mytimeline'), options);
+
+        function onRangeChanged(properties) {
+            document.getElementById('info').innerHTML += 'rangechanged ' +
+                    properties.start + ' - ' + properties.end + '<br>';
+        }
+
+        // attach an event listener using the links events handler
+        links.events.addListener(timeline, 'rangechanged', onRangeChanged);
+
+        // Draw our timeline with the created data and options
+        timeline.draw(data);
+    }
+</script>
+
+<link rel="stylesheet" href="bootstrap.css">
+<link rel="stylesheet" href="mystyle.css">
+
+ 
+  </head>
+   
+ 
+  <body onload="drawVisualization();">
+  
+ 	<div class="container">
+		<div class="row">
+
+			<div class="col-md-2">
+				<h4>Mumbai Suburban Railway Accidents (2012 to 2014)</h4>
+				<a href="indexWeek.html?d=month&sd=day">Calendar</a> | <a href="bar.html"> Bar </a><br/>
+				<form name="filter">
+					<input type="radio" name="line" value="1" checked 	onClick="setData()">Central Railway<br>
+					<input type="radio" name="line" value="2" 			onClick="setData()">Western Railway<br>
+					<input type="radio" name="line" value="3"	onClick="setData()">Both Lines<br>
+					<br/>
+					<input type="checkbox" name="Death" onClick="setData()" value="2">Deaths Only</input><br/>
+					<br/>
+					<input type="radio" name="gender" value="1"		onClick="setData()">Male</input><br/>
+					<input type="radio" name="gender" value="2" 	onClick="setData()">Female</input><br/>
+					<input type="radio" name="gender" value="3" checked onClick="setData()">Both</input><br/>
+					<br/>
+					<input type="radio" name="time" value="1"			onClick="setData()" >Day</input><br/>
+					<input type="radio" name="time" value="2" 		onClick="setData()">Night</input><br/>
+					<input type="radio" name="time" value="3" checked onClick="setData()" >All time</input><br/>
+					<br/>
+				</form>
+				</br>Children | Youth | Adult | Elderly <br/>
+				Morning Peak | Evening Peak <br/>
+				<a href="#" onClick="highlight()">Highlight events</a><br/><br/>
+			</div>
+
+			<div class="col-md-10">
+				<br/>
+				<div id="chart"><strong><span style="color: olive">2012</span>, <span style="color: blue">2013</span>, <span style="color: red">2014</span></strong></div>
+				<div id="mytimeline"><br/></div>
+			</div>
+
+		</div>
+	</div>
+
+<script>
+	var graph = new Rickshaw.Graph( {
+		element: document.getElementById("chart"),
+		renderer: 'line',
+		height: 150,
+		width: 950,
+	    series: [{
+	        color: 'olive',
+	        data: [ 
+	            { x: 1, y: 172 },
+				{ x: 2, y: 128 },
+				{ x: 3, y: 100 },
+				{ x: 4, y: 145 },
+				{ x: 5, y: 108 },
+				{ x: 6, y: 96 },
+				{ x: 7, y: 73 },
+				{ x: 8, y: 88 },
+				{ x: 9, y: 101 },
+				{ x: 10, y: 120 },
+				{ x: 11, y: 98 },
+				{ x: 12, y: 90 }]
+	   		},
+	   		{
+			color: 'blue',
+	        data: [ 
+	            { x: 1, y: 78 },
+				{ x: 2, y: 75 },
+				{ x: 3, y: 99 },
+				{ x: 4, y: 104 },
+				{ x: 5, y: 100 },
+				{ x: 6, y: 100 },
+				{ x: 7, y: 90 },
+				{ x: 8, y: 97 },
+				{ x: 9, y: 108 },
+				{ x: 10, y: 107 },
+				{ x: 11, y: 81 },
+				{ x: 12, y: 93 }]
+	   		},
+	  		{
+			color: 'red',
+	        data: [ 
+	        	{ x: 1, y: 98 },
+				{ x: 2, y: 90 },
+				{ x: 3, y: 105 },
+				{ x: 4, y: 82 },
+				{ x: 5, y: 93 },
+				{ x: 6, y: 106 },
+				{ x: 7, y: 62 },
+				{ x: 8, y: 74 },
+				{ x: 9, y: 86 },
+				{ x: 10, y: 82 },
+				{ x: 11, y: 76 },
+				{ x: 12, y: 69 }]
+	  		 }]
+		});
+		
+ 	// 	var y_ticks = new Rickshaw.Graph.Axis.Y( {
+		// 	graph: graph,
+		// 	orientation: 'left',
+		// 	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+		// 	element: document.getElementById('y_axis')
+		// } );
+
+		var x_ticks = new Rickshaw.Graph.Axis.X( {
+			graph: graph,
+			tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+		} );
+
+		
+		graph.render();
+
+	</script>
+
+   <script type="text/javascript" src="bootstrap.js"></script>
+  </body>
+
+</html>

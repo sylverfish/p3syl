@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    
+	<head>
+        
+		<meta charset="utf-8">
+        
+		<title>Mumbai Railway Accidents - Timeline</title>
+
+
+		<link type="text/css" rel="stylesheet" href="cal/cal-heatmap.css"/>
+ 		<script type="text/javascript" src="d3/d3.js"></script>
+	    <script type="text/javascript" src="cal/cal-heatmap.js"></script>
+	    <script type="text/javascript" src="d3/d3.layout.js"></script>
+	    <script type="text/javascript" src="d3/rickshaw.min.js"></script>
+
+	    <script type="text/javascript" src="timeline/timeline.js"></script>
+   		<link rel="stylesheet" type="text/css" href="timeline/timeline.css">
+
+   		<script type="text/javascript">
+	        var timeline;
+	        var data;
+
+	        // Called when the Visualization API is loaded.
+	        function drawVisualization() {
+	            // Create a JSON data table
+	            data = [
+	                {
+	                    'start': new Date(2014,0,11),
+	                    'content': '<strong>Monika More incident: </strong><br/>Girl loses arms by falling into gap. </br/>Media uproar, instigates action.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 1, 2),
+	                    'content': 'First Monorail starts (Versova-Ghatkopar).<br>'
+					},
+	                {
+	                    'start': new Date(2014, 1, 14),
+	                    'content': 'HC asks to deal with the gaps.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 1, 18),
+	                    'content': 'Youth injured at Masjid dies, 6 more track deaths in a day come under trains.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 1, 20),
+	                    'content': 'MMRDA shelves2nd monorail plans (Thanke Kalyan Bhivandi).<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 1, 27),
+	                    'content': 'Navi Mumbai Passenger Friendly.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 2, 18),
+	                    'content': 'MRVC-JJCOA Trespass Control Project starts.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 2, 24),
+	                    'content': 'Justice for Dhaval (Titwala Derailment.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 3, 2),
+	                    'content': 'BEST Strike.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 3, 12),
+	                    'content': 'Address proof for season ticket.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 3, 12),
+	                    'content': 'Elections.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 3, 16),
+	                    'content': 'Asangaon train derails<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 3, 23),
+	                    'content': 'Ambulance at every station.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 4, 15),
+	                    'content': 'MRVC-JJCOA Trespass Control (20 stations considered critical).<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 4, 16),
+	                    'content': 'Modi era begins.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 4, 22),
+	                    'content': 'Prosthetic arms for Monika<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 5, 6),
+	                    'content': 'Metro launched.<br>'
+	                },
+	                 {
+	                    'start': new Date(2014, 5, 25),
+	                    'content': 'Fare hike (season ticket doubles).<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 6, 2),
+	                    'content': 'Heavy rains (Andheri closed) Water logging at Dadar, Parel, Chembur, Ghatkopar (LBS).<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 6, 11),
+	                    'content': 'Mumbai suburban network and the rail budget.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 6, 28),
+	                    'content': '34 stations to get escalators.<br>'
+	                },
+	                 {
+	                    'start': new Date(2014, 7, 8),
+	                    'content': 'Railway seeks amendment to compensation laws/accident definition.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 7, 25),
+	                    'content': 'Foundation stone laid for Colaba-Seepz Metro.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 7, 27),
+	                    'content': 'Stretchers missing from trains (mystery)<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 8, 1),
+	                    'content': 'GRP unleashes ‘Nirbhaya’ squad on locals to curb crimes against women.<br>'
+	                },
+	                 {
+	                    'start': new Date(2014, 8, 14),
+	                    'content': 'Train derails at CST.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 8, 22),
+	                    'content': 'Airlifting of vicitims (helipads announced)<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 8, 23),
+	                    'content': 'Announce 20 FOBs (MRVC)<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 9, 2),
+	                    'content': 'Cops to test vicitims for alcohol consumption.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 9, 2),
+	                    'content': 'Swachh Bharat Abhiyan.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 10, 4),
+	                    'content': 'HC rap for lack of medical centres at station. <br>'
+	                },
+	                {
+	                    'start': new Date(2014, 10, 9),
+	                    'content': 'Service disrupted (3rd day in row), 900 Unclaimed bodies<br>'
+	                },
+	                 {
+	                    'start': new Date(2014, 10, 9),
+	                    'content': 'Dengue outbreak.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 10, 9),
+	                    'content': 'Ramps removed at some statons: lessens accidents.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 10, 18),
+	                    'content': 'Terrible Tuesday (13 deaths).<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 10, 22),
+	                    'content': '!Railway minister suresh prabhu meets WR/CR.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 11, 12),
+	                    'content': 'SC raps railway for charging for medical emergencies.<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 11, 22),
+	                    'content': 'Considering setting up Trauma centres at stations (set up in Dadar in 2013).<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 11, 29),
+	                    'content': 'Mobile ticketting (only 7 tickets sold).<br>'
+	                },
+	                {
+	                    'start': new Date(2014, 11, 31),
+	                    'content': 'Special security manpower set up for new years eve.<br>'
+	                },
+
+	               
+	            ];
+
+	            // specify options
+	            var options = {
+	                'width':  '100%',
+	                'height': '300px',
+	                'editable': true,   // enable dragging and editing events
+	                'style': 'box'
+	            };
+
+	            // Instantiate our timeline object.
+	            timeline = new links.Timeline(document.getElementById('mytimeline'), options);
+
+	            function onRangeChanged(properties) {
+	                document.getElementById('info').innerHTML += 'rangechanged ' +
+	                        properties.start + ' - ' + properties.end + '<br>';
+	            }
+
+	            // attach an event listener using the links events handler
+	            links.events.addListener(timeline, 'rangechanged', onRangeChanged);
+
+	            // Draw our timeline with the created data and options
+	            timeline.draw(data);
+	        }
+    	</script>
+	</head>
+	<body onload="drawVisualization();">
+		<div id="mytimeline"></div>
+		
+		
+	</body>
+</html>

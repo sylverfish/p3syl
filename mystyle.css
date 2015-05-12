@@ -1,0 +1,80 @@
+body{
+	padding-top:20px;
+    font-family: "Open Sans";
+    color: gray;
+    background-color: white; 
+    nothing: #0D0000;
+}
+
+table{
+	font-size: 10px
+	
+}
+
+.col-md-2 .col-md-3{
+	padding:5px;
+}
+
+.col1 {
+	width: 150px;
+}
+
+.col2 {
+	width:130px;
+}
+
+/*.m_6 .domain-background, .m_6 .domain-background, .m_7 .domain-background, .m_8 .domain-background, .m_9 .domain-background, .m_10 .domain-background {
+		fill: HoneyDew ;
+	}
+
+.m_3 .domain-background, .m_4 .domain-background, .m_5 .domain-background {
+		fill: LightGoldenRodYellow;
+	}
+
+.m_1 .domain-background, .m_2 .domain-background, .m_11 .domain-background, .m_12 .domain-background  {
+		fill: aliceblue;
+	}*/
+
+.q0
+{
+	background-color: #fff;
+	fill: #fff;
+	stroke: #ededed
+}
+
+.cal-heatmap-container .q1
+{
+	background-color: #FFDDDD;
+	fill: #FFDDDD
+}
+
+.cal-heatmap-container .q2
+{
+	background-color: #FF9797;
+	fill: #FF9797
+}
+
+.cal-heatmap-container .q3
+{
+	background-color: #FF0000;
+	fill: #FF0000
+}
+
+.cal-heatmap-container .q4
+{
+	background-color: #B70000;
+	fill: #B70000
+}
+
+.cal-heatmap-container .q5
+{
+	background-color: #6C0000;
+	fill: #6C0000
+}
+
+.cal-heatmap-container .q6
+{
+	background-color: #280000;
+	fill: #280000
+}
+
