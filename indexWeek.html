@@ -7,6 +7,16 @@
     <meta charset="utf-8">
         
     <title>Mumbai Railway Accidents - Timeline</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
 
 
     <link type="text/css" rel="stylesheet" href="cal/cal-heatmap.css"/>
@@ -169,6 +179,15 @@
 
 		var vLine="1", vDeath="1", vGender="3", vTime="3";
 
+		// var line = document.getElementById("line1");
+		// console.log(line.className);
+		// var line = document.getElementById("line2");
+		// console.log(line.className);
+		// var line = document.getElementById("line3");
+		// console.log(line.className);
+
+		// console.log(line[0].checked + " " + line[1].checked + " " + line[2].checked);
+
 		for (var i = line.length - 1; i >= 0; i--) {
 			if(line[i].checked==true)
 				vLine = line[i].value;
@@ -187,10 +206,6 @@
 			if(time[i].checked==true)
 				vTime = time[i].value;
 		}
-		console.log(vLine);
-		console.log(vDeath);
-		console.log(vGender);
-		console.log(vTime);
 
 		for (var i = 0; i < rules.length; i++) {
 			if(rules[i][0] == vLine && rules[i][1]==vDeath && rules[i][2]==vGender && rules[i][3]==vTime){
@@ -403,6 +418,7 @@
 
     </script>
 
+   
 <script src="javascripts/prototype.js" type="text/javascript"></script>
 <script src="javascripts/scriptaculous.js" type="text/javascript"></script>
 
@@ -611,10 +627,39 @@
 
 
 
-<link rel="stylesheet" href="bootstrap.css">
+
 <link rel="stylesheet" href="mystyle.css">
 
- 
+ 	<script>
+	 	( function($) {
+	        // we can now rely on $ within the safety of our "bodyguard" function
+	        $(document).ready( function() { 
+	        	//alert("nyah nyah! I'm able to use '$'!!!!");  
+
+				// $('.btn').click(function() {
+				// 	setData();
+				// });
+				$('.btn').on('change',function() {
+					// console.log("hey there");
+					setData();
+				});
+	        } );
+	    } ) ( jQuery );
+
+		// $(document).ready(function(){
+		//     $("p").click(function(){
+		//         $(this).hide();
+		//     });
+		//     $('#button').button();
+
+		// 	$('#button').click(function() {
+		// 		console.log("hi");
+		// 	});
+		// 	$('.btn').click(function() {
+		// 		console.log("no hi");
+		// 	});
+		// });
+	</script>	
   </head>
    
  
@@ -627,60 +672,68 @@
 				<h4>Mumbai Suburban Railway Accidents (2012 to 2014)</h4>
 				<a href="indexWeek.html?d=month&sd=day">Calendar</a> | <a href="bar.html"> Bar </a><br/>
 				<form name="filter">
-					<!--<select id="domain" onchange="updateDomains()">
-						<option value="month" >month</option>
-						<option value="hour">hour</option>
-						<option value="day">day</option>
-						<option value="week">week</option>
-						<option value="year">year</option>
-					</select>
-
-    				<select id="subdomain" onchange="updateDomains()">
-						<option value="week">week</option>
-						<option value="min">min</option>
-						<option value="x_min">x_min</option>
-						<option value="hour">hour</option>
-						<option value="x_hour">x_hour</option>
-						<option value="day">day</option>
-						<option value="x_day">x_day</option>
-						<option value="hour">hour</option>
-						<option value="x_week">x_week</option>
-						<option value="month">month</option>     
-						<option value="x_month">x_month</option>    				
-    				</select>
-    				-->
     				<a href="indexWeek.html?d=month&sd=day">Month-Day</a><br/>
     				<a href="indexWeek.html?d=month&sd=x_week">Month-Week</a><br/>
     				<a href="indexWeek.html?d=year&sd=x_month">Year-Month</a><br/>
     				<a href="indexWeek.html?d=year&sd=day">Year-Day</a><br/>
     				<a href="indexWeek.html?d=week&sd=day">Week-Day</a><br/>
 
-    				<br/><br/>
-					<input type="radio" name="line" value="1" checked 	onClick="setData()">Central Railway<br>
-					<input type="radio" name="line" value="2" 			onClick="setData()">Western Railway<br>
-					<input type="radio" name="line" value="3"	onClick="setData()">Both Lines<br>
+    				<br/>
+      				<div class="btn-group-vertical" data-toggle="buttons">
+    					<label class="btn btn-default active">
+							<input type="radio"  name="line" value="1"  autocomplete="off">Central Railway</input>
+						</label>
+						<label class="btn btn-default">
+							<input type="radio" name="line" value="2"  autocomplete="off">Western Railway</input>
+						</label>
+						<label class="btn btn-default">
+							<input type="radio"  name="line" value="3" autocomplete="off">Both</input>
+						</label>
+					</div>
+					<br/><br/>
+					<div class="btn-group"  data-toggle="buttons">
+						<label class="btn btn-default">
+							<input type="checkbox" id="Death"  name="Death" value="2" autocomplete="off">Deaths Only</input>
+						</label>
+					</div>
 					<br/>
-					<input type="checkbox" name="Death" onClick="setData()" value="2">Deaths Only</input><br/>
 					<br/>
-					<input type="radio" name="gender" value="1"		onClick="setData()">Male</input><br/>
-					<input type="radio" name="gender" value="2" 	onClick="setData()">Female</input><br/>
-					<input type="radio" name="gender" value="3" checked onClick="setData()">Both</input><br/>
-					<br/>
-					<input type="radio" name="time" value="1"			onClick="setData()" >Day</input><br/>
-					<input type="radio" name="time" value="2" 		onClick="setData()">Night</input><br/>
-					<input type="radio" name="time" value="3" checked onClick="setData()" >All time</input><br/>
-					<br/>
+					<div class="btn-group-vertical" data-toggle="buttons">
+    					<label class="btn btn-default" >
+							<input type="radio" name="gender" value="1">Male</input>
+						</label>
+						<label class="btn btn-default" >
+							<input type="radio" name="gender" value="2">Female</input>
+						</label>
+						<label class="btn btn-default active">
+							<input type="radio" name="gender" value="3" checked>Both</input>
+						</label>
+					</div>
+					<br/><br/>
+					<div class="btn-group-vertical" data-toggle="buttons">
+						<label class="btn btn-default" >
+							<input type="radio" name="time" value="1">Day</input>
+						</label>
+						<label class="btn btn-default" >
+							<input type="radio" name="time" value="2">Night</input>
+						</label>
+						<label class="btn btn-default active" >
+							<input type="radio" name="time" value="3" checked>All time</input>
+						</label>
+					</div>
+					<br/><br/>
 				</form>
 				</br>Children | Youth | Adult | Elderly <br/>
 				Morning Peak | Evening Peak <br/>
 				<a href="#" onClick="highlight()">Highlight events</a><br/><br/>
 			</div>
 
+
 			<div class="col-md-10">
 				<div id="cal-heatmap1"><br/>2012</div>
 				<div id="cal-heatmap2"><br/>2013</div>
 				<div id="cal-heatmap3"><br/>2014</div>
-				<!--<div id="information">2014<br/></div>-->
+				<!--<div id="information">2014<br/></div>--><br/>
 				<div id="information" style="display:none; width:400px; height:100px; background:#FDD; padding: 10px 10px 10px 10px;" onclick="$('information').hide(); return false;"></div>
 
 
@@ -814,7 +867,7 @@
 
 	</script>
 
-	<script type="text/javascript" src="bootstrap.js"></script>
+	
   </body>
 
 </html>

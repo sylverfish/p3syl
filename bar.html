@@ -7,7 +7,15 @@
     <meta charset="utf-8">
         
     <title>Mumbai Railway Accidents - Charts</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
     <link type="text/css" rel="stylesheet" href="cal/cal-heatmap.css"/>
     <link rel="stylesheet" href="d3/rickshaw.css">
@@ -89,62 +97,87 @@
 	]
 	;
 
-	var datas = [
-	"CRAllMFDN.json",
-	"CRAllMDN.json",
-	"CRAllFMD.json",
-	"CRAllFMN.json",
-	"CRAllFDN.json",
-	"CRAllMD.json",
-	"CRAllMN.json",
-	"CRAllFD.json",
-	"CRAllFN.json",
-	"WRAllMFDN.json",
-	"WRAllMDN.json",
-	"WRAllFMD.json",
-	"WRAllFMN.json",
-	"WRAllFDN.json",
-	"WRAllMD.json",
-	"WRAllMN.json",
-	"WRAllFD.json",
-	"WRAllFN.json",
-	"CRDeathsMFDN.json",
-	"CRDeathsMDN.json",
-	"CRDeathsFMD.json",
-	"CRDeathsFMN.json",
-	"CRDeathsFDN.json",
-	"CRDeathsMD.json",
-	"CRDeathsMN.json",
-	"CRDeathsFD.json",
-	"CRDeathsFN.json",
-	"WRDeathsMFDN.json",
-	"WRDeathsMDN.json",
-	"WRDeathsFMD.json",
-	"WRDeathsFMN.json",
-	"WRDeathsFDN.json",
-	"WRDeathsMD.json",
-	"WRDeathsMN.json",
-	"WRDeathsFD.json",
-	"WRDeathsFN.json",
-	"AllAllMFDN.json",
-	"AllAllMDN.json",
-	"AllAllFMD.json",
-	"AllAllFMN.json",
-	"AllAllFDN.json",
-	"AllAllMD.json",
-	"AllAllMN.json",
-	"AllAllFD.json",
-	"AllAllFN.json",
-	"AllDeathsMFDN.json",
-	"AllDeathsMDN.json",
-	"AllDeathsFMD.json",
-	"AllDeathsFMN.json",
-	"AllDeathsFDN.json",
-	"AllDeathsMD.json",
-	"AllDeathsMN.json",
-	"AllDeathsFD.json",
-	"AllDeathsFN.json"
-	];
+	var CRAllMFDN = [{
+	        color: 'olive',
+	        data: [{ x: 1, y: 172 },{ x: 2, y: 128 },{ x: 3, y: 100 },{ x: 4, y: 145 },{ x: 5, y: 108 },{ x: 6, y: 96 },{ x: 7, y: 73 },{ x: 8, y: 88 },{ x: 9, y: 101 },{ x: 10, y: 120 },{ x: 11, y: 98 },{ x: 12, y: 90 }]
+	   		},
+	   		{
+			color: 'blue',
+	        data: [{ x: 1, y: 78 },{ x: 2, y: 75 },{ x: 3, y: 99 },{ x: 4, y: 104 },{ x: 5, y: 100 },{ x: 6, y: 100 },{ x: 7, y: 90 },{ x: 8, y: 97 },{ x: 9, y: 108 },{ x: 10, y: 107 },{ x: 11, y: 81 },{ x: 12, y: 93 }]
+	    	},
+	  		{
+			color: 'red',
+	        data: [{ x: 1, y: 98 },{ x: 2, y: 90 },{ x: 3, y: 105 },{ x: 4, y: 82 },{ x: 5, y: 93 },{ x: 6, y: 106 },{ x: 7, y: 62 },{ x: 8, y: 74 },{ x: 9, y: 86 },{ x: 10, y: 82 },{ x: 11, y: 76 },{ x: 12, y: 69 }]
+	  		 }];
+
+	var CRAllMDN = [{
+	        color: 'olive',
+	        data: [{x:1, y:138},{x:2, y:115},{x:3, y:87},{x:4, y:132},{x:5, y:90},{x:6, y:82},{x:7, y:65},{x:8, y:72},{x:9, y:86},{x:10, y:103},{x:11, y:77},{x:12, y:82}
+	        ]},
+	        {
+	        color: 'blue',
+	        data: [{x:1, y:67},{x:2, y:62},{x:3, y:85},{x:4, y:85},{x:5, y:82},{x:6, y:88},{x:7, y:74},{x:8, y:78},{x:9, y:84},{x:10, y:86},{x:11, y:65},{x:12, y:75},]},
+	        {
+	        color: 'red',
+	        data: [{x:1, y:77},{x:2, y:75},{x:3, y:88},{x:4, y:68},{x:5, y:72},{x:6, y:79},{x:7, y:50},{x:8, y:59},{x:9, y:63},{x:10, y:75},{x:11, y:65},{x:12, y:53}]}
+	        ];
+
+	var CRAllFMD = [];
+	var CRAllFMN = [];
+	var CRAllFDN = [];
+	var CRAllMD = [];
+	var CRAllMN = [];
+	var CRAllFD = [];
+	var CRAllFN = [];
+	var WRAllMFDN = [];
+	var WRAllMDN = [];
+	var WRAllFMD = [];
+	var WRAllFMN = [];
+	var WRAllFDN = [];
+	var WRAllMD = [];
+	var WRAllMN = [];
+	var WRAllFD = [];
+	var WRAllFN = [];
+	var CRDeathsMFDN = [];
+	var CRDeathsMDN = [];
+	var CRDeathsFMD = [];
+	var CRDeathsFMN = [];
+	var CRDeathsFDN = [];
+	var CRDeathsMD = [];
+	var CRDeathsMN = [];
+	var CRDeathsFD = [];
+	var CRDeathsFN = [];
+	var WRDeathsMFDN = [];
+	var WRDeathsMDN = [];
+	var WRDeathsFMD = [];
+	var WRDeathsFMN = [];
+	var WRDeathsFDN = [];
+	var WRDeathsMD = [];
+	var WRDeathsMN = [];
+	var WRDeathsFD = [];
+	var WRDeathsFN = [];
+	var AllAllMFDN = [];
+	var AllAllMDN = [];
+	var AllAllFMD = [];
+	var AllAllFMN = [];
+	var AllAllFDN = [];
+	var AllAllMD = [];
+	var AllAllMN = [];
+	var AllAllFD = [];
+	var AllAllFN = [];
+	var AllDeathsMFDN = [];
+	var AllDeathsMDN = [];
+	var AllDeathsFMD = [];
+	var AllDeathsFMN = [];
+	var AllDeathsFDN = [];
+	var AllDeathsMD = [];
+	var AllDeathsMN = [];
+	var AllDeathsFD = [];
+	var AllDeathsFN = [];
+
+
+	var s = CRAllMFDN;
+	var datas = [CRAllMFDN,CRAllMDN,CRAllFMD,CRAllFMN,CRAllFDN,CRAllMD,CRAllMN,CRAllFD,CRAllFN,WRAllMFDN,WRAllMDN,WRAllFMD,WRAllFMN,WRAllFDN,WRAllMD,WRAllMN,WRAllFD,WRAllFN,CRDeathsMFDN,CRDeathsMDN,CRDeathsFMD,CRDeathsFMN,CRDeathsFDN,CRDeathsMD,CRDeathsMN,CRDeathsFD,CRDeathsFN,WRDeathsMFDN,WRDeathsMDN,WRDeathsFMD,WRDeathsFMN,WRDeathsFDN,WRDeathsMD,WRDeathsMN,WRDeathsFD,WRDeathsFN,AllAllMFDN,AllAllMDN,AllAllFMD,AllAllFMN,AllAllFDN,AllAllMD,AllAllMN,AllAllFD,AllAllFN,AllDeathsMFDN,AllDeathsMDN,AllDeathsFMD,AllDeathsFMN,AllDeathsFDN,AllDeathsMD,AllDeathsMN,AllDeathsFD,AllDeathsFN];
 
 
 
@@ -182,14 +215,26 @@
 		for (var i = 0; i < rules.length; i++) {
 			if(rules[i][0] == vLine && rules[i][1]==vDeath && rules[i][2]==vGender && rules[i][3]==vTime){
 				console.log(datas[i]);
-				dataV = "jsons/"+datas[i];
+				s = datas[i];
 				break;
 			}
 		};
 
-		for (i = 0; i < 3; i++) {
-	 		calendars[i].update(dataV);
-	 	}
+		// graph = new Rickshaw.Graph( {
+		// element: document.getElementById("chart"),
+		// renderer: 'line',
+		// height: 150,
+		// width: 950,
+	 //    series: s
+		// });
+
+		// var x_ticks = new Rickshaw.Graph.Axis.X( {
+		// 	graph: graph,
+		// 	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+		// } );
+		graph.configure({series: AllDeathsFN});	
+		
+		graph.render();
 	}
 
 	function toggleCR(){
@@ -459,9 +504,41 @@
         // Draw our timeline with the created data and options
         timeline.draw(data);
     }
-</script>
 
-<link rel="stylesheet" href="bootstrap.css">
+
+
+</script>
+<script>
+	 	( function($) {
+	        // we can now rely on $ within the safety of our "bodyguard" function
+	        $(document).ready( function() { 
+	        	//alert("nyah nyah! I'm able to use '$'!!!!");  
+
+				// $('.btn').click(function() {
+				// 	setData();
+				// });
+				$('.btn').on('change',function() {
+					// console.log("hey there");
+					setData();
+				});
+	        } );
+	    } ) ( jQuery );
+
+		// $(document).ready(function(){
+		//     $("p").click(function(){
+		//         $(this).hide();
+		//     });
+		//     $('#button').button();
+
+		// 	$('#button').click(function() {
+		// 		console.log("hi");
+		// 	});
+		// 	$('.btn').click(function() {
+		// 		console.log("no hi");
+		// 	});
+		// });
+	</script>
+
 <link rel="stylesheet" href="mystyle.css">
 
  
@@ -477,19 +554,49 @@
 				<h4>Mumbai Suburban Railway Accidents (2012 to 2014)</h4>
 				<a href="indexWeek.html?d=month&sd=day">Calendar</a> | <a href="bar.html"> Bar </a><br/>
 				<form name="filter">
-					<input type="radio" name="line" value="1" checked 	onClick="setData()">Central Railway<br>
-					<input type="radio" name="line" value="2" 			onClick="setData()">Western Railway<br>
-					<input type="radio" name="line" value="3"	onClick="setData()">Both Lines<br>
 					<br/>
-					<input type="checkbox" name="Death" onClick="setData()" value="2">Deaths Only</input><br/>
+					<div class="btn-group-vertical" data-toggle="buttons">
+    					<label class="btn btn-default active">
+							<input type="radio"  name="line" value="1"  autocomplete="off">Central Railway</input>
+						</label>
+						<label class="btn btn-default">
+							<input type="radio" name="line" value="2"  autocomplete="off">Western Railway</input>
+						</label>
+						<label class="btn btn-default">
+							<input type="radio"  name="line" value="3" autocomplete="off">Both</input>
+						</label>
+					</div>
+					<br/><br/>
+					<div class="btn-group"  data-toggle="buttons">
+						<label class="btn btn-default">
+							<input type="checkbox" id="Death"  name="Death" value="2" autocomplete="off">Deaths Only</input>
+						</label>
+					</div>
 					<br/>
-					<input type="radio" name="gender" value="1"		onClick="setData()">Male</input><br/>
-					<input type="radio" name="gender" value="2" 	onClick="setData()">Female</input><br/>
-					<input type="radio" name="gender" value="3" checked onClick="setData()">Both</input><br/>
 					<br/>
-					<input type="radio" name="time" value="1"			onClick="setData()" >Day</input><br/>
-					<input type="radio" name="time" value="2" 		onClick="setData()">Night</input><br/>
-					<input type="radio" name="time" value="3" checked onClick="setData()" >All time</input><br/>
+					<div class="btn-group-vertical" data-toggle="buttons">
+    					<label class="btn btn-default" >
+							<input type="radio" name="gender" value="1">Male</input>
+						</label>
+						<label class="btn btn-default" >
+							<input type="radio" name="gender" value="2">Female</input>
+						</label>
+						<label class="btn btn-default active">
+							<input type="radio" name="gender" value="3" checked>Both</input>
+						</label>
+					</div>
+					<br/><br/>
+					<div class="btn-group-vertical" data-toggle="buttons">
+						<label class="btn btn-default" >
+							<input type="radio" name="time" value="1">Day</input>
+						</label>
+						<label class="btn btn-default" >
+							<input type="radio" name="time" value="2">Night</input>
+						</label>
+						<label class="btn btn-default active" >
+							<input type="radio" name="time" value="3" checked>All time</input>
+						</label>
+					</div>
 					<br/>
 				</form>
 				</br>Children | Youth | Adult | Elderly <br/>
@@ -507,59 +614,13 @@
 	</div>
 
 <script>
+
 	var graph = new Rickshaw.Graph( {
 		element: document.getElementById("chart"),
 		renderer: 'line',
 		height: 150,
 		width: 950,
-	    series: [{
-	        color: 'olive',
-	        data: [ 
-	            { x: 1, y: 172 },
-				{ x: 2, y: 128 },
-				{ x: 3, y: 100 },
-				{ x: 4, y: 145 },
-				{ x: 5, y: 108 },
-				{ x: 6, y: 96 },
-				{ x: 7, y: 73 },
-				{ x: 8, y: 88 },
-				{ x: 9, y: 101 },
-				{ x: 10, y: 120 },
-				{ x: 11, y: 98 },
-				{ x: 12, y: 90 }]
-	   		},
-	   		{
-			color: 'blue',
-	        data: [ 
-	            { x: 1, y: 78 },
-				{ x: 2, y: 75 },
-				{ x: 3, y: 99 },
-				{ x: 4, y: 104 },
-				{ x: 5, y: 100 },
-				{ x: 6, y: 100 },
-				{ x: 7, y: 90 },
-				{ x: 8, y: 97 },
-				{ x: 9, y: 108 },
-				{ x: 10, y: 107 },
-				{ x: 11, y: 81 },
-				{ x: 12, y: 93 }]
-	   		},
-	  		{
-			color: 'red',
-	        data: [ 
-	        	{ x: 1, y: 98 },
-				{ x: 2, y: 90 },
-				{ x: 3, y: 105 },
-				{ x: 4, y: 82 },
-				{ x: 5, y: 93 },
-				{ x: 6, y: 106 },
-				{ x: 7, y: 62 },
-				{ x: 8, y: 74 },
-				{ x: 9, y: 86 },
-				{ x: 10, y: 82 },
-				{ x: 11, y: 76 },
-				{ x: 12, y: 69 }]
-	  		 }]
+	    series: s
 		});
 		
  	// 	var y_ticks = new Rickshaw.Graph.Axis.Y( {
@@ -579,7 +640,6 @@
 
 	</script>
 
-   <script type="text/javascript" src="bootstrap.js"></script>
   </body>
 
 </html>
