@@ -23,17 +23,17 @@
 <body onkeydown="checkKey(event)">
 	<script type="text/javascript">
     function hideLogo(){
-    	// document.getElementById("title").style.display = "none";
+    	document.getElementById("title").style.display = "none";
     }
 
     function showLogo(){
-    	// document.getElementById("title").style.display = "block";
+    	document.getElementById("title").style.display = "block";
     }
     
     </script>
 
 
-	<!--<div id="title" style="display: none">
+	<div id="title" style="display: block">
 		<svg width="300" height="300">
 			<circle cx="150" cy="80" r="55" stroke="blue" stroke-width="27" fill="#280000"/>
   			 <rect width="160" height="40" x="70" y="60" style="fill:rgb(255,0,0)" />
@@ -43,9 +43,13 @@
 		    <tspan x="20" y="190">accidents on the Mumbai Suburban Railway Network.</tspan>
 		    <tspan x="31" y="210">(Thane to CST Mumbai, Andheri to Churchgate)</tspan>		    
 		</svg>	
-	</div>-->
+		<span style="font-size: x-small; color: pink" >(Press arrow keys LEFT and RIGHT)</style>
+	</div>
 	<div id="chart"></div>
 	<!--<div><span id="left">Left</span> | <span id="right">Right</span></div>-->
+
+
+
 
 	<script>
 	var clipWidth = 1100;
