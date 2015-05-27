@@ -28,17 +28,17 @@
     	//document.getElementById("title").style.display = "none";
     	// Effect.Fade('id_of_element', { duration: 3.0 });
     	if(!hidden){
-    		Effect.Fade('title',{ duration: 1.5, from: 1, to: 0 });
+    		Effect.Fade('title',{ duration: 1.0, from: 1, to: 0 });
     		hidden=true;
     	}
 
     }
 
-    var hidden = true;
+    var hidden = false;
 
     function showLogo(){
     	//document.getElementById("title").style.display = "block";
-    	Effect.Appear('title', { duration: 1.5 });
+    	Effect.Appear('title', { duration: 1.0 });
     	hidden = false;
     }
     
@@ -58,14 +58,16 @@
 		<span style="font-size: x-small; color: pink" >(Press arrow keys LEFT and RIGHT)</style>
 	</div>
 	<div id="chart"></div>
+	<div id="popme" style="display:none">Male/Female</div>
 	<!--<div><span id="left">Left</span> | <span id="right">Right</span></div>-->
 
 
 
 
 	<script>
+var gender=[50,150];
 	var clipWidth = 1100;
-	var clipHeight = 1000;
+	var clipHeight = 300;
 	width = 100;
 	var x=0;
 	var cx=0;
@@ -84,6 +86,8 @@
 	var speed=1100;
 	var pages=3;
 	var update;
+	var updatePie;
+
 	d3.csv(["data/StationsTrial.csv"], function(error, data){
 			 var svg = d3.select('#chart').append('svg')
 		    .attr('width', clipWidth)
@@ -127,7 +131,7 @@
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("width","40")
 		    	.attr("height", "20")
-		    	.attr("x", function(d){return lx+parseInt(d.rX)})
+		    	.attr("x", function(d){ return lx+parseInt(d.rX)})
 				.attr("y", function(d){return d.rY})
 				.attr("fill", function(d){
 					if(d.Type=="Interchange") return "green";
@@ -166,9 +170,61 @@
 		    	.attr("cy", function(d){return lx+parseInt(d.rY)-d.All/2-25})
 		    	.attr("r", function(d){if(d.All==0) return 1; return d.All/2})
 		    	.attr("fill", "white")
-		    	.attr("fill-opacity","0.6")
+		    	.attr("fill-opacity","0.8")
+		    	.on("mouseover", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "1");
+
+                	d3.select(this)
+                	.append("title")
+                	.text(d.All + " incidents, and "+d.Deaths +" deaths at "+d.Station);
+
+                	var coordinates = [0, 0];
+					coordinates = d3.mouse(this);
+					var x = coordinates[0];
+					var y = coordinates[1];
+					
+                	var popme = document.getElementById('popme');
+                	// popme.style.display = "block";
+                	// console.log(x + " " + y)
+                	popme.style = "position: absolute; top:"+(y+150)+"px; left:"+(x+30)+"px; border:1px solid red; color: red; padding:5px; display: none" ;
+                	Effect.Appear('popme', {duration: 1.0} );
+                	// popme.style=('position', 'absolute' );
+
+                	//http://stackoverflow.com/questions/16770763/mouse-position-in-d3
+                	//http://stackoverflow.com/questions/14825864/jquery-show-a-hidden-div-at-mouse-position-when-a-link-is-clicked
+
+                	gender= [d.Male, d.Female];
+                	updatePie();
+     //            	console.log(gender[0], gender[1])
+     //            	var color = d3.scale.category10();
+					// var arc = d3.svg.arc()
+					//     .innerRadius(200)
+					//     .outerRadius(240)
+					//     .cornerRadius(20);
+					// var pie = d3.layout.pie()
+					//     .padAngle(.02);
+
+				 //    var pies = g.selectAll("path")
+					// .data(gender).enter();
+
+					// pies.insert("path")
+					//     .style("fill", function(d, i) { return color(i); })
+					//     .attr("d", arc);
+
+		    	
+                })
+                .on("mouseout", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "0.8");
+
+                	document.getElementById('popme').style.display = "none";
+                	// Effect.Fade('popme', {duration: 5.0, from: 1, to: 0} );
+
+                })
 		    	;	
 
+		    
 		    circles
 			.insert('circle')
 				.attr("class", "area").attr("clip-path", "url(#clip)")
@@ -178,7 +234,50 @@
 		    	.attr("r", function(d){if(d.All==0) return 1; return d.Deaths/2})
 		    	.attr("fill", "darkred")
 		    	.attr("fill-opacity","0.8")
+		    	.on("mouseover", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "1");
+                	d3.select(this)
+                	.append("title")
+                	.text(d.All + " incidents, and "+d.Deaths +" deaths at "+d.Station);
+
+                	
+			    	
+                	document.getElementById('popme').style.display = "block";
+                })
+                .on("mouseout", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "0.8");
+
+                	document.getElementById('popme').style.display = "none";
+
+                })
 		    	;
+
+
+		   	 
+			
+
+		 //   	var arc = d3.svg.arc()
+			//     .innerRadius(radius - 40)
+			//     .outerRadius(radius)
+			//     .cornerRadius(20);
+
+			// var pie = d3.layout.pie()
+			//     .padAngle(.02);
+
+			// var color = d3.scale.category10();
+
+
+			// var pies = g.selectAll("path")
+			// .data(pie(data)).enter();
+
+			// pies
+			// .insert("path")
+			// .style("fill", function(d, i) { return color(i); })
+   //  		.attr("d", arc);
+
+	   	
 
 			rects
 		    .insert('rect') //gender
@@ -348,6 +447,8 @@
 			};		
 	});
 
+
+
 	var checkKey = function(e){
 		// console.log(e);
 	    if (e.keyCode == '38') {
@@ -358,12 +459,13 @@
 	    }
 	    else if (e.keyCode == '37') {
 	    	// left arrow
-	    	console.log("L:"+x)
+	    	// console.log("L:"+x)
 	    	if(x>=0) {
 	    		l=0;
 	    		lx=0;
 	    		cx=0;
 	    		showLogo();
+	    		Effect.Shake('chart',{duration:0.1, distance:5}); 
 	    		return;
 	    	}
 	    	hideLogo();
@@ -371,7 +473,7 @@
 			x=l;
 			lx = lx+speed;
 			cx=l;
-			console.log("L:"+x);
+			// console.log("L:"+x);
 			if(x>=0) {
 	    		l=0;
 	    		lx=0;
@@ -379,11 +481,12 @@
 	    		showLogo();
 		    }
 			update();
+
 	    }
 	    else if (e.keyCode == '39') {
 	       	// right arrow
-	       	console.log("R:"+x)
-	       	if(x<=-(pages-1)*speed) {return;}
+	       	// console.log("R:"+x)
+	       	if(x<=-(pages-1)*speed) {Effect.Shake('chart',{duration:0.1, distance:5}); return;}
 
 	       	hideLogo();
 	       	l=l-speed;
@@ -395,7 +498,7 @@
 			cx=l;
 			if(cx<=-pages*speed) {x=-pages*speed; l=-pages*speed;}
 
-			console.log("R:"+x)
+			// console.log("R:"+x)
 		    update();
 	    }
 
@@ -403,6 +506,55 @@
 
 	}
 
+
+//http://bl.ocks.org/mbostock/c501f6cae402ab5e90c9
+	
+
+	var width = 500,
+	    height = 300,
+	    radius = height / 2 - 10;
+
+	var arc = d3.svg.arc()
+	    .innerRadius(radius - 20)
+	    .outerRadius(radius)
+	    .cornerRadius(20);
+
+	var pie = d3.layout.pie()
+	    .padAngle(.02);
+
+	var color = d3.scale.category10();
+
+	var svg = d3.select('#popme').append('svg')
+	// var svg = d3.select("body").append("svg")
+	    .attr("width", width)
+	    .attr("height", height)
+	  .append("g")
+	    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+	svg.selectAll("path")
+	    .data(pie(gender))
+	  .enter().append("path")
+	    .style("fill", function(d, i) { return color(i); })
+	    .attr("d", arc);
+
+	updatePie = function(){
+		console.log(gender[0] + "," +gender[1])
+		svg.selectAll("path")
+			.data(pie(gender))
+			// .enter().append("path")
+		    .style("fill", function(d, i) { return color(i); })
+		    .attr("d", arc)
+		    .transition().duration(1000);
+	}
+
 	</script>
+
+
+<div id="chart2"></div>
+<script>
+	
+	    
+
+</script>
 </body>
 <html>
