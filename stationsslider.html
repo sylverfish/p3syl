@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>      
+    <meta charset="utf-8">      
+    <title>Stations - D3</title>
+
+    <script type="text/javascript" src="d3/d3.js"></script>
+
+
+    <style type="text/css">
+	    body{
+			padding-top:20px;
+		    font-family: "Open Sans";
+		    color: gray;
+		    background-color: #280000; 
+		}
+    </style>
+
+    
+
+    
+  </head>
+<body onkeydown="checkKey(event)">
+	<script type="text/javascript">
+    function hideLogo(){
+    	// document.getElementById("title").style.display = "none";
+    }
+
+    function showLogo(){
+    	// document.getElementById("title").style.display = "block";
+    }
+    
+    </script>
+
+
+	<!--<div id="title" style="display: none">
+		<svg width="300" height="300">
+			<circle cx="150" cy="80" r="55" stroke="blue" stroke-width="27" fill="#280000"/>
+  			 <rect width="160" height="40" x="70" y="60" style="fill:rgb(255,0,0)" />
+  			 <text x="103" y="85" fill="white" >Destinations</text>
+  			 <text x="32" y="170" fill="grey" style="font-family: Georgia; font-size: x-small">
+  								  A visual representation of the tragic situation of 
+		    <tspan x="20" y="190">accidents on the Mumbai Suburban Railway Network.</tspan>
+		    <tspan x="31" y="210">(Thane to CST Mumbai, Andheri to Churchgate)</tspan>		    
+		</svg>	
+	</div>-->
+	<div id="chart"></div>
+	<!--<div><span id="left">Left</span> | <span id="right">Right</span></div>-->
+
+	<script>
+	var clipWidth = 1100;
+	var clipHeight = 1000;
+	width = 100;
+	var x=0;
+	var cx=0;
+	var lx=0;
+
+	var xScale = d3.scale
+					.linear()
+					.domain([0,1600])
+					.range([0,200]);
+
+	var prev=0;	
+	var cprev=0;	
+
+	var pad=20;	
+	var l=0;
+	var speed=200;
+	var update;
+	d3.csv(["data/StationsTrial.csv"], function(error, data){
+			 var svg = d3.select('#chart').append('svg')
+		    .attr('width', clipWidth)
+		    .attr('height', clipHeight);
+
+		    svg.append("defs").append("clipPath")
+		    .attr("id", "clip")
+		    .append("rect")
+		        .attr("width", clipWidth)
+		        .attr("height", clipHeight);
+
+		    var g = svg.append("g");
+
+			
+
+			var lines = g.selectAll("line")
+			.data(data).enter();
+
+			lines
+		    .insert('line') //left
+		    	.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "l1")
+		    	.attr("x1", function(d){return lx+parseInt(d.inx1)})
+		    	.attr("y1", function(d){return d.iny1})
+		    	.attr("x2", function(d){return lx+parseInt(d.inx2)})
+		    	.attr("y2", function(d){return d.iny2})
+		    	.attr("stroke","grey")
+		    	.attr("fill", "none")
+		    	.attr("stroke-width", "2")
+		    	.style("stroke-dasharray", ("10, 10"));
+		    	// .attr("style", "stroke:rgb(255,0,0);stroke-width:2");
+		        // .style("stroke-dasharray", ("3, 3"));  //function(d){return d.Deaths}
+		    ;
+
+			var rects = g.selectAll("rect")
+			.data(data).enter();
+			
+			rects
+		    .insert('rect') //rect
+		    	.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("width","40")
+		    	.attr("height", "20")
+		    	.attr("x", function(d){return lx+parseInt(d.rX)})
+				.attr("y", function(d){return d.rY})
+				.attr("fill", function(d){
+					if(d.Type=="Interchange") return "green";
+					if(d.Type=="Slow") return "blue";
+					if(d.Type=="Fast") return "red"
+				})
+		    ;
+
+		    lines
+		    .insert('line') //right
+		    	.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "l2")
+		    	.attr("x1", function(d){return lx+parseInt(d.outx1)})
+		    	.attr("y1", function(d){return d.outy1})
+		    	.attr("x2", function(d){return lx+parseInt(d.outx2)})
+		    	.attr("y2", function(d){return d.outy2})
+		    	.attr("stroke","grey")
+		    	.attr("fill", "none")
+		    	.attr("stroke-width", "2")
+		    	.style("stroke-dasharray", ("10, 10"));
+		    	// .attr("style", "stroke:rgb(255,0,0);stroke-width:2");
+		        // .style("stroke-dasharray", ("3, 3"));  //function(d){return d.Deaths}
+		    ;
+
+		    
+		    var circles = g.selectAll("circle")
+			.data(data).enter();
+
+			circles
+			.insert('circle')
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "cAll")
+		    	.attr("cx", function(d){return lx+parseInt(d.rX)+25})
+		    	.attr("cy", function(d){return lx+parseInt(d.rY)-2*d.All/3-25})
+		    	.attr("r", function(d){if(d.All==0) return 1; return 2*d.All/3})
+		    	.attr("fill", "white")
+		    	.attr("fill-opacity","0.8")
+		    	;	
+
+		    circles
+			.insert('circle')
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "cDeaths")
+		    	.attr("cx", function(d){return lx+parseInt(d.rX)+25})
+		    	.attr("cy", function(d){return lx+parseInt(d.rY)-2*d.Deaths/3-25})
+		    	.attr("r", function(d){if(d.All==0) return 1; return 2*d.Deaths/3})
+		    	.attr("fill", "darkred")
+		    	.attr("fill-opacity","0.9")
+		    	;
+
+			rects
+		    .insert('rect') //gender
+		    	.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "gender1")
+		    	.attr("width","5")
+		    	.attr("height", function(d){return d.Male/2})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)-2*d.All/3})
+				.attr("y", function(d){return d.rY-d.All})
+				.attr("fill", "blue")
+		    ;
+
+		    rects
+		    .insert('rect') //gender
+		    	.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "gender2")
+		    	.attr("width","5")
+		    	.attr("height", function(d){return d.Female/2})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)-2*d.All/3-8})
+				.attr("y", function(d){return d.rY-d.All})
+				.attr("fill", "red")
+		    ;
+
+		    rects
+		    .insert('rect') //day
+		    	.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "day")
+		    	.attr("width","5")
+		    	.attr("height", function(d){return d.Day/2})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+80})
+				.attr("y", function(d){return d.rY-d.All})
+				.attr("fill", "yellow")
+		    ;
+
+		     rects
+		    .insert('rect') //night
+		    	.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "night")
+		    	.attr("width","5")
+		    	.attr("height", function(d){return d.Night/2})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+88})
+				.attr("y", function(d){return d.rY-d.All})
+				.attr("fill", "grey")
+		    ;
+
+
+			
+
+		    var text = g.selectAll("text")
+				.data(data).enter();
+
+			text
+				.insert('text')
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "stations")
+		    	.attr("x", function(d){return lx+parseInt(d.rX)-10})
+		    	.attr("y", function(d){return lx+parseInt(d.rY)+40})
+		    	.text(function (d) {return d.Station;})
+		    	.attr("font-family", "sans-serif")
+                .attr("font-size", "12px")
+                .attr("fill", "white");
+		    	;
+
+		 //    circles
+			// .insert('circle')
+			// 	.attr("class", "area").attr("clip-path", "url(#clip)")
+		 //    	.attr("id", "cDeaths")
+		 //    	.attr("cx", function(d){function(d){if(d.All==0) return 1; return xScale(d.Deaths)})
+		 //    	.attr("cy", 200)
+		 //    	.attr("r", function(d){if(d.All==0) return 1; return xScale(d.Deaths)})
+		 //    	.attr("fill", "red")
+		    	;	    
+
+		 //    g.selectAll("rect")
+			// .data(data).enter()
+		 //    .insert('rect') //rect
+		 //    	.attr("class", "area").attr("clip-path", "url(#clip)")
+		 //    ;
+
+		 //    g.selectAll("circle")
+			// .data(data).enter()
+		 //    .insert('line') //circle
+		 //    	.attr("class", "area").attr("clip-path", "url(#clip)")
+		 //    ;
+
+		 //    g.selectAll("line")
+			// .data(data).enter()
+		 //    .insert('line') //right
+		 //    	.attr("class", "area").attr("clip-path", "url(#clip)")
+		 //    ;
+
+			// g.selectAll("rect")
+		 //    // .data(data).enter().append('rect')
+		 //    //     .attr("class", "area").attr("clip-path", "url(#clip)")
+		 //    //     .attr('x', function(d){x=x+prev+pad; prev=parseInt(d.All); return x;})
+		 //    //     // .attr('x', function(d){return xScale(d.x)})
+		 //    //     .attr('width', function(d){if(d.All==0) return 1; return (d.All)})
+		 //    //     .attr('height', function(d){if(d.All==0) return 1; return (d.All)} )
+		 //    //     .style('fill', d3.scale.category20());  //function(d){return d.Deaths}
+		 //    .data(data).enter()
+		 //    .insert('rect')
+		 //        .attr("class", "area").attr("clip-path", "url(#clip)")
+		 //        .attr('x', function(d){x=x+prev+pad; prev=parseInt(d.All); return x;})
+		 //        // .attr('x', function(d){return xScale(d.x)})
+		 //        .attr('width', function(d){if(d.All==0) return 1; return (d.All)})
+		 //        .attr('height', function(d){if(d.All==0) return 1; return (d.All)} )
+		 //        .style('fill', d3.scale.category20());  //function(d){return d.Deaths}
+
+
+
+			// g.selectAll("circle")
+			// .data(data).enter()
+		 //    .insert('circle')
+		 //    	.attr("class", "area").attr("clip-path", "url(#clip)")
+		 //        .attr('r', function(d){if(d.All==0) return 1; return xScale(d.All)})
+		 //        .attr('cx', function(d){cx=cx+cprev+pad; cprev=parseInt(d.All); return cx;})
+		 //    	.attr('cy', 200)
+		 //    	.style('fill', "red");
+
+		     update = function(){
+			    g.selectAll("rect")
+			        .transition().duration(500)
+					.attr("x", function(d){return lx+parseInt(d.rX)});
+
+			    g.selectAll("#l1")
+			        .transition().duration(500)
+			        .attr("x1", function(d){return lx+parseInt(d.inx1)})
+		    		.attr("x2", function(d){return lx+parseInt(d.inx2)})
+
+			    g.selectAll("#l2")
+			        .transition().duration(500)
+			        .attr("x1", function(d){return lx+parseInt(d.outx1)})
+		    		.attr("x2", function(d){return lx+parseInt(d.outx2)})
+
+		    	g.selectAll("#cAll")
+			        .transition().duration(500)
+			        .attr("cx", function(d){return lx+parseInt(d.rX)+25});
+
+			    g.selectAll("#cDeaths")
+			        .transition().duration(500)
+			        .attr("cx", function(d){return lx+parseInt(d.rX)+25});
+
+			    g.selectAll("text")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)});
+
+			    g.selectAll("#gender1")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)-2*d.All/3})
+
+			    g.selectAll("#gender2")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)-2*d.All/3-8});
+
+			     g.selectAll("#day")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+80})
+
+			    g.selectAll("#night")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+80+8})
+
+			    // g.selectAll("circle")
+			    //     .transition().duration(500)
+			    //     // .attr('x', function(d){return xScale(d.x)});
+			    //     .attr('cx', function(d){cx=cx+cprev+pad; cprev=parseInt(d.All); return cx;});
+			};		
+	});
+
+	var checkKey = function(e){
+		// console.log(e);
+	    if (e.keyCode == '38') {
+	        // up arrow
+	    }
+	    else if (e.keyCode == '40') {
+	        // down arrow
+	    }
+	    else if (e.keyCode == '37') {
+	    	// left arrow
+	    	hideLogo();
+	    	l=l+speed;
+			x=l;
+
+			lx = lx+speed;
+			
+			if(x>=0) {x=-120; l=0; showLogo();}
+
+			cx=l;
+			
+			if(cx>=0) {cx=-120; l=0; showLogo();}
+
+
+		    update();
+	    }
+	    else if (e.keyCode == '39') {
+	       	// right arrow
+	       	hideLogo();
+	       	l=l-speed;
+			x=l;
+
+			lx = lx-speed;
+
+			if(x<=-800) {x=-800; l=-800;}
+
+			cx=l;
+			if(cx<=-800) {x=-800; l=-800;}
+
+
+		    update();
+	    }
+
+	}
+
+	</script>
+</body>
+<html>
