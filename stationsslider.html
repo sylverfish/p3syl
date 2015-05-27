@@ -16,18 +16,30 @@
 		}
     </style>
 
-    
+    <script src="javascripts/prototype.js" type="text/javascript"></script>
+	<script src="javascripts/scriptaculous.js" type="text/javascript"></script>
 
     
   </head>
 <body onkeydown="checkKey(event)">
 	<script type="text/javascript">
     function hideLogo(){
-    	document.getElementById("title").style.display = "none";
+    	//document.getElementById("title").style.display = "none";
+    	//document.getElementById("title").style.display = "none";
+    	// Effect.Fade('id_of_element', { duration: 3.0 });
+    	if(!hidden){
+    		Effect.Fade('title',{ duration: 1.5, from: 1, to: 0 });
+    		hidden=true;
+    	}
+
     }
 
+    var hidden = true;
+
     function showLogo(){
-    	document.getElementById("title").style.display = "block";
+    	//document.getElementById("title").style.display = "block";
+    	Effect.Appear('title', { duration: 1.5 });
+    	hidden = false;
     }
     
     </script>
@@ -69,7 +81,8 @@
 
 	var pad=20;	
 	var l=0;
-	var speed=200;
+	var speed=1100;
+	var pages=3;
 	var update;
 	d3.csv(["data/StationsTrial.csv"], function(error, data){
 			 var svg = d3.select('#chart').append('svg')
@@ -100,7 +113,8 @@
 		    	.attr("stroke","grey")
 		    	.attr("fill", "none")
 		    	.attr("stroke-width", "2")
-		    	.style("stroke-dasharray", ("10, 10"));
+		    	.attr("stroke-opacity","0.5")
+		    	.style("stroke-dasharray", ("4, 4"));
 		    	// .attr("style", "stroke:rgb(255,0,0);stroke-width:2");
 		        // .style("stroke-dasharray", ("3, 3"));  //function(d){return d.Deaths}
 		    ;
@@ -133,7 +147,9 @@
 		    	.attr("stroke","grey")
 		    	.attr("fill", "none")
 		    	.attr("stroke-width", "2")
-		    	.style("stroke-dasharray", ("10, 10"));
+		    	.attr("stroke-opacity","0.5")
+		    	.style("stroke-dasharray", ("4, 4"))
+		    	;
 		    	// .attr("style", "stroke:rgb(255,0,0);stroke-width:2");
 		        // .style("stroke-dasharray", ("3, 3"));  //function(d){return d.Deaths}
 		    ;
@@ -147,10 +163,10 @@
 				.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "cAll")
 		    	.attr("cx", function(d){return lx+parseInt(d.rX)+25})
-		    	.attr("cy", function(d){return lx+parseInt(d.rY)-2*d.All/3-25})
-		    	.attr("r", function(d){if(d.All==0) return 1; return 2*d.All/3})
+		    	.attr("cy", function(d){return lx+parseInt(d.rY)-d.All/2-25})
+		    	.attr("r", function(d){if(d.All==0) return 1; return d.All/2})
 		    	.attr("fill", "white")
-		    	.attr("fill-opacity","0.8")
+		    	.attr("fill-opacity","0.6")
 		    	;	
 
 		    circles
@@ -158,10 +174,10 @@
 				.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "cDeaths")
 		    	.attr("cx", function(d){return lx+parseInt(d.rX)+25})
-		    	.attr("cy", function(d){return lx+parseInt(d.rY)-2*d.Deaths/3-25})
-		    	.attr("r", function(d){if(d.All==0) return 1; return 2*d.Deaths/3})
+		    	.attr("cy", function(d){return lx+parseInt(d.rY)-d.Deaths/2-25})
+		    	.attr("r", function(d){if(d.All==0) return 1; return d.Deaths/2})
 		    	.attr("fill", "darkred")
-		    	.attr("fill-opacity","0.9")
+		    	.attr("fill-opacity","0.8")
 		    	;
 
 			rects
@@ -170,7 +186,7 @@
 		    	.attr("id", "gender1")
 		    	.attr("width","5")
 		    	.attr("height", function(d){return d.Male/2})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)-2*d.All/3})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)-d.All/2})
 				.attr("y", function(d){return d.rY-d.All})
 				.attr("fill", "blue")
 		    ;
@@ -181,7 +197,7 @@
 		    	.attr("id", "gender2")
 		    	.attr("width","5")
 		    	.attr("height", function(d){return d.Female/2})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)-2*d.All/3-8})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)-d.All/2-8})
 				.attr("y", function(d){return d.rY-d.All})
 				.attr("fill", "red")
 		    ;
@@ -311,11 +327,11 @@
 
 			    g.selectAll("#gender1")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)-2*d.All/3})
+			        .attr("x", function(d){return lx+parseInt(d.rX)-d.All/2})
 
 			    g.selectAll("#gender2")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)-2*d.All/3-8});
+			        .attr("x", function(d){return lx+parseInt(d.rX)-d.All/2-8});
 
 			     g.selectAll("#day")
 			        .transition().duration(500)
@@ -342,37 +358,48 @@
 	    }
 	    else if (e.keyCode == '37') {
 	    	// left arrow
+	    	console.log("L:"+x)
+	    	if(x>=0) {
+	    		l=0;
+	    		lx=0;
+	    		cx=0;
+	    		showLogo();
+	    		return;
+	    	}
 	    	hideLogo();
 	    	l=l+speed;
 			x=l;
-
 			lx = lx+speed;
-			
-			if(x>=0) {x=-120; l=0; showLogo();}
-
 			cx=l;
-			
-			if(cx>=0) {cx=-120; l=0; showLogo();}
-
-
-		    update();
+			console.log("L:"+x);
+			if(x>=0) {
+	    		l=0;
+	    		lx=0;
+	    		cx=0;
+	    		showLogo();
+		    }
+			update();
 	    }
 	    else if (e.keyCode == '39') {
 	       	// right arrow
+	       	console.log("R:"+x)
+	       	if(x<=-(pages-1)*speed) {return;}
+
 	       	hideLogo();
 	       	l=l-speed;
 			x=l;
-
 			lx = lx-speed;
 
-			if(x<=-800) {x=-800; l=-800;}
+			if(x<=-pages*speed) {x=-pages*speed; l=-pages*speed;}
 
 			cx=l;
-			if(cx<=-800) {x=-800; l=-800;}
+			if(cx<=-pages*speed) {x=-pages*speed; l=-pages*speed;}
 
-
+			console.log("R:"+x)
 		    update();
 	    }
+
+
 
 	}
 
