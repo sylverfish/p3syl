@@ -278,37 +278,38 @@ var gender=[50,150];
    //  		.attr("d", arc);
 
 	   	
-
 			rects
 		    .insert('rect') //gender
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "gender1")
-		    	.attr("width","5")
-		    	.attr("height", function(d){return d.Male/2})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)-d.All/2})
-				.attr("y", function(d){return d.rY-d.All})
+		    	.attr("width", function(d){return d.Male/2})
+		    	.attr("height", 3 )
+		    	.attr("x", function(d){return lx+parseInt(d.rX);})
+				.attr("y", function(d){return parseInt(d.rY)+50})
 				.attr("fill", "blue")
 		    ;
+
+		    // function(d){}
 
 		    rects
 		    .insert('rect') //gender
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "gender2")
-		    	.attr("width","5")
-		    	.attr("height", function(d){return d.Female/2})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)-d.All/2-8})
-				.attr("y", function(d){return d.rY-d.All})
-				.attr("fill", "red")
+		    	.attr("width", function(d){return d.Female/2})
+		    	.attr("height", 3)
+		    	.attr("x", function(d){return lx+parseInt(d.rX);})
+				.attr("y", function(d){return parseInt(d.rY)+55})
+				.attr("fill", "green")
 		    ;
 
 		    rects
 		    .insert('rect') //day
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "day")
-		    	.attr("width","5")
-		    	.attr("height", function(d){return d.Day/2})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+80})
-				.attr("y", function(d){return d.rY-d.All})
+		    	.attr("width", function(d){return d.Day/2})
+		    	.attr("height", 3 )
+		    	.attr("x", function(d){return lx+parseInt(d.rX);})
+				.attr("y", function(d){return parseInt(d.rY)+63})
 				.attr("fill", "yellow")
 		    ;
 
@@ -316,10 +317,10 @@ var gender=[50,150];
 		    .insert('rect') //night
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "night")
-		    	.attr("width","5")
-		    	.attr("height", function(d){return d.Night/2})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+88})
-				.attr("y", function(d){return d.rY-d.All})
+		    	.attr("width", function(d){return d.Night/2})
+		    	.attr("height", 3 )
+		    	.attr("x", function(d){return lx+parseInt(d.rX);})
+				.attr("y", function(d){return parseInt(d.rY)+68})
 				.attr("fill", "grey")
 		    ;
 
@@ -333,7 +334,7 @@ var gender=[50,150];
 				.insert('text')
 				.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "stations")
-		    	.attr("x", function(d){return lx+parseInt(d.rX)-10})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)})
 		    	.attr("y", function(d){return lx+parseInt(d.rY)+40})
 		    	.text(function (d) {return d.Station;})
 		    	.attr("font-family", "sans-serif")
@@ -426,19 +427,19 @@ var gender=[50,150];
 
 			    g.selectAll("#gender1")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)-d.All/2})
+			        .attr("x", function(d){return lx+parseInt(d.rX)})
 
 			    g.selectAll("#gender2")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)-d.All/2-8});
+			        .attr("x", function(d){return lx+parseInt(d.rX)});
 
 			     g.selectAll("#day")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+80})
+			        .attr("x", function(d){return lx+parseInt(d.rX)})
 
 			    g.selectAll("#night")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+80+8})
+			        .attr("x", function(d){return lx+parseInt(d.rX)})
 
 			    // g.selectAll("circle")
 			    //     .transition().duration(500)
