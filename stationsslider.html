@@ -60,6 +60,14 @@
 	<!-- style="background-image: url(images/bg.jpg);padding:0; margin:0" -->
 	<!--style="background-image: url(images/bg.jpg)"-->
 	<script type="text/javascript">
+
+	var yScale = d3.scale.linear()
+    .range([0, 70]);
+
+    var dScale = d3.scale.linear()
+    .range([0, 40]);
+
+
 	function skip(){
 		var n = pages-page;
 		page=pages;
@@ -357,10 +365,17 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+parseInt(d.All)/2+40+30;
 		    	})
 		    	.attr("r", function(d){
-		    		if(showDeathsOnly){
+		    		if(year=="2012to2014"){
+		    			console.log("showBars1");
 		    			return 0;
 		    		}
-		    		if(parseInt(d.All)==0) return 1; return parseInt(d.All)/2}
+		    		else
+		    		{
+			    		if(showDeathsOnly){
+			    			return 0;
+			    		}
+			    		if(parseInt(d.All)==0) return 1; return parseInt(d.All)/2}
+			    	}
 		    	)
 		    	.attr("fill", "#FFCC00")
 		    	.attr("fill-opacity","0.6")
@@ -470,12 +485,19 @@ var gender=[50,150];
 		    		}
 		    	})
 		    	.attr("r", function(d){
-		    	if(d.All==0) 
-		    			return 1; 
-		    		if(showDeathsOnly){
-		    			return d.Deaths*2;
-		    		}
-		    		return d.Deaths/2;
+		    		if(year=="2012to2014"){
+	    				return 0;
+	    			}
+	    			else
+		    			{
+			    		if(d.All==0) 
+			    			return 1; 
+			    		if(showDeathsOnly){
+			    			return d.Deaths*2;
+			    		}
+			    		return d.Deaths/2;
+			    	}
+			    	
 		    	})
 		    	.attr("fill", "darkred")
 		    	.attr("fill-opacity","0.8")
@@ -518,7 +540,257 @@ var gender=[50,150];
 		    	;
 
 
-		   	 
+		rects
+		    .insert('rect')
+		    .attr("class", "area").attr("clip-path", "url(#clip)")
+	    	.attr("id", "bar12All")
+	    	.attr("width", 30) 
+	    	.attr("height", function (d){
+	    		if(year=="2012to2014" && !showDeathsOnly){
+	    			yScale.domain([0, d3.max(data, function(d) { return d.All12; })]);
+		    		return yScale(d.All12);
+		    	}
+		    	else
+	    			return 0;
+	    	})
+	    	.attr("x", function (d){return lx+parseInt(d.rX)-20;})
+			.attr("y", function (d) {
+				if(year=="2012to2014"){
+	            	if(d.Line=="CR")
+		    			return parseInt(d.rY)-35-yScale(d.All12);
+		    		else
+		    			return parseInt(d.rY)+45;
+		    	}		    			
+            })
+			.attr("fill", "#FFCC00")
+	    	.attr("fill-opacity","0.6")
+			.on("mouseover", function(d){
+				d3.select(this)
+            	.style("fill-opacity", "1");
+
+            	d3.select(this)
+            	.append("title")
+            	.text(d.All12 + " incidents at "+d.Station + " in 2012");
+			})
+			.on("mouseout", function(d){
+            	d3.select(this)
+            	.style("fill-opacity", "0.6");
+            })
+		;
+
+		rects
+		    .insert('rect')
+		    .attr("class", "area").attr("clip-path", "url(#clip)")
+	    	.attr("id", "bar12Deaths")
+	    	.attr("width", 30) 
+	    	.attr("height", function (d){
+	    		if(year=="2012to2014" && !showDeathsOnly){
+	    			yScale.domain([0, d3.max(data, function(d) { return d.All12; })]);
+		    		return yScale(d.Deaths12)/2;
+		    	}
+		    	if(year=="2012to2014" && showDeathsOnly){
+	    			dScale.domain([0, d3.max(data, function(d) { return d.Deaths12; })]);
+		    		return dScale(d.Deaths12);
+			    }
+			    return 0;
+	    	})
+	    	.attr("x", function (d){return lx+parseInt(d.rX)-20;})
+			.attr("y", function (d) {
+				if(year=="2012to2014"){
+	            	if(d.Line=="CR"){
+	            		if(!showDeathsOnly)
+		    				return parseInt(d.rY)-35-yScale(d.Deaths12);
+		    			else
+		    				return parseInt(d.rY)-35-dScale(d.Deaths12);
+		    		}
+		    		else
+		    			return parseInt(d.rY)+45;
+		    	}		    			
+            })
+			.attr("fill", "darkred")
+	    	.attr("fill-opacity","0.6")
+			.on("mouseover", function(d){
+				d3.select(this)
+            	.style("fill-opacity", "1");
+
+            	d3.select(this)
+            	.append("title")
+            	.text(d.Deaths12 + " deaths at "+d.Station + " in 2012");
+			})
+			.on("mouseout", function(d){
+            	d3.select(this)
+            	.style("fill-opacity", "0.6");
+            })
+		;
+
+		rects
+		    .insert('rect')
+		    .attr("class", "area").attr("clip-path", "url(#clip)")
+	    	.attr("id", "bar13All")
+	    	.attr("width", 30) 
+	    	.attr("height", function (d){
+	    		if(year=="2012to2014" && !showDeathsOnly){
+	    			yScale.domain([0, d3.max(data, function(d) { return d.All13; })]);
+		    		return yScale(d.All13);
+		    	}
+		    	else
+	    			return 0;
+	    	})
+	    	.attr("x", function (d){return lx+parseInt(d.rX)+40-20;})
+			.attr("y", function (d) {
+				if(year=="2012to2014"){
+	            	if(d.Line=="CR")
+		    			return parseInt(d.rY)-35-yScale(d.All13);
+		    		else
+		    			return parseInt(d.rY)+45;
+		    	}		    			
+            })
+			.attr("fill", "#FFCC00")
+	    	.attr("fill-opacity","0.6")
+			.on("mouseover", function(d){
+				d3.select(this)
+            	.style("fill-opacity", "1");
+
+            	d3.select(this)
+            	.append("title")
+            	.text(d.All13 + " incidents at "+d.Station+" in 2013");
+			})
+			.on("mouseout", function(d){
+            	d3.select(this)
+            	.style("fill-opacity", "0.6");
+            })
+		;
+
+		rects
+		    .insert('rect')
+		    .attr("class", "area").attr("clip-path", "url(#clip)")
+	    	.attr("id", "bar13Deaths")
+	    	.attr("width", 30) 
+	    	.attr("height", function (d){
+	    		if(year=="2012to2014" && !showDeathsOnly){
+	    			yScale.domain([0, d3.max(data, function(d) { return d.All13; })]);
+		    		return yScale(d.Deaths13);
+		    	}
+		    	if(year=="2012to2014" && showDeathsOnly){
+	    			dScale.domain([0, d3.max(data, function(d) { return d.Deaths13; })]);
+		    		return dScale(d.Deaths13);
+			    }
+	    		return 0;
+	    	})
+	    	.attr("x", function (d){return lx+parseInt(d.rX)+40-20;})
+			.attr("y", function (d) {
+				if(year=="2012to2014"){
+	            	if(d.Line=="CR"){
+	            		if(!showDeathsOnly)
+	            			return parseInt(d.rY)-35-yScale(d.Deaths13);
+	            		else
+	            			return parseInt(d.rY)-35-dScale(d.Deaths13);
+	            	}
+		    		else
+		    			return parseInt(d.rY)+45;
+		    	}   			
+            })
+			.attr("fill", "darkred")
+	    	.attr("fill-opacity","0.6")
+			.on("mouseover", function(d){
+				d3.select(this)
+            	.style("fill-opacity", "1");
+
+            	d3.select(this)
+            	.append("title")
+            	.text(d.Deaths13 + " deaths at "+d.Station + " in 2013");
+			})
+			.on("mouseout", function(d){
+            	d3.select(this)
+            	.style("fill-opacity", "0.6");
+            })
+		;
+
+		
+		rects
+		    .insert('rect')
+		    .attr("class", "area").attr("clip-path", "url(#clip)")
+	    	.attr("id", "bar14All")
+	    	.attr("width", 30) 
+	    	.attr("height", function (d){
+	    		yScale.domain([0, d3.max(data, function(d) { return d.All14; })]);
+	    		if(year=="2012to2014" && !showDeathsOnly){
+		    		return yScale(d.All14);
+		    	}
+		    	else
+	    			return 0;
+	    	})
+	    	.attr("x", function (d){return lx+parseInt(d.rX)+80-20;})
+			.attr("y", function (d) {
+				if(year=="2012to2014"){
+	            	if(d.Line=="CR")
+		    			return parseInt(d.rY)-35-yScale(d.All14);
+		    		else
+		    			return parseInt(d.rY)+45;	
+	    		}	    			
+            })
+			.attr("fill", "#FFCC00")
+	    	.attr("fill-opacity","0.6")
+			.on("mouseover", function(d){
+				d3.select(this)
+            	.style("fill-opacity", "1");
+
+            	d3.select(this)
+            	.append("title")
+            	.text(d.All14 + " incidents at "+d.Station+" in 2014");
+			})
+			.on("mouseout", function(d){
+            	d3.select(this)
+            	.style("fill-opacity", "0.6");
+            })
+		;
+
+		rects
+		    .insert('rect')
+		    .attr("class", "area").attr("clip-path", "url(#clip)")
+	    	.attr("id", "bar14Deaths")
+	    	.attr("width", 30) 
+	    	.attr("height", function (d){
+	    		if(year=="2012to2014" && !showDeathsOnly){
+	    			yScale.domain([0, d3.max(data, function(d) { return d.All14; })]);
+		    		return yScale(d.Deaths14);
+		    	}
+		    	if(year=="2012to2014" && showDeathsOnly){
+	    			dScale.domain([0, d3.max(data, function(d) { return d.Deaths14; })]);
+		    		return dScale(d.Deaths14);
+		    	}
+    			return 0;
+	    	})
+	    	.attr("x", function (d){return lx+parseInt(d.rX)+80-20;})
+			.attr("y", function (d) {
+				if(year=="2012to2014"){
+	            	if(d.Line=="CR"){
+	            		if(!showDeathsOnly)
+	            			return parseInt(d.rY)-35-yScale(d.Deaths14);
+	            		else
+	            			return parseInt(d.rY)-35-dScale(d.Deaths14);
+		    		}
+		    		else
+		    			return parseInt(d.rY)+45;		
+		    	}    			
+            })
+			.attr("fill", "darkred")
+	    	.attr("fill-opacity","0.6")
+			.on("mouseover", function(d){
+				d3.select(this)
+            	.style("fill-opacity", "1");
+
+            	d3.select(this)
+            	.append("title")
+            	.text(d.Deaths14 + " deaths at "+d.Station + "in 2014");
+			})
+			.on("mouseout", function(d){
+            	d3.select(this)
+            	.style("fill-opacity", "0.6");
+            })
+		;
+
+
 			
 
 		 //   	var arc = d3.svg.arc()
@@ -547,14 +819,20 @@ var gender=[50,150];
 		    	.attr("id", "gender1")
 		    	// .attr("width", function(d){return d.Male/2})
 		    	.attr("width", function(d){
-		    		m=parseInt(d.Male);
-		    		f=parseInt(d.Female);
-		    		if((m+f)>0){
-		    			t = m/(m+f)*80;
-		    		}else t=0;
-		    		t = Math.round(t);
-		    		// console.log("M:"+t)
-		    		return t;
+		    		if(year=="2012to2014"){
+		    			return 0;
+		    		}
+		    		else
+		    		{
+			    		m=parseInt(d.Male);
+			    		f=parseInt(d.Female);
+			    		if((m+f)>0){
+			    			t = m/(m+f)*80;
+			    		}else t=0;
+			    		t = Math.round(t);
+			    		// console.log("M:"+t)
+			    		return t;
+		    		}
 		    	})
 		    	.attr("height", 10 )
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
@@ -581,15 +859,21 @@ var gender=[50,150];
 		    	.attr("id", "gender2")
 		    	// .attr("width", function(d){return d.Female/2})
 		    	.attr("width", function(d){
-		    		m=parseInt(d.Male);
-		    		f=parseInt(d.Female);
-		    		if((m+f)>0){
-		    			t = f/(m+f)*80;
-		    		}else t=0;
-		    		t = Math.round(t);
-		    		// t2=10-t
-		    		// console.log("F:"+t)
-		    		return t;
+		    		if(year=="2012to2014"){
+		    			return 0;
+		    		}
+		    		else
+		    		{
+			    		m=parseInt(d.Male);
+			    		f=parseInt(d.Female);
+			    		if((m+f)>0){
+			    			t = f/(m+f)*80;
+			    		}else t=0;
+			    		t = Math.round(t);
+			    		// t2=10-t
+			    		// console.log("F:"+t)
+			    		return t;
+		    		}
 		    	})
 
 
@@ -673,15 +957,22 @@ var gender=[50,150];
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "day")
 		    	.attr("width", function(d){
-		    		m=parseInt(d.Day);
-		    		f=parseInt(d.Night);
-		    		if((m+f)>0){
-		    			t = m/(m+f)*80;
-		    		}else t=0;
-		    		t = Math.round(t);
-		    		// t2=10-t
-		    		// console.log("F:"+t)
-		    		return t;})
+		    		if(year=="2012to2014"){
+		    			return 0;
+		    		}
+		    		else
+		    		{
+			    		m=parseInt(d.Day);
+			    		f=parseInt(d.Night);
+			    		if((m+f)>0){
+			    			t = m/(m+f)*80;
+			    		}else t=0;
+			    		t = Math.round(t);
+			    		// t2=10-t
+			    		// console.log("F:"+t)
+			    		return t;
+		    		}
+		    	})
 		    	.attr("height", 10 )
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
 				.attr("y", function(d){
@@ -706,15 +997,22 @@ var gender=[50,150];
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "night")
 		    	.attr("width", function(d){
-		    		m=parseInt(d.Day);
-		    		f=parseInt(d.Night);
-		    		if((m+f)>0){
-		    			t = f/(m+f)*80;
-		    		}else t=0;
-		    		t = Math.round(t);
-		    		// t2=10-t
-		    		// console.log("F:"+t)
-		    		return t;})
+		    		if(year=="2012to2014"){
+		    			return 0;
+		    		}
+		    		else
+		    		{
+			    		m=parseInt(d.Day);
+			    		f=parseInt(d.Night);
+			    		if((m+f)>0){
+			    			t = f/(m+f)*80;
+			    		}else t=0;
+			    		t = Math.round(t);
+			    		// t2=10-t
+			    		// console.log("F:"+t)
+			    		return t;
+			    	}
+			    })
 		    	.attr("height", 10 )
 		    	.attr("x", function(d){
 		    		m=parseInt(d.Day);
@@ -776,17 +1074,24 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+115;
 		    	})
 		    	.text(function (d) {
-		    		if(d.All==0){
-		    			if(!showDeathsOnly){
-		    				return "No incidents";
-		    			}
-		    			else return "";
+		    		if(year=="2012to2014"){
+		    			console.log("showBars1");
+		    			return "";
 		    		}
-		    		else{
-		    			if(!showDeathsOnly){
-		    				return d.All;
-		    			}
-		    		}
+		    		else
+			    		{
+			    		if(d.All==0){
+			    			if(!showDeathsOnly){
+			    				return "No incidents";
+			    			}
+			    			else return "";
+			    		}
+			    		else{
+			    			if(!showDeathsOnly){
+			    				return d.All;
+			    			}
+			    		}
+			    	}
 		    	})
 		    	.attr("font-family", "Open Sans")
 		    	.attr("font-weight", function (d) {
@@ -837,20 +1142,27 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+85;
 		    	})
 		    	.text(function (d) {
-		    		if(!showDeathsOnly){
-		    			if(d.Deaths==0){
-		    				return "";
-			    		}
-			    		else 
-			    			return d.Deaths;
+		    		if(year=="2012to2014"){
+		    			console.log("showBars1");
+		    			return "";
 		    		}
-		    		else{
-		    			if(d.Deaths==0){
-		    				return "No fatalities";
+		    		else
+			    	{
+			    		if(!showDeathsOnly){
+			    			if(d.Deaths==0){
+			    				return "";
+				    		}
+				    		else 
+				    			return d.Deaths;
 			    		}
-			    		else 
-			    			return d.Deaths;
-		    		}
+			    		else{
+			    			if(d.Deaths==0){
+			    				return "No fatalities";
+				    		}
+				    		else 
+				    			return d.Deaths;
+			    		}
+			    	}
 		    	})
 		    	.attr("font-family", "Open Sans")
 		    	.attr("font-weight", function(d){
@@ -972,6 +1284,33 @@ var gender=[50,150];
 			        .transition().duration(500)
 			        .attr("cx", function(d){return lx+parseInt(d.rX)+40});
 
+
+				g.selectAll("#bar12All")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)-20;})
+
+			    g.selectAll("#bar13All")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)+40-20;})
+
+			    g.selectAll("#bar14All")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)+80-20;})
+
+			    g.selectAll("#bar12Deaths")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)-20;})
+
+			    g.selectAll("#bar13Deaths")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)+40-20;})
+
+			    g.selectAll("#bar14Deaths")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)+80-20;})
+
+
+
 			    g.selectAll("text")
 			        .transition().duration(500)
 			        .attr("x", function(d){return lx+parseInt(d.rX)});
@@ -1049,6 +1388,10 @@ var gender=[50,150];
 		if(n==3){
 			d1=year;
 		}
+		else
+		if(n=="All"){
+			d1="2012to2014"
+		}
 		else{
 			d1 = n;
 		}
@@ -1057,7 +1400,7 @@ var gender=[50,150];
 		snippet.innerHTML = year;
 		// Effect.Shake('snippet')
 		datasource = "data/"+d1+"Trains.csv";
-		
+		console.log(datasource);
 		Effect.DropOut('finalmenu');
 		// Effect.DropOut('selyears');
 
@@ -1173,13 +1516,20 @@ var gender=[50,150];
 		    	// 	return d.All/2;
 		    	// })
 		    	.attr("r", function(d){
-		    		if(showDeathsOnly){
+		    		if(year=="2012to2014"){
+		    			console.log("showbars3")
 		    			return 0;
 		    		}
-		    		if(d.All==0) 
-		    			return 1; 
 		    		else
-		    			return d.All/2;
+		    		{
+			    		if(showDeathsOnly){
+			    			return 0;
+			    		}
+			    		if(d.All==0) 
+			    			return 1; 
+			    		else
+			    			return d.All/2;
+		    		}
 		    	})
 		    	.attr("fill", "#FFCC00")
 		    	.attr("fill-opacity","0.6")
@@ -1219,30 +1569,220 @@ var gender=[50,150];
 		    		}
 		    	})
 		    	.attr("r", function(d){
-		    		if(d.All==0) 
-		    			return 1; 
-		    		if(showDeathsOnly){
-		    			return d.Deaths*2;
+		    		if(year=="2012to2014"){
+		    			return 0;
 		    		}
-		    		return d.Deaths/2;
+		    		else
+		    		{
+			    		if(d.All==0) 
+			    			return 1; 
+			    		if(showDeathsOnly){
+			    			return d.Deaths*2;
+			    		}
+			    		return d.Deaths/2;
+			    	}
 		    	})
 		    	.attr("fill", "darkred")
 		    	.attr("fill-opacity","0.8")
 		    ;
 		
+
+
+			g.selectAll("#bar12All")
+				.data(data).enter();
+			g.selectAll("#bar12All")
+		        .transition().duration(500)
+		    	.attr("width", 30) 
+		    	.attr("height", function(d){
+		    		if(year=="2012to2014" && !showDeathsOnly){
+		    			yScale.domain([0, d3.max(data, function(d) { return d.All12; })]);
+			    		return yScale(d.All12);
+			    	}
+		    		return 0;
+		    	})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)-20;})
+				.attr("y", function (d) {
+					// return yScale(d.All12);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-35-yScale(d.All12);
+			    		else
+			    			return parseInt(d.rY)+45;	
+	    			}		    			
+	            })
+				.attr("fill", "#FFCC00")
+		    	.attr("fill-opacity","0.6")
+			;
+
+			g.selectAll("#bar12Deaths")
+				.data(data).enter();
+			g.selectAll("#bar12Deaths")
+		        .transition().duration(500)
+		    	.attr("width", 30) 
+		    	.attr("height", function(d){
+		    		if(year=="2012to2014" && !showDeathsOnly){
+		    			yScale.domain([0, d3.max(data, function(d) { return d.All12; })]);
+			    		return yScale(d.Deaths12);
+			    	}
+			    	if(year=="2012to2014" && showDeathsOnly){
+		    			dScale.domain([0, d3.max(data, function(d) { return d.Deaths12; })]);
+			    		return dScale(d.Deaths12);
+			    	}
+		    		return 0;
+		    	})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)-20;})
+				.attr("y", function (d) {
+					if(year=="2012to2014"){
+						if(d.Line=="CR"){
+							if(!showDeathsOnly)
+			    				return parseInt(d.rY)-35-yScale(d.Deaths12);
+			    			else
+			    				return parseInt(d.rY)-35-dScale(d.Deaths12)
+			    		}
+			    		else
+			    			return parseInt(d.rY)+45;		    			
+			    	}
+	            })
+				.attr("fill", "darkred")
+		    	.attr("fill-opacity","0.6")
+			;
+
+			g.selectAll("#bar13All")
+				.data(data).enter();
+			g.selectAll("#bar13All")
+		        .transition().duration(500)
+		    	.attr("width", 30) 
+		    	.attr("height", function(d){
+		    		if(year=="2012to2014" && !showDeathsOnly){
+		    			yScale.domain([0, d3.max(data, function(d) { return d.All13; })]);
+			    		return yScale(d.All13);
+			    	}
+		    		return 0;
+		    	})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+40-20;})
+				.attr("y", function (d) {
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-35-yScale(d.All13);
+			    		else
+			    			return parseInt(d.rY)+45;		
+			    	}    			
+	            })
+				.attr("fill", "#FFCC00")
+		    	.attr("fill-opacity","0.6")
+			;
+
+			g.selectAll("#bar13Deaths")
+				.data(data).enter();
+			g.selectAll("#bar13Deaths")
+		        .transition().duration(500)
+		    	.attr("width", 30) 
+		    	.attr("height", function(d){
+		    		if(year=="2012to2014" && !showDeathsOnly){
+		    			yScale.domain([0, d3.max(data, function(d) { return d.All13; })]);
+			    		return yScale(d.Deaths13);
+			    	}
+			    	if(year=="2012to2014" && showDeathsOnly){
+		    			dScale.domain([0, d3.max(data, function(d) { return d.Deaths13; })]);
+			    		return dScale(d.Deaths13);
+			    	}
+		    		return 0;
+		    	})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+40-20;})
+				.attr("y", function (d) {
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+		            	{
+		            		if(!showDeathsOnly)
+			    				return parseInt(d.rY)-35-yScale(d.Deaths13);
+			    			else
+			    				return parseInt(d.rY)-35-dScale(d.Deaths13);
+			    		}
+			    		else
+			    			return parseInt(d.rY)+45;
+			    	}		    			
+	            })
+				.attr("fill", "darkred")
+		    	.attr("fill-opacity","0.6")
+			;
+
+			g.selectAll("#bar14All")
+				.data(data).enter();
+			g.selectAll("#bar14All")
+		        .transition().duration(500)
+		    	.attr("width", 30) 
+		    	.attr("height", function(d){
+		    		if(year=="2012to2014" && !showDeathsOnly){
+		    			yScale.domain([0, d3.max(data, function(d) { return d.All14; })]);
+			    		return yScale(d.All14);
+			    	}
+		    		return 0;
+		    	})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+80-20;})
+				.attr("y", function (d) {
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-35-yScale(d.All14);
+			    		else
+			    			return parseInt(d.rY)+45;
+			    	}		    			
+	            })
+				.attr("fill", "#FFCC00")
+		    	.attr("fill-opacity","0.6")
+			;
+
+			g.selectAll("#bar14Deaths")
+				.data(data).enter();
+			g.selectAll("#bar14Deaths")
+		        .transition().duration(500)
+		    	.attr("width", 30) 
+		    	.attr("height", function(d){
+		    		if(year=="2012to2014" && !showDeathsOnly){
+		    			yScale.domain([0, d3.max(data, function(d) { return d.All14; })]);
+			    		return yScale(d.Deaths14);
+			    	}
+			    	if(year=="2012to2014" && showDeathsOnly){
+		    			dScale.domain([0, d3.max(data, function(d) { return d.Deaths14; })]);
+			    		return dScale(d.Deaths14);
+			    	}
+	    			return 0;
+		    	})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+80-20;})
+				.attr("y", function (d) {
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR"){
+		            		if(!showDeathsOnly)
+		            			return parseInt(d.rY)-35-yScale(d.Deaths14);
+		            		else
+		            			return parseInt(d.rY)-35-dScale(d.Deaths14);
+			    		}
+			    		else
+			    			return parseInt(d.rY)+45;
+			    	}		    			
+	            })
+				.attr("fill", "darkred")
+		    	.attr("fill-opacity","0.6")
+			;
+
 			g.selectAll("#gender1")
 			.data(data).enter();
 			g.selectAll("#gender1")
 		        .transition().duration(500)
 		    	.attr("width", function(d){
-		    		m=parseInt(d.Male);
-		    		f=parseInt(d.Female);
-		    		if((m+f)>0){
-		    			t = m/(m+f)*80;
-		    		}else t=0;
-		    		t = Math.round(t);
-		    		// console.log("M:"+t)
-		    		return t;
+		    		if(year=="2012to2014"){
+		    			return 0;
+		    		}
+		    		else
+		    		{
+			    		m=parseInt(d.Male);
+			    		f=parseInt(d.Female);
+			    		if((m+f)>0){
+			    			t = m/(m+f)*80;
+			    		}else t=0;
+			    		t = Math.round(t);
+			    		// console.log("M:"+t)
+			    		return t;
+			    	}
 		    	})
 		    	.attr("height", 10 )
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
@@ -1259,15 +1799,21 @@ var gender=[50,150];
 		    g.selectAll("#gender2")
 		        .transition().duration(500)
 		    	.attr("width", function(d){
-		    		m=parseInt(d.Male);
-		    		f=parseInt(d.Female);
-		    		if((m+f)>0){
-		    			t = f/(m+f)*80;
-		    		}else t=0;
-		    		t = Math.round(t);
-		    		// t2=10-t
-		    		// console.log("F:"+t)
-		    		return t;
+		    		if(year=="2012to2014"){
+		    			return 0;
+		    		}
+		    		else
+		    		{
+			    		m=parseInt(d.Male);
+			    		f=parseInt(d.Female);
+			    		if((m+f)>0){
+			    			t = f/(m+f)*80;
+			    		}else t=0;
+			    		t = Math.round(t);
+			    		// t2=10-t
+			    		// console.log("F:"+t)
+			    		return t;
+			    	}
 		    	})
 		    	.attr("height", 10 )
 		    	.attr("x", function(d){
@@ -1292,15 +1838,21 @@ var gender=[50,150];
 		    g.selectAll("#day")
 		        .transition().duration(500)
 		    	.attr("width", function(d){
-		    		m=parseInt(d.Day);
-		    		f=parseInt(d.Night);
-		    		if((m+f)>0){
-		    			t = m/(m+f)*80;
-		    		}else t=0;
-		    		t = Math.round(t);
-		    		// t2=10-t
-		    		// console.log("F:"+t)
-		    		return t;
+		    		if(year=="2012to2014"){
+		    			return 0;
+		    		}
+		    		else
+		    		{
+			    		m=parseInt(d.Day);
+			    		f=parseInt(d.Night);
+			    		if((m+f)>0){
+			    			t = m/(m+f)*80;
+			    		}else t=0;
+			    		t = Math.round(t);
+			    		// t2=10-t
+			    		// console.log("F:"+t)
+			    		return t;
+			    	}
 		    	})
 		    	.attr("height", 10 )
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
@@ -1317,15 +1869,21 @@ var gender=[50,150];
 		    g.selectAll("#night")
 		        .transition().duration(500)
 		    	.attr("width", function(d){
-		    		m=parseInt(d.Day);
-		    		f=parseInt(d.Night);
-		    		if((m+f)>0){
-		    			t = f/(m+f)*80;
-		    		}else t=0;
-		    		t = Math.round(t);
-		    		// t2=10-t
-		    		// console.log("F:"+t)
-		    		return t;
+		    		if(year=="2012to2014"){
+		    			return 0;
+		    		}
+		    		else
+		    		{
+			    		m=parseInt(d.Day);
+			    		f=parseInt(d.Night);
+			    		if((m+f)>0){
+			    			t = f/(m+f)*80;
+			    		}else t=0;
+			    		t = Math.round(t);
+			    		// t2=10-t
+			    		// console.log("F:"+t)
+			    		return t;
+			    	}
 		    	})
 		    	.attr("height", 10 )
 		    	.attr("x", function(d){
@@ -1374,16 +1932,22 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+115;
 		    	})
 		    	.text(function (d) {
-		    		if(d.All==0){
-		    			if(!showDeathsOnly){
-		    				return "No incidents";
-		    			}
-		    			else return "";
+		    		if(year=="2012to2014"){
+		    			return "";
 		    		}
-		    		else{
-		    			if(!showDeathsOnly){
-		    				return d.All;
-		    			}
+		    		else
+		    		{
+			    		if(d.All==0){
+			    			if(!showDeathsOnly){
+			    				return "No incidents";
+			    			}
+			    			else return "";
+			    		}
+			    		else{
+			    			if(!showDeathsOnly){
+			    				return d.All;
+			    			}
+			    		}
 		    		}
 		    	})
 		    	.attr("font-family", "Open Sans")
@@ -1412,19 +1976,25 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+85;
 		    	})
 		    	.text(function (d) {
-		    		if(!showDeathsOnly){
-		    			if(d.Deaths==0){
-		    				return "";
-			    		}
-			    		else 
-			    			return d.Deaths;
+		    		if(year=="2012to2014"){
+		    			return "";
 		    		}
-		    		else{
-		    			if(d.Deaths==0){
-		    				return "No fatalities";
+		    		else
+		    		{
+			    		if(!showDeathsOnly){
+			    			if(d.Deaths==0){
+			    				return "";
+				    		}
+				    		else 
+				    			return d.Deaths;
 			    		}
-			    		else 
-			    			return d.Deaths;
+			    		else{
+			    			if(d.Deaths==0){
+			    				return "No fatalities";
+				    		}
+				    		else 
+				    			return d.Deaths;
+			    		}
 		    		}
 		    		
 		    	})
@@ -1625,7 +2195,8 @@ var gender=[50,150];
 </select> -->
 <a href="#" onclick="updateData('2014')">2014</a>
  | <a href="#" onclick="updateData('2013')">2013</a>
- | <a href="#" onclick="updateData('2012')">2012</a> <br/>
+ | <a href="#" onclick="updateData('2012')">2012</a> 
+ | <a href="#" onclick="updateData('All')">Compare all years</a><br/>
  <input type="checkbox" id='deathsonly' onClick="showDeaths()">Show only deaths</input><br/>
  <span style="font-size:xx-small">(currently the Male/Female and Day/Night percentages are not updated for deaths)</span>
 
