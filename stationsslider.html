@@ -5,8 +5,8 @@
     <title>Stations - D3</title>
 
     <script type="text/javascript" src="d3/d3.js"></script>
-
-
+   	<link type="text/css" rel="stylesheet" href="cal/cal-heatmap.css"/>
+	<link rel="stylesheet" href="mystyle.css">
     <style type="text/css">
 	    body{
 			padding-top:20px;
@@ -14,14 +14,23 @@
 		    color: gray;
 		    background-color: #280000; 
 		}
+
+		.cal-heatmap-container .q1
+		{
+			background-color: #200000;
+			fill: #200000
+		}
+
     </style>
 
     <script src="javascripts/prototype.js" type="text/javascript"></script>
 	<script src="javascripts/scriptaculous.js" type="text/javascript"></script>
 
+     <script type="text/javascript" src="cal/cal-heatmap.js"></script>
+
     
   </head>
-<body onkeydown="checkKey(event)">
+<body onkeydown="checkKey(event)" style="background-image: url(images/bg.jpg)">
 	<script type="text/javascript">
     function hideLogo(){
     	//document.getElementById("title").style.display = "none";
@@ -57,8 +66,8 @@
 		</svg>	
 		<span style="font-size: x-small; color: pink" >(Press arrow keys LEFT and RIGHT)</style>
 	</div>
-	<div id="chart"></div>
-	<div id="popme" style="display:none">Male/Female</div>
+	<div id="chart" ></div>
+	<div id="popme" style="display:none"></div>
 	<!--<div><span id="left">Left</span> | <span id="right">Right</span></div>-->
 
 
@@ -138,6 +147,24 @@ var gender=[50,150];
 					if(d.Type=="Slow") return "blue";
 					if(d.Type=="Fast") return "red"
 				})
+				.on("mouseover", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "1");
+                	d3.select(this)
+                	.append("title")
+                	.text(d.Type + " Station");
+
+                	
+			    	
+                	document.getElementById('popme').style.display = "block";
+                })
+                .on("mouseout", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "0.8");
+
+                	document.getElementById('popme').style.display = "none";
+
+                })
 		    ;
 
 		    lines
@@ -250,7 +277,6 @@ var gender=[50,150];
                 	.style("fill-opacity", "0.8");
 
                 	document.getElementById('popme').style.display = "none";
-
                 })
 		    	;
 
@@ -287,20 +313,82 @@ var gender=[50,150];
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
 				.attr("y", function(d){return parseInt(d.rY)+50})
 				.attr("fill", "blue")
+				.on("mouseover", function(d){
+					var total = parseInt(d.Male) + parseInt(d.Female);
+					var m = Math.round(d.Male/total*100);
+					var f = Math.round(d.Female/total*100);
+                	d3.select(this)
+                	.append("title")
+                	.text(m + "% male, and "+ f +"% female");
+                })
 		    ;
-
-		    // function(d){}
 
 		    rects
 		    .insert('rect') //gender
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "gender2")
 		    	.attr("width", function(d){return d.Female/2})
-		    	.attr("height", 3)
+		    	.attr("height", 3 )
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
 				.attr("y", function(d){return parseInt(d.rY)+55})
 				.attr("fill", "green")
+				.on("mouseover", function(d){
+					var total = parseInt(d.Male) + parseInt(d.Female);
+					var m = Math.round(d.Male/total*100);
+					var f = Math.round(d.Female/total*100);
+                	d3.select(this)
+                	.append("title")
+                	.text(m + "% male, and "+ f +"% female");
+                })
 		    ;
+
+		  //   rects
+		  //   .insert('rect') //gender
+		  //   	.attr("class", "area").attr("clip-path", "url(#clip)")
+		  //   	.attr("id", "gender1")
+		  //   	.attr("width", 10 )//function(d){return d.Male/2}
+		  //   	.attr("height", function(d){
+		  //   		total=parseInt(d.Male)+parseInt(d.Female);
+		  //   		if(total==0)
+		  //   			h=0;
+		  //   		else{
+		  //   			h=d.Male/(total)*10; 
+		  //   		}
+		  //   		return  Math.round(h);
+		  //   		})
+		  //   	.attr("x", function(d){return lx+parseInt(d.rX)-15;})
+				// .attr("y", function(d){return parseInt(d.rY)})
+				// .attr("fill", "blue")
+		  //   ;
+
+		    // function(d){}
+
+		  //   rects
+		  //   .insert('rect') //gender
+		  //   	.attr("class", "area").attr("clip-path", "url(#clip)")
+		  //   	.attr("id", "gender2")
+		  //   	.attr("width", 10 )//function(d){return d.Male/2}
+		  //   	.attr("height", function(d){
+		  //   		total=parseInt(d.Male)+parseInt(d.Female);
+		  //   		if(total==0)
+		  //   			h=0;
+		  //   		else{
+		  //   			h=d.Male/(total)*10;  
+		  //   		}
+		  //   		return Math.round(h);
+		  //   		})
+		  //   	.attr("x", function(d){return lx+parseInt(d.rX)+15;})
+				// .attr("y", function(d){
+				// 	t=parseInt(d.Male)+parseInt(d.Female);
+		  //   		if(total==0)
+		  //   			th=0;
+		  //   		else{
+		  //   			th=d.Male/(t)*10; 
+		  //   		}
+		  //   		console.log(h);
+				// 	return Math.round(parseInt(d.rY)+h)})
+				// .attr("fill", "green")
+		  //   ;
 
 		    rects
 		    .insert('rect') //day
@@ -311,6 +399,14 @@ var gender=[50,150];
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
 				.attr("y", function(d){return parseInt(d.rY)+63})
 				.attr("fill", "yellow")
+				.on("mouseover", function(d){
+					var total = parseInt(d.Male) + parseInt(d.Female);
+					var m = Math.round(d.Day/total*100);
+					var f = Math.round(d.Night/total*100);
+                	d3.select(this)
+                	.append("title")
+                	.text(m + "% during daytime, and "+ f +"% during nights");
+                })
 		    ;
 
 		     rects
@@ -322,6 +418,14 @@ var gender=[50,150];
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
 				.attr("y", function(d){return parseInt(d.rY)+68})
 				.attr("fill", "grey")
+				.on("mouseover", function(d){
+					var total = parseInt(d.Male) + parseInt(d.Female);
+					var m = Math.round(d.Day/total*100);
+					var f = Math.round(d.Night/total*100);
+                	d3.select(this)
+                	.append("title")
+                	.text(m + "% during daytime, and "+ f +"% during nights");
+                })
 		    ;
 
 
@@ -341,6 +445,69 @@ var gender=[50,150];
                 .attr("font-size", "12px")
                 .attr("fill", "white");
 		    	;
+
+		   	text
+				.insert('text')
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "figures")
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+30+d.All/2})
+		    	.attr("y", function(d){return lx+parseInt(d.rY)-d.All/2-25})
+		    	.text(function (d) {return d.All;})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "Bold")
+                .attr("font-size", function (d) {
+                	var size=Math.round(d.All/2);
+                	if(size<9) size=9;
+                	return size;
+                })
+                .attr("fill", "grey")
+                .style("fill-opacity", "0.7")
+                .on("mouseover", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "1");
+
+                	d3.select(this)
+                	.append("title")
+                	.text("Incidents in a year");
+                })
+                .on("mouseout", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "0.7");
+                })
+		    	;
+
+		   	text
+				.insert('text')
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "figuresdeaths")
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+30})
+		    	.attr("y", function(d){return lx+parseInt(d.rY)-25})
+		    	.text(function (d) {return d.Deaths;})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "Bold")
+                .attr("font-size", function (d) {
+                	var size=Math.round(d.All/3);
+                	if(size<9) size=9;
+                	return size;
+                })
+                .attr("fill", "darkred")
+                .style("fill-opacity", "0.7")
+                .on("mouseover", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "1");
+
+                	d3.select(this)
+                	.append("title")
+                	.text("Deaths in a year");
+                })
+                .on("mouseout", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "0.7");
+                })
+		    	;
+
+
+		    	//function(d){return lx+parseInt(d.rY)-d.Deaths/2-25}
 
 		 //    circles
 			// .insert('circle')
@@ -441,6 +608,14 @@ var gender=[50,150];
 			        .transition().duration(500)
 			        .attr("x", function(d){return lx+parseInt(d.rX)})
 
+			    g.selectAll("#figures")
+			        .transition().duration(500)
+			        .attr("x", function(d){return lx+parseInt(d.rX)+30+d.All/2})
+
+			    g.selectAll("#figuresdeaths")
+			        .transition().duration(500)
+		    		.attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+30})
+
 			    // g.selectAll("circle")
 			    //     .transition().duration(500)
 			    //     // .attr('x', function(d){return xScale(d.x)});
@@ -525,7 +700,7 @@ var gender=[50,150];
 
 	var color = d3.scale.category10();
 
-	var svg = d3.select('#popme').append('svg')
+	var svg = d3.select('#chart2').append('svg')
 	// var svg = d3.select("body").append("svg")
 	    .attr("width", width)
 	    .attr("height", height)
@@ -553,7 +728,54 @@ var gender=[50,150];
 
 <div id="chart2"></div>
 <script>
-	
+	var calendar = new CalHeatMap();
+	var itemNameV = "incident";
+	var verticalOrientationV = false;
+	var startDates = [2012, 2013, 2014];
+	var domainV = "month";
+	var domainDynamicDimensionV = false;
+	var domainGutterV = 2;
+	var domainMarginV = 2;
+	var subDomainV = "day";
+	var domainLabelFormatV = "%b-%y"; 
+	//subDomainTextFormat: "%d",
+	var rangeV = 12;
+	var leg = [1,2,4];
+	// var leg = [80,120,150,170];
+	var legendVerticalPositionV = "center";
+	var legendOrientationV = "vertical";
+	var cellSizeV = 9;
+	var dataV = "jsons/ThaneAll.json";
+
+	calendar.init({
+			itemSelector: "#popme",
+			itemName: itemNameV,
+			verticalOrientation: verticalOrientationV,
+	    	data: dataV,
+	    	start: new Date(2012, 0),
+	    	domain: domainV,
+			domainLabelFormat: domainLabelFormatV,
+			domainDynamicDimension: domainDynamicDimensionV,
+			domainGutter: domainGutterV,
+		    domainMargin: domainMarginV,
+	    	subDomain: subDomainV,
+	    	considerMissingDataAsZero: true,
+	    	//rowLimit: 31,
+			//subDomainTextFormat: "%d",
+			// subDomainTitleFormat: {
+			// 	filled:	"Whats is going on {name} to be {count} if {date} over {connector}",
+			// 	empty: "nothing to declare on {date}"
+			// },
+			range: rangeV,
+			legend: leg,
+			legendVerticalPosition: legendVerticalPositionV,
+			legendOrientation: legendOrientationV,
+			//legendMargin: [0,20,0,0],
+			cellSize: cellSizeV,
+			// legendColors: {
+			// 	empty: "green"
+			// }
+			});
 	    
 
 </script>
