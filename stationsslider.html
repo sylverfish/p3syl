@@ -477,10 +477,20 @@ var gender=[50,150];
 		    .insert('rect') //gender
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "gender1")
-		    	.attr("width", function(d){return d.Male/2})
+		    	// .attr("width", function(d){return d.Male/2})
+		    	.attr("width", function(d){
+		    		m=parseInt(d.Male);
+		    		f=parseInt(d.Female);
+		    		if((m+f)>0){
+		    			t = m/(m+f)*70;
+		    		}else t=0;
+		    		t = Math.round(t);
+		    		console.log("M:"+t)
+		    		return t;
+		    	})
 		    	.attr("height", 3 )
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
-				.attr("y", function(d){return parseInt(d.rY)+50})
+				.attr("y", function(d){return parseInt(d.rY)+30})
 				.attr("fill", "blue")
 				.on("mouseover", function(d){
 					var total = parseInt(d.Male) + parseInt(d.Female);
@@ -496,10 +506,31 @@ var gender=[50,150];
 		    .insert('rect') //gender
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "gender2")
-		    	.attr("width", function(d){return d.Female/2})
+		    	// .attr("width", function(d){return d.Female/2})
+		    	.attr("width", function(d){
+		    		m=parseInt(d.Male);
+		    		f=parseInt(d.Female);
+		    		if((m+f)>0){
+		    			t = f/(m+f)*70;
+		    		}else t=0;
+		    		t = Math.round(t);
+		    		// t2=10-t
+		    		console.log("F:"+t)
+		    		return t;
+		    	})
+
+
 		    	.attr("height", 3 )
-		    	.attr("x", function(d){return lx+parseInt(d.rX);})
-				.attr("y", function(d){return parseInt(d.rY)+55})
+		    	.attr("x", function(d){
+		    		m=parseInt(d.Male);
+		    		f=parseInt(d.Female);
+		    		if((m+f)>0){
+		    			t = m/(m+f)*70;
+		    		}else t=0;
+
+		    		return lx+t+parseInt(d.rX);
+		    	})
+				.attr("y", function(d){return parseInt(d.rY)+30})
 				.attr("fill", "green")
 				.on("mouseover", function(d){
 					var total = parseInt(d.Male) + parseInt(d.Female);
@@ -563,13 +594,22 @@ var gender=[50,150];
 		    .insert('rect') //day
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "day")
-		    	.attr("width", function(d){return d.Day/2})
+		    	.attr("width", function(d){
+		    		m=parseInt(d.Day);
+		    		f=parseInt(d.Night);
+		    		if((m+f)>0){
+		    			t = m/(m+f)*70;
+		    		}else t=0;
+		    		t = Math.round(t);
+		    		// t2=10-t
+		    		console.log("F:"+t)
+		    		return t;})
 		    	.attr("height", 3 )
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
-				.attr("y", function(d){return parseInt(d.rY)+63})
+				.attr("y", function(d){return parseInt(d.rY)+40})
 				.attr("fill", "yellow")
 				.on("mouseover", function(d){
-					var total = parseInt(d.Male) + parseInt(d.Female);
+					var total = parseInt(d.Day) + parseInt(d.Night);
 					var m = Math.round(d.Day/total*100);
 					var f = Math.round(d.Night/total*100);
                 	d3.select(this)
@@ -582,10 +622,27 @@ var gender=[50,150];
 		    .insert('rect') //night
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "night")
-		    	.attr("width", function(d){return d.Night/2})
+		    	.attr("width", function(d){
+		    		m=parseInt(d.Day);
+		    		f=parseInt(d.Night);
+		    		if((m+f)>0){
+		    			t = f/(m+f)*70;
+		    		}else t=0;
+		    		t = Math.round(t);
+		    		// t2=10-t
+		    		console.log("F:"+t)
+		    		return t;})
 		    	.attr("height", 3 )
-		    	.attr("x", function(d){return lx+parseInt(d.rX);})
-				.attr("y", function(d){return parseInt(d.rY)+68})
+		    	.attr("x", function(d){
+		    		m=parseInt(d.Day);
+		    		f=parseInt(d.Night);
+		    		if((m+f)>0){
+		    			t = m/(m+f)*70;
+		    		}else t=0;
+
+		    		return lx+t+parseInt(d.rX);
+		    	})
+				.attr("y", function(d){return parseInt(d.rY)+40})
 				.attr("fill", "grey")
 				.on("mouseover", function(d){
 					var total = parseInt(d.Male) + parseInt(d.Female);
@@ -774,7 +831,15 @@ var gender=[50,150];
 
 			    g.selectAll("#gender2")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)});
+			        .attr("x", function(d){
+			        	m=parseInt(d.Male);
+			    		f=parseInt(d.Female);
+			    		if((m+f)>0){
+			    			t = m/(m+f)*70;
+			    		}else t=0;
+
+			    		return lx+t+parseInt(d.rX);
+			    	});
 
 			     g.selectAll("#day")
 			        .transition().duration(500)
@@ -782,7 +847,15 @@ var gender=[50,150];
 
 			    g.selectAll("#night")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)})
+			        .attr("x", function(d){
+				        m=parseInt(d.Day);
+			    		f=parseInt(d.Night);
+			    		if((m+f)>0){
+			    			t = m/(m+f)*70;
+			    		}else t=0;
+
+			    		return lx+t+parseInt(d.rX);
+		    		});
 
 			    g.selectAll("#figures")
 			        .transition().duration(500)
@@ -893,10 +966,19 @@ var gender=[50,150];
 			.data(data).enter();
 			g.selectAll("#gender1")
 		        .transition().duration(500)
-		    	.attr("width", function(d){return d.Male/2})
+		    	.attr("width", function(d){
+		    		m=parseInt(d.Male);
+		    		f=parseInt(d.Female);
+		    		if((m+f)>0){
+		    			t = m/(m+f)*70;
+		    		}else t=0;
+		    		t = Math.round(t);
+		    		console.log("M:"+t)
+		    		return t;
+		    	})
 		    	.attr("height", 3 )
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
-				.attr("y", function(d){return parseInt(d.rY)+50})
+				.attr("y", function(d){return parseInt(d.rY)+30})
 				.attr("fill", "blue")
 		    ;
 
@@ -904,10 +986,28 @@ var gender=[50,150];
 			.data(data).enter();
 		    g.selectAll("#gender2")
 		        .transition().duration(500)
-		    	.attr("width", function(d){return d.Female/2})
+		    	.attr("width", function(d){
+		    		m=parseInt(d.Male);
+		    		f=parseInt(d.Female);
+		    		if((m+f)>0){
+		    			t = f/(m+f)*70;
+		    		}else t=0;
+		    		t = Math.round(t);
+		    		// t2=10-t
+		    		console.log("F:"+t)
+		    		return t;
+		    	})
 		    	.attr("height", 3 )
-		    	.attr("x", function(d){return lx+parseInt(d.rX);})
-				.attr("y", function(d){return parseInt(d.rY)+55})
+		    	.attr("x", function(d){
+		    		m=parseInt(d.Male);
+		    		f=parseInt(d.Female);
+		    		if((m+f)>0){
+		    			t = m/(m+f)*50;
+		    		}else t=0;
+
+		    		return lx+t+parseInt(d.rX);
+		    	})
+				.attr("y", function(d){return parseInt(d.rY)+30})
 				.attr("fill", "green")
 		    ;
 
@@ -915,10 +1015,20 @@ var gender=[50,150];
 			.data(data).enter();
 		    g.selectAll("#day")
 		        .transition().duration(500)
-		    	.attr("width", function(d){return d.Day/2})
+		    	.attr("width", function(d){
+		    		m=parseInt(d.Day);
+		    		f=parseInt(d.Night);
+		    		if((m+f)>0){
+		    			t = m/(m+f)*70;
+		    		}else t=0;
+		    		t = Math.round(t);
+		    		// t2=10-t
+		    		console.log("F:"+t)
+		    		return t;
+		    	})
 		    	.attr("height", 3 )
 		    	.attr("x", function(d){return lx+parseInt(d.rX);})
-				.attr("y", function(d){return parseInt(d.rY)+63})
+				.attr("y", function(d){return parseInt(d.rY)+40})
 				.attr("fill", "yellow")
 		    ;
 
@@ -926,10 +1036,28 @@ var gender=[50,150];
 			.data(data).enter();
 		    g.selectAll("#night")
 		        .transition().duration(500)
-		    	.attr("width", function(d){return d.Night/2})
+		    	.attr("width", function(d){
+		    		m=parseInt(d.Day);
+		    		f=parseInt(d.Night);
+		    		if((m+f)>0){
+		    			t = f/(m+f)*70;
+		    		}else t=0;
+		    		t = Math.round(t);
+		    		// t2=10-t
+		    		console.log("F:"+t)
+		    		return t;
+		    	})
 		    	.attr("height", 3 )
-		    	.attr("x", function(d){return lx+parseInt(d.rX);})
-				.attr("y", function(d){return parseInt(d.rY)+68})
+		    	.attr("x", function(d){
+		    		m=parseInt(d.Day);
+		    		f=parseInt(d.Night);
+		    		if((m+f)>0){
+		    			t = m/(m+f)*70;
+		    		}else t=0;
+
+		    		return lx+t+parseInt(d.rX);
+		    	})
+				.attr("y", function(d){return parseInt(d.rY)+40})
 				.attr("fill", "grey")
 		    ;
 
