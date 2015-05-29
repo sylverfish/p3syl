@@ -50,6 +50,10 @@
     	Effect.Appear('title', { duration: 1.0 });
     	hidden = false;
     }
+
+    function hidePopup(){
+    	Effect.Fade('popme',{ duration: 1.0, from: 1, to: 0 });
+    }
     
     </script>
 
@@ -64,7 +68,7 @@
 		    <tspan x="20" y="190">accidents on the Mumbai Suburban Railway Network.</tspan>
 		    <tspan x="31" y="210">(Thane to CST Mumbai, Andheri to Churchgate)</tspan>		    
 		</svg>	
-		<span style="font-size: x-small; color: pink" >(Press arrow keys LEFT and RIGHT)</style>
+		<span style="font-size: x-small; color: pink" >(Press arrow keys LEFT and RIGHT) Or click on the left or right of the page</style>
 	</div>
 	<div id="chart"  ></div>
 	<!--<div><span id="left">Left</span> | <span id="right">Right</span></div>-->
@@ -75,7 +79,7 @@
 	<script>
 var gender=[50,150];
 	var clipWidth = 1100;
-	var clipHeight = 300;
+	var clipHeight = 800;
 	width = 100;
 	var x=0;
 	var cx=0;
@@ -92,7 +96,7 @@ var gender=[50,150];
 	var pad=20;	
 	var l=0;
 	var speed=1100;
-	var pages=3;
+	var pages=7;
 	var update;
 	var updatePie;
 
@@ -122,11 +126,11 @@ var gender=[50,150];
 		    	.attr("y1", function(d){return d.iny1})
 		    	.attr("x2", function(d){return lx+parseInt(d.inx2)})
 		    	.attr("y2", function(d){return d.iny2})
-		    	.attr("stroke","grey")
+		    	.attr("stroke",function(d){if(d.Line=="CR") return "lightblue"; else return "pink";})
 		    	.attr("fill", "none")
-		    	.attr("stroke-width", "2")
+		    	.attr("stroke-width", "6")
 		    	.attr("stroke-opacity","0.5")
-		    	.style("stroke-dasharray", ("4, 4"));
+		    	.style("stroke-dasharray", ("2,4,2,4,2,4"));
 		    	// .attr("style", "stroke:rgb(255,0,0);stroke-width:2");
 		        // .style("stroke-dasharray", ("3, 3"));  //function(d){return d.Deaths}
 		    ;
@@ -155,15 +159,18 @@ var gender=[50,150];
 			rects
 		    .insert('rect') //rect
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
-		    	.attr("width","40")
-		    	.attr("height", "20")
-		    	.attr("x", function(d){ return lx+parseInt(d.rX)})
-				.attr("y", function(d){return d.rY})
+		    	.attr("width","60")
+		    	.attr("height", "15")
+		    	.attr("rx", 6)
+    			.attr("ry", 6)
+		    	.attr("x", function(d){ return lx+parseInt(d.rX)-10})
+				.attr("y", function(d){return parseInt(d.rY)+2.5})
 				.attr("fill", function(d){
-					if(d.Type=="Interchange") return "green";
-					if(d.Type=="Slow") return "blue";
-					if(d.Type=="Fast") return "red"
+					if(d.Type=="Interchange") return "darkgreen";
+					if(d.Type=="Slow") return "darkblue";
+					if(d.Type=="Fast") return "darkred"
 				})
+				// .style("fill-opacity", "0.8")
 				.on("mouseover", function(d){
                 	d3.select(this)
                 	.style("fill-opacity", "1");
@@ -177,9 +184,9 @@ var gender=[50,150];
                 })
                 .on("mouseout", function(d){
                 	d3.select(this)
-                	.style("fill-opacity", "0.8");
+                	// .style("fill-opacity", "0.8");
 
-                	document.getElementById('popme').style.display = "none";
+                	// document.getElementById('popme').style.display = "none";
 
                 })
 		    ;
@@ -192,11 +199,11 @@ var gender=[50,150];
 		    	.attr("y1", function(d){return d.outy1})
 		    	.attr("x2", function(d){return lx+parseInt(d.outx2)})
 		    	.attr("y2", function(d){return d.outy2})
-		    	.attr("stroke","grey")
+		    	.attr("stroke",function(d){if(d.Line=="CR") return "lightblue"; else return "pink";})
 		    	.attr("fill", "none")
-		    	.attr("stroke-width", "2")
+		    	.attr("stroke-width", "6")
 		    	.attr("stroke-opacity","0.5")
-		    	.style("stroke-dasharray", ("4, 4"))
+		    	.style("stroke-dasharray", ("2,4,2,4,2,4"));
 		    	;
 		    	// .attr("style", "stroke:rgb(255,0,0);stroke-width:2");
 		        // .style("stroke-dasharray", ("3, 3"));  //function(d){return d.Deaths}
@@ -229,6 +236,12 @@ var gender=[50,150];
 					var y = coordinates[1];
 					
                 	var popme = document.getElementById('popme');
+
+                	var st = document.getElementById('stationName');
+                	st.innerHTML = d.Station;
+                	dataV = "jsons/"+d.Station+"All.json"
+                	 console.log(dataV)
+
                 	// popme.style.display = "block";
                 	// console.log(x + " " + y)
                 	// popme.style = "position: absolute; top:"+(y+150)+"px; left:"+(x+30)+"px; border:1px solid red; color: red; padding:5px; display: none" ;
@@ -264,7 +277,7 @@ var gender=[50,150];
                 	d3.select(this)
                 	.style("fill-opacity", "0.8");
 
-                	document.getElementById('popme').style.display = "none";
+                	// document.getElementById('popme').style.display = "none";
                 	// Effect.Fade('popme', {duration: 5.0, from: 1, to: 0} );
 
                 })
@@ -296,7 +309,7 @@ var gender=[50,150];
                 	d3.select(this)
                 	.style("fill-opacity", "0.8");
 
-                	document.getElementById('popme').style.display = "none";
+                	// document.getElementById('popme').style.display = "none";
                 })
 		    	;
 
@@ -588,7 +601,7 @@ var gender=[50,150];
 		     update = function(){
 			    g.selectAll("rect")
 			        .transition().duration(500)
-					.attr("x", function(d){return lx+parseInt(d.rX)});
+					.attr("x", function(d){return lx+parseInt(d.rX)-10});
 
 			    g.selectAll("#l1")
 			        .transition().duration(500)
@@ -753,7 +766,8 @@ var gender=[50,150];
 
 
 <div id="chart2" style="display:none"></div>
-<div id="popme" style="position: absolute; top:300px; left:200px; border:1px solid red; color: red; background-color: #100000; padding:5px; display: none;background-image: url(images/bg.jpg)"></div>
+<div id="popme" style="position: absolute; top:300px; left:200px; border:1px solid red; color: red; background-color: #100000; padding:5px; display: none;background-image: url(images/bg.jpg)" onClick="hidePopup()">
+<span id="stationName"></span></div>
 
 <div id="snippet" style="position: absolute; top:10px; left:450px; padding:5px; display: none; color: gold; font-weight:bold; font-size:25px">Some data snippet of interest to be shown here</div>
 
@@ -810,6 +824,8 @@ var gender=[50,150];
 			// }
 			});
 			inited=true;
+		}else{
+			calendar.update(dataV);
 		}
 	
 	}
