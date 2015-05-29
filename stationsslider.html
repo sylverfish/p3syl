@@ -6,11 +6,13 @@
 
     <script type="text/javascript" src="d3/d3.js"></script>
    	<link type="text/css" rel="stylesheet" href="cal/cal-heatmap.css"/>
+   	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+   	<link href='http://fonts.googleapis.com/css?family=Playfair+Display' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="mystyle.css">
     <style type="text/css">
 	    body{
 			padding-top:20px;
-		    font-family: "Open Sans";
+		    font-family: 'Open Sans', sans-serif;
 		    color: gray;
 		    /*background-color: #400000; 
 */		    background-color: #FFF; 		    
@@ -62,10 +64,10 @@
 	<script type="text/javascript">
 
 	var yScale = d3.scale.linear()
-    .range([0, 70]);
+    .range([1, 65]);
 
     var dScale = d3.scale.linear()
-    .range([0, 40]);
+    .range([1, 40]);
 
 
 	function skip(){
@@ -161,18 +163,18 @@
     </script>
 
 
-	<div id="title" style="position: absolute; top:10px; left:20px; display:block">
-		<svg width="300" height="300">
+	<div id="title" style="position: absolute; top:10px; left:20px;">
+		<svg width="300" height="325">
 			<circle cx="150" cy="80" r="55" stroke="blue" stroke-width="27" fill="white"/>
   			 <rect width="160" height="40" x="70" y="60" style="fill:rgb(255,0,0)" />
   			 <text x="103" y="85" fill="white" >Destinations</text>
-  			 <text x="32" y="170" fill="grey" style="font-family: Georgia; font-size: x-small">
+  			 <text x="32" y="170" fill="grey" style="font-family: 'Playfair Display', serif; font-size: x-small">
   								  A visual representation of the tragic situation of 
 		    <tspan x="20" y="190">accidents on the Mumbai Suburban Railway Network.</tspan>
 		    <tspan x="31" y="210">(Thane to CST Mumbai, Andheri to Churchgate)</tspan>		    
 		</svg>	
 		<br/>
-		<span style="font-size: x-small; color: grey" >(Press arrow keys LEFT and RIGHT) Or click on the left or right of the page</style>
+		<span style="font-size: x-small; color: grey" >(Press arrow keys LEFT and RIGHT) Or click on the left or right of the page. <br/>Click on stations for more details.</style>
 	</div>
 	<div id="chart"  ></div>
 	<!--<div><span id="left">Left</span> | <span id="right">Right</span></div>-->
@@ -202,8 +204,8 @@ var gender=[50,150];
 
 	var pad=20;	
 	var l=0;
-	var speed=1100;
-	var pages=6;
+	var speed=1100-220+90;
+	var pages=5;
 	var update;
 	var updatePie;
 	var datasource = "data/2014Trains.csv";
@@ -544,7 +546,7 @@ var gender=[50,150];
 		    .insert('rect')
 		    .attr("class", "area").attr("clip-path", "url(#clip)")
 	    	.attr("id", "bar12All")
-	    	.attr("width", 30) 
+	    	.attr("width", 20) 
 	    	.attr("height", function (d){
 	    		if(year=="2012to2014" && !showDeathsOnly){
 	    			yScale.domain([0, d3.max(data, function(d) { return d.All12; })]);
@@ -553,7 +555,7 @@ var gender=[50,150];
 		    	else
 	    			return 0;
 	    	})
-	    	.attr("x", function (d){return lx+parseInt(d.rX)-20;})
+	    	.attr("x", function (d){return lx+parseInt(d.rX);})
 			.attr("y", function (d) {
 				if(year=="2012to2014"){
 	            	if(d.Line=="CR")
@@ -582,7 +584,7 @@ var gender=[50,150];
 		    .insert('rect')
 		    .attr("class", "area").attr("clip-path", "url(#clip)")
 	    	.attr("id", "bar12Deaths")
-	    	.attr("width", 30) 
+	    	.attr("width", 20) 
 	    	.attr("height", function (d){
 	    		if(year=="2012to2014" && !showDeathsOnly){
 	    			yScale.domain([0, d3.max(data, function(d) { return d.All12; })]);
@@ -594,7 +596,7 @@ var gender=[50,150];
 			    }
 			    return 0;
 	    	})
-	    	.attr("x", function (d){return lx+parseInt(d.rX)-20;})
+	    	.attr("x", function (d){return lx+parseInt(d.rX);})
 			.attr("y", function (d) {
 				if(year=="2012to2014"){
 	            	if(d.Line=="CR"){
@@ -627,7 +629,7 @@ var gender=[50,150];
 		    .insert('rect')
 		    .attr("class", "area").attr("clip-path", "url(#clip)")
 	    	.attr("id", "bar13All")
-	    	.attr("width", 30) 
+	    	.attr("width", 20) 
 	    	.attr("height", function (d){
 	    		if(year=="2012to2014" && !showDeathsOnly){
 	    			yScale.domain([0, d3.max(data, function(d) { return d.All13; })]);
@@ -636,7 +638,7 @@ var gender=[50,150];
 		    	else
 	    			return 0;
 	    	})
-	    	.attr("x", function (d){return lx+parseInt(d.rX)+40-20;})
+	    	.attr("x", function (d){return lx+parseInt(d.rX)+22;})
 			.attr("y", function (d) {
 				if(year=="2012to2014"){
 	            	if(d.Line=="CR")
@@ -665,7 +667,7 @@ var gender=[50,150];
 		    .insert('rect')
 		    .attr("class", "area").attr("clip-path", "url(#clip)")
 	    	.attr("id", "bar13Deaths")
-	    	.attr("width", 30) 
+	    	.attr("width", 20) 
 	    	.attr("height", function (d){
 	    		if(year=="2012to2014" && !showDeathsOnly){
 	    			yScale.domain([0, d3.max(data, function(d) { return d.All13; })]);
@@ -677,7 +679,7 @@ var gender=[50,150];
 			    }
 	    		return 0;
 	    	})
-	    	.attr("x", function (d){return lx+parseInt(d.rX)+40-20;})
+	    	.attr("x", function (d){return lx+parseInt(d.rX)+22;})
 			.attr("y", function (d) {
 				if(year=="2012to2014"){
 	            	if(d.Line=="CR"){
@@ -711,7 +713,7 @@ var gender=[50,150];
 		    .insert('rect')
 		    .attr("class", "area").attr("clip-path", "url(#clip)")
 	    	.attr("id", "bar14All")
-	    	.attr("width", 30) 
+	    	.attr("width", 20) 
 	    	.attr("height", function (d){
 	    		yScale.domain([0, d3.max(data, function(d) { return d.All14; })]);
 	    		if(year=="2012to2014" && !showDeathsOnly){
@@ -720,7 +722,7 @@ var gender=[50,150];
 		    	else
 	    			return 0;
 	    	})
-	    	.attr("x", function (d){return lx+parseInt(d.rX)+80-20;})
+	    	.attr("x", function (d){return lx+parseInt(d.rX)+44;})
 			.attr("y", function (d) {
 				if(year=="2012to2014"){
 	            	if(d.Line=="CR")
@@ -749,7 +751,7 @@ var gender=[50,150];
 		    .insert('rect')
 		    .attr("class", "area").attr("clip-path", "url(#clip)")
 	    	.attr("id", "bar14Deaths")
-	    	.attr("width", 30) 
+	    	.attr("width", 20) 
 	    	.attr("height", function (d){
 	    		if(year=="2012to2014" && !showDeathsOnly){
 	    			yScale.domain([0, d3.max(data, function(d) { return d.All14; })]);
@@ -761,7 +763,7 @@ var gender=[50,150];
 		    	}
     			return 0;
 	    	})
-	    	.attr("x", function (d){return lx+parseInt(d.rX)+80-20;})
+	    	.attr("x", function (d){return lx+parseInt(d.rX)+44;})
 			.attr("y", function (d) {
 				if(year=="2012to2014"){
 	            	if(d.Line=="CR"){
@@ -852,6 +854,83 @@ var gender=[50,150];
                 	.text(m + "% male, and "+ f +"% female");
                 })
 		    ;
+
+		    var imgs = g.selectAll("img")
+			.data(data).enter();
+
+			// imgs.insert("svg:image")
+   //              .attr("id","maleicontest")
+   //              .attr("xlink:href", "images/female.svg")
+   //              .attr("x",  function(d){return lx+parseInt(d.rX)-20;})
+			// 	.attr("y", function(d){
+			// 		// return 100;
+			// 		if(d.Line=="CR")
+		 //    			return parseInt(d.rY)-35;
+		 //    		else
+		 //    			return parseInt(d.rY)+45;
+		 //    	})
+		 //    	.attr("width",20)
+		 //    	.attr("height",20)
+		 //    	;
+
+            imgs.insert("svg:image")
+                .attr("id","maleicon")
+                .attr("xlink:href", "images/female.svg")
+                .attr("x", function(d){return lx+parseInt(d.rX)-20;})
+				.attr("y", function(d){
+					// return 100;
+					if(d.Line=="CR")
+		    			return parseInt(d.rY)-35-8;
+		    		else
+		    			return parseInt(d.rY)+45+8;
+		    	})
+		    	.attr("width",20)
+		    	.attr("height",20)
+		    	;
+
+            imgs.insert("svg:image")
+                .attr("id","femaleicon")
+                .attr("xlink:href", "images/female.svg")
+                .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+				.attr("y", function(d){
+					// return 100;
+					if(d.Line=="CR")
+		    			return parseInt(d.rY)-35-8;
+		    		else
+		    			return parseInt(d.rY)+45+8;
+		    	})
+		    	.attr("width",20)
+		    	.attr("height",20)
+                ;
+
+
+            imgs.insert("svg:image")
+                // .append()
+                .attr("id","dayicon")
+                .attr("xlink:href", "images/female.svg")
+                .attr("x", function(d){return lx+parseInt(d.rX)-20;})
+				.attr("y", function(d){
+					if(d.Line=="CR")
+		    			return parseInt(d.rY)-35+10;
+		    		else
+		    			return parseInt(d.rY)+45-10;
+		    	})
+		    	.attr("width",20)
+		    	.attr("height",20)
+		    	;
+
+            imgs.insert("svg:image")
+                // .append()
+                .attr("id","nighticon")
+                .attr("xlink:href", "images/female.svg")
+                .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+				.attr("y", function(d){if(d.Line=="CR")
+		    			return parseInt(d.rY)-35+10;
+		    		else
+		    			return parseInt(d.rY)+45-10;
+		    	})
+		    	.attr("width",20)
+		    	.attr("height",20);
 
 		    rects
 		    .insert('rect') //gender
@@ -981,7 +1060,10 @@ var gender=[50,150];
 		    		else
 		    			return parseInt(d.rY)+30;
 		    	})
-				.attr("fill", "#CC9900")
+				// .attr("fill", "#CC9900")
+				.attr("fill", "yellow")
+				// .attr("stroke", "#666")
+				// .attr("stroke-width","1")
 				.on("mouseover", function(d){
 					var total = parseInt(d.Day) + parseInt(d.Night);
 					var m = Math.round(d.Day/total*100);
@@ -992,7 +1074,7 @@ var gender=[50,150];
                 })
 		    ;
 
-		     rects
+		    rects
 		    .insert('rect') //night
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "night")
@@ -1029,7 +1111,10 @@ var gender=[50,150];
 		    		else
 		    			return parseInt(d.rY)+30;
 		    	})
-				.attr("fill", "#AEAEAE")
+				// .attr("fill", "#AEAEAE")
+				.attr("fill", "#666")
+				// .attr("stroke", "#666")
+				// .attr("stroke-width","1")
 				.on("mouseover", function(d){
 					var total = parseInt(d.Male) + parseInt(d.Female);
 					var m = Math.round(d.Day/total*100);
@@ -1128,6 +1213,252 @@ var gender=[50,150];
                 })
 		    	;
 
+		    text
+				.insert('text')
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "bar12AText")
+		    	.attr("x", function (d){return lx+parseInt(d.rX);})
+				.attr("y", function (d) {
+					yScale.domain([0, d3.max(data, function(d) { return d.All12; })]);
+		    		var ht =  yScale(d.All12);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-40-yScale(d.All12);
+			    		else
+			    			return parseInt(d.rY)+60+yScale(d.All12);
+			    	}		    			
+	            })
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+			    		{
+			    		if(d.All12==0){
+			    			if(!showDeathsOnly){
+			    				return "0";
+			    			}
+			    			else return "";
+			    		}
+			    		else{
+			    			if(!showDeathsOnly){
+			    				return d.All12;
+			    			}
+			    		}
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+                .attr("font-size", 12)
+                .attr("fill", "grey")
+                .style("fill-opacity", "0.7")
+		    	;
+
+		    text
+				.insert('text')
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "bar12DText")
+		    	.attr("x", function (d){return lx+parseInt(d.rX);})
+				.attr("y", function (d) {
+					dScale.domain([0, d3.max(data, function(d) { return d.Deaths12; })]);
+		    		var ht =  yScale(d.All12);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-40-yScale(d.Deaths12);
+			    		else
+			    			return parseInt(d.rY)+60+yScale(d.Deaths12);
+			    	}		    			
+	            })
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+			    		{
+			    		if(d.Deaths12==0){
+			    			if(showDeathsOnly){
+			    				return "0";
+			    			}
+			    			else return "";
+			    		}
+			    		else{
+			    			if(showDeathsOnly){
+			    				return d.Deaths12;
+			    			}
+			    		}
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+                .attr("font-size", 12)
+                .attr("fill", "darkred")
+                .style("fill-opacity", "0.7")
+		    	;
+
+		    text
+				.insert('text')
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "bar13AText")
+		    	.attr("x", function (d){return lx+parseInt(d.rX)+22;})
+				.attr("y", function (d) {
+					yScale.domain([0, d3.max(data, function(d) { return d.All13; })]);
+		    		var ht =  yScale(d.All13);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-40-yScale(d.All13);
+			    		else
+			    			return parseInt(d.rY)+60+yScale(d.All13);
+			    	}		    			
+	            })
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+			    		{
+			    		if(d.All13==0){
+			    			if(!showDeathsOnly){
+			    				return "0";
+			    			}
+			    			else return "";
+			    		}
+			    		else{
+			    			if(!showDeathsOnly){
+			    				return d.All13;
+			    			}
+			    		}
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+                .attr("font-size", 12)
+                .attr("fill", "grey")
+                .style("fill-opacity", "0.7")
+		    	;
+
+		    text
+				.insert('text')
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "bar13DText")
+		    	.attr("x", function (d){return lx+parseInt(d.rX)+22;})
+				.attr("y", function (d) {
+					dScale.domain([0, d3.max(data, function(d) { return d.Deaths13; })]);
+		    		var ht =  yScale(d.Deaths13);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-40-yScale(d.Deaths13);
+			    		else
+			    			return parseInt(d.rY)+60+yScale(d.Deaths13);
+			    	}		    			
+	            })
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+			    		{
+			    		if(d.Deaths13==0){
+			    			if(showDeathsOnly){
+			    				return "0";
+			    			}
+			    			else return "";
+			    		}
+			    		else{
+			    			if(showDeathsOnly){
+			    				return d.Deaths13;
+			    			}
+			    		}
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+                .attr("font-size", 12)
+                .attr("fill", "darkred")
+                .style("fill-opacity", "0.7")
+		    	;
+
+		    text
+				.insert('text')
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "bar14AText")
+		    	.attr("x", function (d){return lx+parseInt(d.rX)+44;})
+				.attr("y", function (d) {
+					yScale.domain([0, d3.max(data, function(d) { return d.All14; })]);
+		    		var ht =  yScale(d.All14);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-40-yScale(d.All14);
+			    		else
+			    			return parseInt(d.rY)+60+yScale(d.All14);
+			    	}		    			
+	            })
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+			    		{
+			    		if(d.All14==0){
+			    			if(!showDeathsOnly){
+			    				return "0";
+			    			}
+			    			else return "";
+			    		}
+			    		else{
+			    			if(!showDeathsOnly){
+			    				return d.All14;
+			    			}
+			    		}
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+                .attr("font-size", 12)
+                .attr("fill", "grey")
+                .style("fill-opacity", "0.7")
+		    	;
+
+		    text
+				.insert('text')
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "bar14DText")
+		    	.attr("x", function (d){return lx+parseInt(d.rX)+44;})
+				.attr("y", function (d) {
+					dScale.domain([0, d3.max(data, function(d) { return d.Deaths14; })]);
+		    		var ht =  dScale(d.All14);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-40-yScale(d.Deaths14);
+			    		else
+			    			return parseInt(d.rY)+60+yScale(d.Deaths14);
+			    	}		    			
+	            })
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+			    		{
+			    		if(d.Deaths14==0){
+			    			if(showDeathsOnly){
+			    				return "0";
+			    			}
+			    			else return "";
+			    		}
+			    		else{
+			    			if(showDeathsOnly){
+			    				return d.Deaths14;
+			    			}
+			    		}
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+                .attr("font-size", 12)
+                .attr("fill", "darkred")
+                .style("fill-opacity", "0.7")
+		    	;
+
 		   	text
 				.insert('text')
 				.attr("class", "area").attr("clip-path", "url(#clip)")
@@ -1178,7 +1509,7 @@ var gender=[50,150];
 		    	})
                 .attr("font-size", function (d) {
                 	if(!showDeathsOnly){
-	            		return 16;
+	            		return 10;
 	            	}
 	            	else{
 	            		if(d.Deaths==0)
@@ -1287,27 +1618,27 @@ var gender=[50,150];
 
 				g.selectAll("#bar12All")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)-20;})
+			        .attr("x", function(d){return lx+parseInt(d.rX);})
 
 			    g.selectAll("#bar13All")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)+40-20;})
+			        .attr("x", function(d){return lx+parseInt(d.rX)+22;})
 
 			    g.selectAll("#bar14All")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)+80-20;})
+			        .attr("x", function(d){return lx+parseInt(d.rX)+44;})
 
 			    g.selectAll("#bar12Deaths")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)-20;})
+			        .attr("x", function(d){return lx+parseInt(d.rX);})
 
 			    g.selectAll("#bar13Deaths")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)+40-20;})
+			        .attr("x", function(d){return lx+parseInt(d.rX)+22;})
 
 			    g.selectAll("#bar14Deaths")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)+80-20;})
+			        .attr("x", function(d){return lx+parseInt(d.rX)+44;})
 
 
 
@@ -1359,10 +1690,46 @@ var gender=[50,150];
 		    		// .attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+30})
 		    		.attr("x", function(d){return lx+parseInt(d.rX)+70;})
 
-			    // g.selectAll("circle")
-			    //     .transition().duration(500)
-			    //     // .attr('x', function(d){return xScale(d.x)});
-			    //     .attr('cx', function(d){cx=cx+cprev+pad; cprev=parseInt(d.All); return cx;});
+		    	g.selectAll("#bar12AText")
+			    .transition().duration(500)
+	    		.attr("x", function (d){return lx+parseInt(d.rX)+1;})
+
+	    		g.selectAll("#bar13AText")
+			    .transition().duration(500)
+	    		.attr("x", function (d){return lx+parseInt(d.rX)+22+1;})
+
+	    		g.selectAll("#bar14AText")
+			    .transition().duration(500)
+	    		.attr("x", function (d){return lx+parseInt(d.rX)+44+1;})
+
+	    		g.selectAll("#bar12DText")
+			    .transition().duration(500)
+	    		.attr("x", function (d){return lx+parseInt(d.rX)+1;})
+
+	    		g.selectAll("#bar13DText")
+			    .transition().duration(500)
+	    		.attr("x", function (d){return lx+parseInt(d.rX)+22+1;})
+
+	    		g.selectAll("#bar14DText")
+			    .transition().duration(500)
+	    		.attr("x", function (d){return lx+parseInt(d.rX)+44+1;})
+
+	    		g.selectAll("#maleicon")
+	    		.transition().duration(500)
+			    .attr("x", function(d){return lx+parseInt(d.rX)-20;})
+
+	    		g.selectAll("#femaleicon")
+	    		.transition().duration(500)
+			    .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+
+			    g.selectAll("#dayicon")
+	    		.transition().duration(500)
+			    .attr("x", function(d){return lx+parseInt(d.rX)-20;})
+
+	    		g.selectAll("#nighticon")
+	    		.transition().duration(500)
+			    .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+			    
 			};		
 	});
 	}
@@ -1592,7 +1959,7 @@ var gender=[50,150];
 				.data(data).enter();
 			g.selectAll("#bar12All")
 		        .transition().duration(500)
-		    	.attr("width", 30) 
+		    	.attr("width", 20) 
 		    	.attr("height", function(d){
 		    		if(year=="2012to2014" && !showDeathsOnly){
 		    			yScale.domain([0, d3.max(data, function(d) { return d.All12; })]);
@@ -1600,7 +1967,7 @@ var gender=[50,150];
 			    	}
 		    		return 0;
 		    	})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)-20;})
+		    	.attr("x", function(d){return lx+parseInt(d.rX);})
 				.attr("y", function (d) {
 					// return yScale(d.All12);
 					if(year=="2012to2014"){
@@ -1618,7 +1985,7 @@ var gender=[50,150];
 				.data(data).enter();
 			g.selectAll("#bar12Deaths")
 		        .transition().duration(500)
-		    	.attr("width", 30) 
+		    	.attr("width", 20) 
 		    	.attr("height", function(d){
 		    		if(year=="2012to2014" && !showDeathsOnly){
 		    			yScale.domain([0, d3.max(data, function(d) { return d.All12; })]);
@@ -1630,7 +1997,7 @@ var gender=[50,150];
 			    	}
 		    		return 0;
 		    	})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)-20;})
+		    	.attr("x", function(d){return lx+parseInt(d.rX);})
 				.attr("y", function (d) {
 					if(year=="2012to2014"){
 						if(d.Line=="CR"){
@@ -1651,7 +2018,7 @@ var gender=[50,150];
 				.data(data).enter();
 			g.selectAll("#bar13All")
 		        .transition().duration(500)
-		    	.attr("width", 30) 
+		    	.attr("width", 20) 
 		    	.attr("height", function(d){
 		    		if(year=="2012to2014" && !showDeathsOnly){
 		    			yScale.domain([0, d3.max(data, function(d) { return d.All13; })]);
@@ -1659,7 +2026,7 @@ var gender=[50,150];
 			    	}
 		    		return 0;
 		    	})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)+40-20;})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+22;})
 				.attr("y", function (d) {
 					if(year=="2012to2014"){
 		            	if(d.Line=="CR")
@@ -1676,7 +2043,7 @@ var gender=[50,150];
 				.data(data).enter();
 			g.selectAll("#bar13Deaths")
 		        .transition().duration(500)
-		    	.attr("width", 30) 
+		    	.attr("width", 20) 
 		    	.attr("height", function(d){
 		    		if(year=="2012to2014" && !showDeathsOnly){
 		    			yScale.domain([0, d3.max(data, function(d) { return d.All13; })]);
@@ -1688,7 +2055,7 @@ var gender=[50,150];
 			    	}
 		    		return 0;
 		    	})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)+40-20;})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+22;})
 				.attr("y", function (d) {
 					if(year=="2012to2014"){
 		            	if(d.Line=="CR")
@@ -1710,7 +2077,7 @@ var gender=[50,150];
 				.data(data).enter();
 			g.selectAll("#bar14All")
 		        .transition().duration(500)
-		    	.attr("width", 30) 
+		    	.attr("width", 20) 
 		    	.attr("height", function(d){
 		    		if(year=="2012to2014" && !showDeathsOnly){
 		    			yScale.domain([0, d3.max(data, function(d) { return d.All14; })]);
@@ -1718,7 +2085,7 @@ var gender=[50,150];
 			    	}
 		    		return 0;
 		    	})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)+80-20;})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+44;})
 				.attr("y", function (d) {
 					if(year=="2012to2014"){
 		            	if(d.Line=="CR")
@@ -1735,7 +2102,7 @@ var gender=[50,150];
 				.data(data).enter();
 			g.selectAll("#bar14Deaths")
 		        .transition().duration(500)
-		    	.attr("width", 30) 
+		    	.attr("width", 20) 
 		    	.attr("height", function(d){
 		    		if(year=="2012to2014" && !showDeathsOnly){
 		    			yScale.domain([0, d3.max(data, function(d) { return d.All14; })]);
@@ -1747,7 +2114,7 @@ var gender=[50,150];
 			    	}
 	    			return 0;
 		    	})
-		    	.attr("x", function(d){return lx+parseInt(d.rX)+80-20;})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+44;})
 				.attr("y", function (d) {
 					if(year=="2012to2014"){
 		            	if(d.Line=="CR"){
@@ -1861,7 +2228,10 @@ var gender=[50,150];
 		    		else
 		    			return parseInt(d.rY)+30;
 		    	})
-				.attr("fill", "#CC9900")
+				// .attr("fill", "#CC9900")
+				.attr("fill", "yellow")
+				// .attr("stroke", "#666")
+				// .attr("stroke-width","1")
 		    ;
 
 		    g.selectAll("#night")
@@ -1900,7 +2270,10 @@ var gender=[50,150];
 		    		else
 		    			return parseInt(d.rY)+30;
 		    	})
-				.attr("fill", "#AEAEAE")
+				// .attr("fill", "#AEAEAE")
+				.attr("fill", "#666")
+				// .attr("stroke", "#666")
+				// .attr("stroke-width","1")
 		    ;
 
 		    g.selectAll("#stations")
@@ -2012,7 +2385,7 @@ var gender=[50,150];
 		    	})
 	            .attr("font-size", function (d) {
 	            	if(!showDeathsOnly){
-	            		return 16;
+	            		return 10;
 	            	}
 	            	else{
 	            		if(d.Deaths==0)
@@ -2025,12 +2398,322 @@ var gender=[50,150];
 		    	;
 
 
+		    	g.selectAll("#bar12AText")
+				.data(data).enter();
+			   	g.selectAll("#bar12AText")
+		        .transition().duration(500)
+		    	.attr("x", function (d){return lx+parseInt(d.rX)+1;})
+				.attr("y", function (d) {
+	    			yScale.domain([0, d3.max(data, function(d) { return d.All12; })]);
+		    		var ht =  yScale(d.All12);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-40-yScale(d.All12);
+			    		else
+			    			return parseInt(d.rY)+60+yScale(d.All12);
+			    	}		    			
+	            })	
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+			    		{
+			    		if(d.All12==0){
+			    			if(!showDeathsOnly){
+			    				return "0";
+			    			}
+			    			else return "";
+			    		}
+			    		else{
+			    			if(!showDeathsOnly){
+			    				return d.All12;
+			    			}
+			    		}
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+	            .attr("font-size", 12)
+	            .attr("fill", "grey")
+	            .style("fill-opacity", "0.7")
+		    	;
+
+		    g.selectAll("#bar12DText")
+				.data(data).enter();
+			   	g.selectAll("#bar12DText")
+		        .transition().duration(500)
+		    	.attr("x", function (d){return lx+parseInt(d.rX)+1;})
+				.attr("y", function (d) {
+	    			dScale.domain([0, d3.max(data, function(d) { return d.Deaths12; })]);
+		    		var ht =  dScale(d.Deaths12);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR"){
+		            		if(showDeathsOnly)
+			    				return parseInt(d.rY)-40-dScale(d.Deaths12);
+			    			else
+			    				return parseInt(d.rY)-40-yScale(d.Deaths12);
+			    		}
+			    		else{
+			    			if(showDeathsOnly)
+			    				return parseInt(d.rY)+60+dScale(d.Deaths12);
+			    			else
+			    				return parseInt(d.rY)+60+yScale(d.Deaths12);
+			    		}
+			    	}		    			
+	            })	
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+		    		{	
+		    			return d.Deaths12;
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+	            .attr("font-size", 12)
+	            .attr("fill", "darkred")
+	            .style("fill-opacity", "0.7")
+		    	;
+
+
+
+	    	g.selectAll("#bar13AText")
+				.data(data).enter();
+			   	g.selectAll("#bar13AText")
+		        .transition().duration(500)
+		    	.attr("x", function (d){return lx+parseInt(d.rX)+22+1;})
+				.attr("y", function (d) {
+					yScale.domain([0, d3.max(data, function(d) { return d.All13; })]);
+		    		var ht =  yScale(d.All13);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-40-yScale(d.All13);
+			    		else
+			    			return parseInt(d.rY)+60+yScale(d.All13);
+			    	}		    			
+	            })	
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+			    		{
+			    		if(d.All13==0){
+			    			if(!showDeathsOnly){
+			    				return "0";
+			    			}
+			    			else return "";
+			    		}
+			    		else{
+			    			if(!showDeathsOnly){
+			    				return d.All13;
+			    			}
+			    		}
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+	            .attr("font-size", 12)
+	            .attr("fill", "grey")
+	            .style("fill-opacity", "0.7")
+		    	;
+
+		    g.selectAll("#bar13DText")
+				.data(data).enter();
+			   	g.selectAll("#bar13DText")
+		        .transition().duration(500)
+		    	.attr("x", function (d){return lx+parseInt(d.rX)+22+1;})
+				.attr("y", function (d) {
+	    			dScale.domain([0, d3.max(data, function(d) { return d.Deaths13; })]);
+		    		var ht =  dScale(d.Deaths13);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR"){
+		            		if(showDeathsOnly)
+			    				return parseInt(d.rY)-40-dScale(d.Deaths13);
+			    			else
+			    				return parseInt(d.rY)-40-yScale(d.Deaths13);
+			    		}
+			    		else{
+			    			if(showDeathsOnly)
+			    				return parseInt(d.rY)+60+dScale(d.Deaths13);
+			    			else
+			    				return parseInt(d.rY)+60+yScale(d.Deaths13);
+			    		}
+			    	}		    			
+	            })	
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+		    		{	
+		    			return d.Deaths13;
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+	            .attr("font-size", 12)
+	            .attr("fill", "darkred")
+	            .style("fill-opacity", "0.7")
+		    	;
+
+
+			g.selectAll("#bar14AText")
+				.data(data).enter();
+			   	g.selectAll("#bar14AText")
+		        .transition().duration(500)
+		    	.attr("x", function (d){return lx+parseInt(d.rX)+44;})
+				.attr("y", function (d) {
+					yScale.domain([0, d3.max(data, function(d) { return d.All14; })]);
+		    		var ht =  yScale(d.All14);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR")
+			    			return parseInt(d.rY)-40-yScale(d.All14);
+			    		else
+			    			return parseInt(d.rY)+60+yScale(d.All14);
+			    	}		    			
+	            })	
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+			    		{
+			    		if(d.All14==0){
+			    			if(!showDeathsOnly){
+			    				return "0";
+			    			}
+			    			else return "";
+			    		}
+			    		else{
+			    			if(!showDeathsOnly){
+			    				return d.All14;
+			    			}
+			    		}
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+	            .attr("font-size", 12)
+	            .attr("fill", "grey")
+	            .style("fill-opacity", "0.7")
+		    	;
+
+		    g.selectAll("#bar14DText")
+				.data(data).enter();
+			   	g.selectAll("#bar14DText")
+		        .transition().duration(500)
+		    	.attr("x", function (d){return lx+parseInt(d.rX)+44+1;})
+				.attr("y", function (d) {
+	    			dScale.domain([0, d3.max(data, function(d) { return d.Deaths14; })]);
+		    		var ht =  dScale(d.Deaths14);
+					if(year=="2012to2014"){
+		            	if(d.Line=="CR"){
+		            		if(showDeathsOnly)
+			    				return parseInt(d.rY)-40-dScale(d.Deaths14);
+			    			else
+			    				return parseInt(d.rY)-40-yScale(d.Deaths14);
+			    		}
+			    		else{
+			    			if(showDeathsOnly)
+			    				return parseInt(d.rY)+60+dScale(d.Deaths14);
+			    			else
+			    				return parseInt(d.rY)+60+yScale(d.Deaths14);
+			    		}
+			    	}		    			
+	            })	
+		    	.text(function (d) {
+		    		if(year!="2012to2014"){
+		    			return "";
+		    		}
+		    		else
+		    		{	
+		    			return d.Deaths14;
+			    	}
+		    	})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "light")
+	            .attr("font-size", 12)
+	            .attr("fill", "darkred")
+	            .style("fill-opacity", "0.7")
+		    	;
+
+
+		    g.selectAll("#maleicon")
+				.data(data).enter();
+			   	g.selectAll("#maleicon")
+		        .transition().duration(500)
+	            .attr("xlink:href", "images/female.svg")
+                .attr("x", function(d){return lx+parseInt(d.rX)-20;})
+				.attr("y", function(d){
+					// return 100;
+					if(d.Line=="CR")
+		    			return parseInt(d.rY)-35-8;
+		    		else
+		    			return parseInt(d.rY)+45+8;
+		    	})
+		    	.attr("width",20)
+		    	.attr("height",20)
+		    	;
+
+             g.selectAll("#femaleicon")
+				.data(data).enter();
+			   	g.selectAll("#femaleicon")
+                .attr("id","femaleicon")
+                .attr("xlink:href", "images/female.svg")
+                .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+				.attr("y", function(d){
+					// return 100;
+					if(d.Line=="CR")
+		    			return parseInt(d.rY)-35-8;
+		    		else
+		    			return parseInt(d.rY)+45+8;
+		    	})
+		    	.attr("width",20)
+		    	.attr("height",20)
+                ;
+
+
+             g.selectAll("#dayicon")
+				.data(data).enter();
+			   	g.selectAll("#dayicon")
+                .attr("id","dayicon")
+                .attr("xlink:href", "images/female.svg")
+                .attr("x", function(d){return lx+parseInt(d.rX)-20;})
+				.attr("y", function(d){
+					if(d.Line=="CR")
+		    			return parseInt(d.rY)-35+10;
+		    		else
+		    			return parseInt(d.rY)+45-10;
+		    	})
+		    	.attr("width",20)
+		    	.attr("height",20)
+		    	;
+
+             g.selectAll("#nighticon")
+				.data(data).enter();
+			   	g.selectAll("#nighticon")
+                .attr("id","nighticon")
+                .attr("xlink:href", "images/female.svg")
+                .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+				.attr("y", function(d){if(d.Line=="CR")
+		    			return parseInt(d.rY)-35+10;
+		    		else
+		    			return parseInt(d.rY)+45-10;
+		    	})
+		    	.attr("width",20)
+		    	.attr("height",20);
+
+
+
+
+
 			});
-			// console.log("updated")
-			// for(i=0; i<whichPage; i++){
-			// 	console.log ("moved")
-			// 	moveRight();
-			// }
+			
+			
 		}
 
 		// update();
@@ -2185,22 +2868,15 @@ var gender=[50,150];
 <div id="popme" style="position: absolute; top:300px; left:200px; border:1px solid red; color: red; background-color: #100000; padding:5px; display: none;background-image: url(images/bg.jpg)" onClick="hidePopup()">
 <span id="stationName"></span></div>
 
-<div id="snippet" style="position: absolute; top:590px; left:400px; padding:5px; display: block; color: gold; font-weight:bold; font-size:25px">2014</div>
+<div id="snippet" style="position: absolute; top:408px; left:560px; padding:5px; display: block; color: gold; font-weight:bold; font-size:20px">2014</div>
 
-<div id="selyears" style="position: absolute; top:500px; left:90px; font-size:small">
-<!--  <select id="years" onchange="updateData('0')">
-	<option value="2014">2014</option>
-	<option value="2013">2013</option>
-	<option value="2012">2012</option>
-</select> -->
+<div id="selyears" style="position: absolute; top:415px; left:20px; font-size:small;">
 <a href="#" onclick="updateData('2014')">2014</a>
  | <a href="#" onclick="updateData('2013')">2013</a>
  | <a href="#" onclick="updateData('2012')">2012</a> 
- | <a href="#" onclick="updateData('All')">Compare all years</a><br/>
+ | <a href="#" onclick="updateData('All')">Compare all years</a>
  <input type="checkbox" id='deathsonly' onClick="showDeaths()">Show only deaths</input><br/>
- <span style="font-size:xx-small">(currently the Male/Female and Day/Night percentages are not updated for deaths)</span>
-
-</div>
+ </div>
 
 <div id="finalmenu" style="position: absolute; top:250px; left:900px; display: none">
  <a href="#">View full map</a>
@@ -2215,7 +2891,7 @@ var gender=[50,150];
 <a href="indexWeek.html?d=month&sd=day">home.html</a>
 </div>
 
-<div id="startskip" style="position: absolute; top:610px; left:80px; font-size:x-small">
+<div id="startskip" style="position: absolute; top:610px; left:80px; font-size:x-small;">
 	<a href="#" onclick="skipToStart()">back to start</a> | <a href="#" onclick="skip()">skip to end</a>
 </div>
 
@@ -2280,5 +2956,8 @@ var gender=[50,150];
 	    
 
 </script>
+
+
+
 </body>
 <html>
