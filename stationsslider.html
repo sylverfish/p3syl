@@ -12,13 +12,33 @@
 			padding-top:20px;
 		    font-family: "Open Sans";
 		    color: gray;
-		    background-color: #280000; 
+		    background-color: #400000; 
 		}
 
 		.cal-heatmap-container .q1
 		{
 			background-color: #200000;
 			fill: #200000
+		}
+
+		/* unvisited link */
+		a:link {
+		    color: #FFF;
+		}
+
+		/* visited link */
+		a:visited {
+		    color: #FFF;
+		}
+
+		/* mouse over link */
+		a:hover {
+		    color: #FFF;
+		}
+
+		/* selected link */
+		a:active {
+		    color: #FFF;
 		}
 
     </style>
@@ -28,10 +48,74 @@
 
      <script type="text/javascript" src="cal/cal-heatmap.js"></script>
 
+     <script>
+		
+     </script>
+
     
   </head>
-<body onkeydown="checkKey(event)" style="background-image: url(images/bg.jpg)">
+<body onkeydown="checkKey(event)" onClick="changeThePage(event)" style="background-image: url(images/bg.jpg);padding:0; margin:0" >
+	<!--style="background-image: url(images/bg.jpg)"-->
 	<script type="text/javascript">
+	function skip(){
+		var n = pages-page;
+		page=pages;
+		hideLogo();
+		Effect.Appear('snippet', {duration: 0.8} );
+		Effect.Appear('finalmenu');
+		Effect.DropOut('selyears');
+		l=l-speed*n;
+		x=l;
+		lx = lx-speed*n;
+		if(x<=-pages*speed*n) {x=-pages*speed*n; l=-pages*speed*n;}
+		cx=l;
+		if(cx<=-pages*speed*n) {x=-pages*speed*n; l=-pages*speed*n;}
+	    update();
+	}
+
+	function skipToStart(){
+		
+		var n = page;
+
+		page = 1;
+		Effect.Appear('snippet', {duration: 0.8} );
+		Effect.Appear('selyears');
+		Effect.DropOut('finalmenu');
+
+		if(x>=0) {
+	    		l=0;
+	    		lx=0;
+	    		cx=0;
+	    		showLogo();
+	    		Effect.Shake('chart',{duration:0.1, distance:5}); 
+	    		return;
+	    	}
+    	
+    	l=l+speed*n;
+		x=l;
+		lx = lx+speed*n;
+		cx=l;
+		// console.log("L:"+x);
+		if(x>=0) {
+    		l=0;
+    		lx=0;
+    		cx=0;
+    		showLogo();
+	    }
+		update();
+	}
+	function changeThePage(e){
+		var x = e.pageX;
+		var snippet = document.getElementById('snippet')
+			snippet.innerHTML = snippet.innerHTML+" "+x;
+		if(x<=clipWidth/8){
+			moveLeft();
+		}
+		if(x>=7*clipWidth/8){
+			moveRight();
+		};
+   	}
+
     function hideLogo(){
     	//document.getElementById("title").style.display = "none";
     	//document.getElementById("title").style.display = "none";
@@ -48,6 +132,8 @@
     function showLogo(){
     	//document.getElementById("title").style.display = "block";
     	Effect.Appear('title', { duration: 1.0 });
+    	// Effect.Appear('selyears')
+    	// document.getElementById("selyears").style.display = "block";
     	hidden = false;
     }
 
@@ -85,10 +171,7 @@ var gender=[50,150];
 	var cx=0;
 	var lx=0;
 
-	var xScale = d3.scale
-					.linear()
-					.domain([0,1600])
-					.range([0,200]);
+	
 
 	var prev=0;	
 	var cprev=0;	
@@ -96,11 +179,11 @@ var gender=[50,150];
 	var pad=20;	
 	var l=0;
 	var speed=1100;
-	var pages=7;
+	var pages=8;
 	var update;
 	var updatePie;
 
-	d3.csv(["data/StationsTrial.csv"], function(error, data){
+	d3.csv(["data/2014Trains.csv"], function(error, data){
 			 var svg = d3.select('#chart').append('svg')
 		    .attr('width', clipWidth)
 		    .attr('height', clipHeight);
@@ -135,23 +218,23 @@ var gender=[50,150];
 		        // .style("stroke-dasharray", ("3, 3"));  //function(d){return d.Deaths}
 		    ;
 
-		    svg
-		    .on("click", function(d){
-		    	console.log(";;;;;;;;;;;;;;;;;;;;")
-		    	var coordinates = [0, 0];
-					coordinates = d3.mouse(this);
-					var x = coordinates[0];
-					var snippet = document.getElementById('snippet')
-						snippet.innerHTML = snippet.innerHTML+" "+x;
-					if(x<=clipWidth/2){
-						Effect.Appear('snippet', {duration: 0.8} );
-						moveLeft();
-					}else{
-						Effect.Appear('snippet', {duration: 0.8} );
-						moveRight()
-					};
-		    });
+		   //  svg
+		   //  .on("click", function(d){
+		   //  	console.log(";;;;;;;;;;;;;;;;;;;;")
+		   //  	var coordinates = [0, 0];
+					// coordinates = d3.mouse(this);
+					// var x = coordinates[0];
+					// var snippet = document.getElementById('snippet')
+					// 	snippet.innerHTML = snippet.innerHTML+" "+x;
+					// if(x<=clipWidth/2){
+						
+					// 	moveLeft();
+					// }else{
+					// 	moveRight()
+					// };
+		   //  });
 
+			var popped = false;
 
 			var rects = g.selectAll("rect")
 			.data(data).enter();
@@ -159,25 +242,43 @@ var gender=[50,150];
 			rects
 		    .insert('rect') //rect
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
-		    	.attr("width","60")
-		    	.attr("height", "15")
+		    	.attr("id", "stationsrect")
+		    	.attr("width","100")
+		    	.attr("height", "20")
 		    	.attr("rx", 6)
     			.attr("ry", 6)
 		    	.attr("x", function(d){ return lx+parseInt(d.rX)-10})
-				.attr("y", function(d){return parseInt(d.rY)+2.5})
+				.attr("y", function(d){return parseInt(d.rY)})
 				.attr("fill", function(d){
-					if(d.Type=="Interchange") return "darkgreen";
-					if(d.Type=="Slow") return "darkblue";
-					if(d.Type=="Fast") return "darkred"
+					if(d.Type=="Interchange") return "#555500";
+					if(d.Type=="Slow") return "#2B4460";
+					if(d.Type=="Fast") return "#7D180D"
 				})
 				// .style("fill-opacity", "0.8")
+				.on("click", function(d){
+					if(!popped){
+						var popme = document.getElementById('popme');               	
+	                	var st = document.getElementById('stationName');
+	                	st.innerHTML = d.Station;
+	                	dataV = "jsons/"+d.Station+"All.json"
+
+						showCalendar();
+						Effect.Appear('popme', {duration: 1.0} );
+						popped = true;
+					}
+					else{
+						Effect.Fade('popme');
+						popped = false;						
+					}
+					// return false;
+				})
 				.on("mouseover", function(d){
                 	d3.select(this)
                 	.style("fill-opacity", "1");
                 	d3.select(this)
                 	.append("title")
                 	.text(d.Type + " Station");
-          			Effect.Appear('popme', {duration: 1.0} );
+          			// 
     	
                 	// document.getElementById('popme').style.display = "block";
                 	showCalendar();
@@ -229,24 +330,41 @@ var gender=[50,150];
                 	d3.select(this)
                 	.append("title")
                 	.text(d.All + " incidents, and "+d.Deaths +" deaths at "+d.Station);
+				})
+		    	.on("click", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "1");
+
+                	d3.select(this)
+                	.append("title")
+                	.text(d.All + " incidents, and "+d.Deaths +" deaths at "+d.Station);
 
                 	var coordinates = [0, 0];
 					coordinates = d3.mouse(this);
 					var x = coordinates[0];
 					var y = coordinates[1];
 					
-                	var popme = document.getElementById('popme');
-
-                	var st = document.getElementById('stationName');
-                	st.innerHTML = d.Station;
-                	dataV = "jsons/"+d.Station+"All.json"
-                	 console.log(dataV)
+                	
+                	
+                	if(!popped){
+                		var popme = document.getElementById('popme');               	
+	                	var st = document.getElementById('stationName');
+	                	st.innerHTML = d.Station;
+	                	dataV = "jsons/"+d.Station+"All.json"
+                		showCalendar();
+						Effect.Appear('popme', {duration: 1.0} );
+						popped = true;
+					}
+					else{
+						Effect.Fade('popme');
+						popped = false;
+					}
 
                 	// popme.style.display = "block";
                 	// console.log(x + " " + y)
                 	// popme.style = "position: absolute; top:"+(y+150)+"px; left:"+(x+30)+"px; border:1px solid red; color: red; padding:5px; display: none" ;
-                	showCalendar();
-                	Effect.Appear('popme', {duration: 1.0} );
+                	
+                	// Effect.Appear('popme', {duration: 1.0} );
 
                 	// popme.style=('position', 'absolute' );
 
@@ -299,11 +417,29 @@ var gender=[50,150];
                 	d3.select(this)
                 	.append("title")
                 	.text(d.All + " incidents, and "+d.Deaths +" deaths at "+d.Station);
+                })
+		    	.on("click", function(d){
+                	d3.select(this)
+                	.style("fill-opacity", "1");
+                	d3.select(this)
+                	.append("title")
+                	.text(d.All + " incidents, and "+d.Deaths +" deaths at "+d.Station);
+                	// document.getElementById('popme').style.display = "block";
+                	if(!popped){
+                		var popme = document.getElementById('popme');               	
+	                	var st = document.getElementById('stationName');
+	                	st.innerHTML = d.Station;
+	                	dataV = "jsons/"+d.Station+"All.json"
 
-                	
-			    	
-                	document.getElementById('popme').style.display = "block";
-                	showCalendar();
+                		showCalendar();
+						Effect.Appear('popme', {duration: 1.0} );
+						popped = true;
+					}
+					else{
+						Effect.Fade('popme');
+						popped = false;
+					}
+                	// showCalendar();
                 })
                 .on("mouseout", function(d){
                 	d3.select(this)
@@ -472,26 +608,30 @@ var gender=[50,150];
 				.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "stations")
 		    	.attr("x", function(d){return lx+parseInt(d.rX)})
-		    	.attr("y", function(d){return lx+parseInt(d.rY)+40})
+		    	.attr("y", function(d){return parseInt(d.rY)+15})
 		    	.text(function (d) {return d.Station;})
 		    	.attr("font-family", "sans-serif")
-                .attr("font-size", "12px")
-                .attr("fill", "white");
+                .attr("font-size", "11px")
+                .attr("fill", "white")
+                .style("fill-opacity", "0.7")
 		    	;
 
 		   	text
 				.insert('text')
 				.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "figures")
-		    	.attr("x", function(d){return lx+parseInt(d.rX)+30+d.All/2})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+60})
+		    	// .attr("x", function(d){return lx+parseInt(d.rX)+30+d.All/2})
 		    	.attr("y", function(d){return lx+parseInt(d.rY)-d.All/2-25})
+		    	.attr("y", function(d){return lx+parseInt(d.rY)-40})
 		    	.text(function (d) {return d.All;})
 		    	.attr("font-family", "Open Sans")
 		    	.attr("font-weight", "Bold")
                 .attr("font-size", function (d) {
-                	var size=Math.round(d.All/2);
-                	if(size<9) size=9;
-                	return size;
+                	return 35;
+                	// var size=Math.round(d.All/2);
+                	// if(size<9) size=9;
+                	// return size;
                 })
                 .attr("fill", "grey")
                 .style("fill-opacity", "0.7")
@@ -513,15 +653,18 @@ var gender=[50,150];
 				.insert('text')
 				.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "figuresdeaths")
-		    	.attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+30})
-		    	.attr("y", function(d){return lx+parseInt(d.rY)-25})
+		    	// .attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+30})
+		    	// .attr("y", function(d){return lx+parseInt(d.rY)-25})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+75})
+		    	.attr("y", function(d){return lx+parseInt(d.rY)-20})
 		    	.text(function (d) {return d.Deaths;})
 		    	.attr("font-family", "Open Sans")
 		    	.attr("font-weight", "Bold")
                 .attr("font-size", function (d) {
-                	var size=Math.round(d.All/3);
-                	if(size<9) size=9;
-                	return size;
+                	// var size=Math.round(d.All/3);
+                	// if(size<9) size=9;
+                	// return size;
+                	return 20;
                 })
                 .attr("fill", "darkred")
                 .style("fill-opacity", "0.7")
@@ -643,11 +786,13 @@ var gender=[50,150];
 
 			    g.selectAll("#figures")
 			        .transition().duration(500)
-			        .attr("x", function(d){return lx+parseInt(d.rX)+30+d.All/2})
+			        // .attr("x", function(d){return lx+parseInt(d.rX)+30+d.All/2})
+			        .attr("x", function(d){return lx+parseInt(d.rX)+60})
 
 			    g.selectAll("#figuresdeaths")
 			        .transition().duration(500)
-		    		.attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+30})
+		    		// .attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+30})
+		    		.attr("x", function(d){return lx+parseInt(d.rX)+75})
 
 			    // g.selectAll("circle")
 			    //     .transition().duration(500)
@@ -656,8 +801,218 @@ var gender=[50,150];
 			};		
 	});
 
+	function updateData(){
+		Effect.DropOut('finalmenu');
+		// Effect.DropOut('selyears');
+
+		d3.csv(["data/2013Trains.csv"], function(error, data){
+			svg = d3.select('#chart');
+			
+			x=0;
+			cx=0;
+			lx=0;
+			prev=0;	
+			cprev=0;	
+			l=0;
+
+
+			g = svg.select("g");
+
+			
+
+   		    g.selectAll("#l1")
+			.data(data).enter();
+			g.selectAll("#l1")
+				.transition().duration(500)
+	    	   	.attr("x1", function(d){return lx+parseInt(d.inx1)})
+		    	.attr("y1", function(d){return d.iny1})
+		    	.attr("x2", function(d){return lx+parseInt(d.inx2)})
+		    	.attr("y2", function(d){return d.iny2})
+		    	.attr("stroke",function(d){if(d.Line=="CR") return "lightblue"; else return "pink";})
+		    	.attr("fill", "none")
+		    	.attr("stroke-width", "6")
+		    	.attr("stroke-opacity","0.5")
+		    	.style("stroke-dasharray", ("2,4,2,4,2,4"));
+	
+
+			g.selectAll("#stationsrect")
+			.data(data).enter();
+			g.selectAll("#stationsrect")
+				.transition().duration(500)
+		    	.attr("width","100")
+		    	.attr("height", "20")
+		    	.attr("rx", 6)
+    			.attr("ry", 6)
+		    	.attr("x", function(d){ return lx+parseInt(d.rX)-10})
+				.attr("y", function(d){return parseInt(d.rY)})
+				.attr("fill", function(d){
+					if(d.Type=="Interchange") return "#555500";
+					if(d.Type=="Slow") return "#2B4460";
+					if(d.Type=="Fast") return "#7D180D"
+				})
+		    ;
+
+		    g.selectAll("#l2")
+			.data(data).enter();
+		    g.selectAll("#l2")
+		    	.attr("x1", function(d){return lx+parseInt(d.outx1)})
+		    	.attr("y1", function(d){return d.outy1})
+		    	.attr("x2", function(d){return lx+parseInt(d.outx2)})
+		    	.attr("y2", function(d){return d.outy2})
+		    	.attr("stroke",function(d){if(d.Line=="CR") return "lightblue"; else return "pink";})
+		    	.attr("fill", "none")
+		    	.attr("stroke-width", "6")
+		    	.attr("stroke-opacity","0.5")
+		    	.style("stroke-dasharray", ("2,4,2,4,2,4"))
+		    ;
+		    
+
+		    g.selectAll("#cAll")
+			.data(data).enter();
+			g.selectAll("#cAll")
+		        .transition().duration(500)
+		    	.attr("cx", function(d){return lx+parseInt(d.rX)+25})
+		    	.attr("cy", function(d){return lx+parseInt(d.rY)-d.All/2-25})
+		    	.attr("r", function(d){if(d.All==0) return 1; return d.All/2})
+		    	.attr("fill", "white")
+		    	.attr("fill-opacity","0.8")
+		    ;
+		    	
+		    g.selectAll("#cDeaths")
+			.data(data).enter();
+		    g.selectAll("#cDeaths")
+		        .transition().duration(500)
+		    	.attr("cx", function(d){return lx+parseInt(d.rX)+25})
+		    	.attr("cy", function(d){return lx+parseInt(d.rY)-d.Deaths/2-25})
+		    	.attr("r", function(d){if(d.All==0) return 1; return d.Deaths/2})
+		    	.attr("fill", "darkred")
+		    	.attr("fill-opacity","0.8")
+		    ;
+  	
+  			g.selectAll("#gender1")
+			.data(data).enter();
+			g.selectAll("#gender1")
+		        .transition().duration(500)
+		    	.attr("width", function(d){return d.Male/2})
+		    	.attr("height", 3 )
+		    	.attr("x", function(d){return lx+parseInt(d.rX);})
+				.attr("y", function(d){return parseInt(d.rY)+50})
+				.attr("fill", "blue")
+		    ;
+
+		    g.selectAll("#gender2")
+			.data(data).enter();
+		    g.selectAll("#gender2")
+		        .transition().duration(500)
+		    	.attr("width", function(d){return d.Female/2})
+		    	.attr("height", 3 )
+		    	.attr("x", function(d){return lx+parseInt(d.rX);})
+				.attr("y", function(d){return parseInt(d.rY)+55})
+				.attr("fill", "green")
+		    ;
+
+		    g.selectAll("#day")
+			.data(data).enter();
+		    g.selectAll("#day")
+		        .transition().duration(500)
+		    	.attr("width", function(d){return d.Day/2})
+		    	.attr("height", 3 )
+		    	.attr("x", function(d){return lx+parseInt(d.rX);})
+				.attr("y", function(d){return parseInt(d.rY)+63})
+				.attr("fill", "yellow")
+		    ;
+
+		    g.selectAll("#night")
+			.data(data).enter();
+		    g.selectAll("#night")
+		        .transition().duration(500)
+		    	.attr("width", function(d){return d.Night/2})
+		    	.attr("height", 3 )
+		    	.attr("x", function(d){return lx+parseInt(d.rX);})
+				.attr("y", function(d){return parseInt(d.rY)+68})
+				.attr("fill", "grey")
+		    ;
+
+		    g.selectAll("#stations")
+			.data(data).enter();
+			g.selectAll("#stations")
+		        .transition().duration(500)
+				.attr("class", "area").attr("clip-path", "url(#clip)")
+		    	.attr("id", "stations")
+		    	.attr("x", function(d){return lx+parseInt(d.rX)})
+		    	.attr("y", function(d){return parseInt(d.rY)+15})
+		    	.text(function (d) {return d.Station;})
+		    	.attr("font-family", "sans-serif")
+                .attr("font-size", "11px")
+                .attr("fill", "white");
+		    	;
+
+		    g.selectAll("#figures")
+			.data(data).enter();
+		   	g.selectAll("#figures")
+		        .transition().duration(500)
+		    	// .attr("x", function(d){return lx+parseInt(d.rX)+30+d.All/2})
+		    	// .attr("y", function(d){return lx+parseInt(d.rY)-d.All/2-25})
+		    	.attr("y", function(d){return lx+parseInt(d.rY)-d.All/2-25})
+		    	.attr("y", function(d){return lx+parseInt(d.rY)-40})
+		    	.text(function (d) {return d.All;})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "Bold")
+                .attr("font-size", function (d) {
+                	// var size=Math.round(d.All/2);
+                	// if(size<9) size=9;
+                	// return size;
+                	return 35;
+                })
+                .attr("fill", "grey")
+                .style("fill-opacity", "0.7")
+            ;
+
+            g.selectAll("#figuresdeaths")
+			.data(data).enter();
+		   	g.selectAll("#figuresdeaths")
+		        .transition().duration(500)
+		    	// .attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+30})
+		    	// .attr("y", function(d){return lx+parseInt(d.rY)-25})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+75})
+		    	.attr("y", function(d){return lx+parseInt(d.rY)-20})
+		    	.text(function (d) {return d.Deaths + " lives lost";})
+		    	.attr("font-family", "Open Sans")
+		    	.attr("font-weight", "Bold")
+                .attr("font-size", function (d) {
+                	// var size=Math.round(d.All/3);
+                	// if(size<9) size=9;
+                	// return size;
+                	return 20;
+                })
+                .attr("fill", "darkred")
+                .style("fill-opacity", "0.7")
+		    	;
+
+
+		});
+		console.log("updated")
+	}
+
+
+	var page=1;
 
 	function moveLeft(){
+		Effect.Appear('snippet', {duration: 0.8} );
+		
+		// Effect.Fade('popme');
+		// popped = false;	
+		
+		page = (page-1);
+		if(page<1) page=1;
+		console.log(page);
+		if(page==1){
+			console.log(page);
+			Effect.Appear('selyears');
+		}
+		if(page==pages-1)
+			Effect.DropOut('finalmenu');
+
 		if(x>=0) {
 	    		l=0;
 	    		lx=0;
@@ -666,23 +1021,42 @@ var gender=[50,150];
 	    		Effect.Shake('chart',{duration:0.1, distance:5}); 
 	    		return;
 	    	}
-	    	hideLogo();
-	    	l=l+speed;
-			x=l;
-			lx = lx+speed;
-			cx=l;
-			// console.log("L:"+x);
-			if(x>=0) {
-	    		l=0;
-	    		lx=0;
-	    		cx=0;
-	    		showLogo();
-		    }
-			update();
+    	hideLogo();
+    	l=l+speed;
+		x=l;
+		lx = lx+speed;
+		cx=l;
+		// console.log("L:"+x);
+		if(x>=0) {
+    		l=0;
+    		lx=0;
+    		cx=0;
+    		showLogo();
+	    }
+		update();
 	}
 
 	function moveRight(){
-			if(x<=-(pages-1)*speed) {Effect.Shake('chart',{duration:0.1, distance:5}); return;}
+			Effect.Appear('snippet', {duration: 0.8} );
+
+			// Effect.Fade('popme');
+			// popped = false;	
+
+			page = (page+1);
+			if(page>=pages)
+				page = pages;
+			if(page==pages)
+				Effect.Appear('finalmenu');
+			console.log(page);
+
+			if(page>1){
+				Effect.DropOut('selyears');
+			}
+
+			if(x<=-(pages-1)*speed) {
+				Effect.Shake('chart',{duration:0.1, distance:5}); 
+				
+				return;}
 
 	       	hideLogo();
 	       	l=l-speed;
@@ -770,6 +1144,28 @@ var gender=[50,150];
 <span id="stationName"></span></div>
 
 <div id="snippet" style="position: absolute; top:10px; left:450px; padding:5px; display: none; color: gold; font-weight:bold; font-size:25px">Some data snippet of interest to be shown here</div>
+
+<div id="selyears" style="position: absolute; top:450px; left:300px;">
+ <select name="years" onchange="updateData()">
+	<option value="2014">2014</option>
+	<option value="2013">2013</option>
+	<option value="2012">2012</option>
+</select>
+</div>
+
+<div id="finalmenu" style="position: absolute; top:250px; left:900px; display: none">
+ <a href="#">View full map</a>
+ <br/><br/>
+ Take a journey again for year <select name="years" onchange="updateData()">
+	<option value="2014">2014</option>
+	<option value="2013">2013</option>
+	<option value="2012">2012</option>
+</select>
+</div>
+
+<div id="startskip" style="position: absolute; top:610px; left:80px; font-size:x-small">
+<a href="#" onclick="skipToStart()">back to start</a> | <a href="#" onclick="skip()">skip to end</a>
+</div>
 
 
 <script>
