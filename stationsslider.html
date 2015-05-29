@@ -66,8 +66,7 @@
 		</svg>	
 		<span style="font-size: x-small; color: pink" >(Press arrow keys LEFT and RIGHT)</style>
 	</div>
-	<div id="chart" ></div>
-	<div id="popme" style="display:none"></div>
+	<div id="chart"  ></div>
 	<!--<div><span id="left">Left</span> | <span id="right">Right</span></div>-->
 
 
@@ -132,6 +131,24 @@ var gender=[50,150];
 		        // .style("stroke-dasharray", ("3, 3"));  //function(d){return d.Deaths}
 		    ;
 
+		    svg
+		    .on("click", function(d){
+		    	console.log(";;;;;;;;;;;;;;;;;;;;")
+		    	var coordinates = [0, 0];
+					coordinates = d3.mouse(this);
+					var x = coordinates[0];
+					var snippet = document.getElementById('snippet')
+						snippet.innerHTML = snippet.innerHTML+" "+x;
+					if(x<=clipWidth/2){
+						Effect.Appear('snippet', {duration: 0.8} );
+						moveLeft();
+					}else{
+						Effect.Appear('snippet', {duration: 0.8} );
+						moveRight()
+					};
+		    });
+
+
 			var rects = g.selectAll("rect")
 			.data(data).enter();
 			
@@ -153,10 +170,10 @@ var gender=[50,150];
                 	d3.select(this)
                 	.append("title")
                 	.text(d.Type + " Station");
-
-                	
-			    	
-                	document.getElementById('popme').style.display = "block";
+          			Effect.Appear('popme', {duration: 1.0} );
+    	
+                	// document.getElementById('popme').style.display = "block";
+                	showCalendar();
                 })
                 .on("mouseout", function(d){
                 	d3.select(this)
@@ -214,8 +231,10 @@ var gender=[50,150];
                 	var popme = document.getElementById('popme');
                 	// popme.style.display = "block";
                 	// console.log(x + " " + y)
-                	popme.style = "position: absolute; top:"+(y+150)+"px; left:"+(x+30)+"px; border:1px solid red; color: red; padding:5px; display: none" ;
+                	// popme.style = "position: absolute; top:"+(y+150)+"px; left:"+(x+30)+"px; border:1px solid red; color: red; padding:5px; display: none" ;
+                	showCalendar();
                 	Effect.Appear('popme', {duration: 1.0} );
+
                 	// popme.style=('position', 'absolute' );
 
                 	//http://stackoverflow.com/questions/16770763/mouse-position-in-d3
@@ -271,6 +290,7 @@ var gender=[50,150];
                 	
 			    	
                 	document.getElementById('popme').style.display = "block";
+                	showCalendar();
                 })
                 .on("mouseout", function(d){
                 	d3.select(this)
@@ -624,19 +644,8 @@ var gender=[50,150];
 	});
 
 
-
-	var checkKey = function(e){
-		// console.log(e);
-	    if (e.keyCode == '38') {
-	        // up arrow
-	    }
-	    else if (e.keyCode == '40') {
-	        // down arrow
-	    }
-	    else if (e.keyCode == '37') {
-	    	// left arrow
-	    	// console.log("L:"+x)
-	    	if(x>=0) {
+	function moveLeft(){
+		if(x>=0) {
 	    		l=0;
 	    		lx=0;
 	    		cx=0;
@@ -657,12 +666,10 @@ var gender=[50,150];
 	    		showLogo();
 		    }
 			update();
+	}
 
-	    }
-	    else if (e.keyCode == '39') {
-	       	// right arrow
-	       	// console.log("R:"+x)
-	       	if(x<=-(pages-1)*speed) {Effect.Shake('chart',{duration:0.1, distance:5}); return;}
+	function moveRight(){
+			if(x<=-(pages-1)*speed) {Effect.Shake('chart',{duration:0.1, distance:5}); return;}
 
 	       	hideLogo();
 	       	l=l-speed;
@@ -676,6 +683,25 @@ var gender=[50,150];
 
 			// console.log("R:"+x)
 		    update();
+	}
+
+	var checkKey = function(e){
+		// console.log(e);
+	    if (e.keyCode == '38') {
+	        // up arrow
+	    }
+	    else if (e.keyCode == '40') {
+	        // down arrow
+	    }
+	    else if (e.keyCode == '37') {
+	    	// left arrow
+	    	// console.log("L:"+x)
+	    	moveLeft()
+	    }
+	    else if (e.keyCode == '39') {
+	       	// right arrow
+	       	// console.log("R:"+x)
+	       moveRight();
 	    }
 
 
@@ -726,7 +752,12 @@ var gender=[50,150];
 	</script>
 
 
-<div id="chart2"></div>
+<div id="chart2" style="display:none"></div>
+<div id="popme" style="position: absolute; top:300px; left:200px; border:1px solid red; color: red; background-color: #100000; padding:5px; display: none;background-image: url(images/bg.jpg)"></div>
+
+<div id="snippet" style="position: absolute; top:10px; left:450px; padding:5px; display: none; color: gold; font-weight:bold; font-size:25px">Some data snippet of interest to be shown here</div>
+
+
 <script>
 	var calendar = new CalHeatMap();
 	var itemNameV = "incident";
@@ -746,13 +777,15 @@ var gender=[50,150];
 	var legendOrientationV = "vertical";
 	var cellSizeV = 9;
 	var dataV = "jsons/ThaneAll.json";
-
-	calendar.init({
+	var inited=false;
+	function showCalendar(){
+		if(!inited){
+			calendar.init({
 			itemSelector: "#popme",
 			itemName: itemNameV,
 			verticalOrientation: verticalOrientationV,
 	    	data: dataV,
-	    	start: new Date(2012, 0),
+	    	start: new Date(2014, 0),
 	    	domain: domainV,
 			domainLabelFormat: domainLabelFormatV,
 			domainDynamicDimension: domainDynamicDimensionV,
@@ -776,6 +809,10 @@ var gender=[50,150];
 			// 	empty: "green"
 			// }
 			});
+			inited=true;
+		}
+	
+	}
 	    
 
 </script>
