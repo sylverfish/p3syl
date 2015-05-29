@@ -66,7 +66,7 @@
 		hideLogo();
 		Effect.Appear('snippet', {duration: 0.8} );
 		Effect.Appear('finalmenu');
-		Effect.DropOut('selyears');
+		// Effect.DropOut('selyears');
 		l=l-speed*n;
 		x=l;
 		lx = lx-speed*n;
@@ -76,13 +76,20 @@
 	    update();
 	}
 
+	var showDeathsOnly=false;
+	function showDeaths(){
+		showDeathsOnly = !showDeathsOnly;
+		console.log("showDeaths"+ showDeathsOnly)
+		updateData('3');
+	}
+
 	function skipToStart(){
 		
 		var n = page;
 
 		page = 1;
 		Effect.Appear('snippet', {duration: 0.8} );
-		Effect.Appear('selyears');
+		// Effect.Appear('selyears');
 		Effect.DropOut('finalmenu');
 
 		if(x>=0) {
@@ -167,7 +174,13 @@
 
 	<script>
 var gender=[50,150];
-	var clipWidth = 1200;
+
+	var clipWidth = window.innerWidth
+	|| document.documentElement.clientWidth
+	|| document.body.clientWidth;
+	clipWidth = clipWidth-20;
+	console.log(clipWidth);
+	// var clipWidth = 1200;
 	var clipHeight = 800;
 	width = 100;
 	var x=0;
@@ -341,9 +354,14 @@ var gender=[50,150];
 		    		if(d.Line == "CR")
 		    			return parseInt(d.rY)-parseInt(d.All)/2-40-10;
 		    		else
-		    			return parseInt(d.rY)+parseInt(d.All)/2+40+20;
+		    			return parseInt(d.rY)+parseInt(d.All)/2+40+30;
 		    	})
-		    	.attr("r", function(d){if(parseInt(d.All)==0) return 1; return parseInt(d.All)/2})
+		    	.attr("r", function(d){
+		    		if(showDeathsOnly){
+		    			return 0;
+		    		}
+		    		if(parseInt(d.All)==0) return 1; return parseInt(d.All)/2}
+		    	)
 		    	.attr("fill", "#FFCC00")
 		    	.attr("fill-opacity","0.6")
 		    	.on("mouseover", function(d){
@@ -430,12 +448,35 @@ var gender=[50,150];
 				.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "cDeaths")
 		    	.attr("cx", function(d){return lx+parseInt(d.rX)+40})
-		    	.attr("cy", function(d){if(d.Line == "CR")
-		    			return parseInt(d.rY)-d.Deaths/2-40-10;
-		    		else
-		    			return parseInt(d.rY)+d.Deaths/2+40+20;
+		    	.attr("cy", function(d){
+	    			if(!showDeathsOnly){
+		    			console.log(d.Line)
+			    		if(d.Line == "CR"){
+			    			yy = parseInt(d.rY)-d.Deaths/2-40-10
+			    			return yy;
+			    		}
+			    		if(d.Line == "WR"){
+			    			yy = parseInt(d.rY)+d.Deaths/2+40+30;
+			    			console.log("WR----"+yy)
+			    			return yy;
+			    		}
+		    		}
+		    		else{
+		    				if(d.Line == "CR")
+			    			return parseInt(d.rY)-(d.Deaths*2)-40-10;
+			    		else
+			    			return parseInt(d.rY)+(d.Deaths*2)+40+30;
+		    			
+		    		}
 		    	})
-		    	.attr("r", function(d){if(d.All==0) return 1; return d.Deaths/2})
+		    	.attr("r", function(d){
+		    	if(d.All==0) 
+		    			return 1; 
+		    		if(showDeathsOnly){
+		    			return d.Deaths*2;
+		    		}
+		    		return d.Deaths/2;
+		    	})
 		    	.attr("fill", "darkred")
 		    	.attr("fill-opacity","0.8")
 		    	.on("mouseover", function(d){
@@ -521,7 +562,7 @@ var gender=[50,150];
                 	if(d.Line=="CR")
 		    			return parseInt(d.rY)-35;
 		    		else
-		    			return parseInt(d.rY)+35		    			
+		    			return parseInt(d.rY)+45		    			
                 })
 				.attr("fill", "#31A2FD")
 				.on("mouseover", function(d){
@@ -566,7 +607,7 @@ var gender=[50,150];
 					if(d.Line=="CR")
 		    			return parseInt(d.rY)-35;
 		    		else
-		    			return parseInt(d.rY)+35
+		    			return parseInt(d.rY)+45
 		    	})
 				.attr("fill", "#491B65")
 				.on("mouseover", function(d){
@@ -647,7 +688,7 @@ var gender=[50,150];
 					if(d.Line=="CR")
 		    			return parseInt(d.rY)-20;
 		    		else
-		    			return parseInt(d.rY)+20;
+		    			return parseInt(d.rY)+30;
 		    	})
 				.attr("fill", "#CC9900")
 				.on("mouseover", function(d){
@@ -688,7 +729,7 @@ var gender=[50,150];
 					if(d.Line=="CR")
 		    			return parseInt(d.rY)-20;
 		    		else
-		    			return parseInt(d.rY)+20;
+		    			return parseInt(d.rY)+30;
 		    	})
 				.attr("fill", "#AEAEAE")
 				.on("mouseover", function(d){
@@ -732,13 +773,20 @@ var gender=[50,150];
 		    		if(d.Line=="CR")
 		    			return parseInt(d.rY)-75;
 	    			else
-		    			return parseInt(d.rY)+105;
+		    			return parseInt(d.rY)+115;
 		    	})
 		    	.text(function (d) {
-		    		if(d.All==0)
-		    			return "No incidents"
-		    		else
-		    			return d.All;
+		    		if(d.All==0){
+		    			if(!showDeathsOnly){
+		    				return "No incidents";
+		    			}
+		    			else return "";
+		    		}
+		    		else{
+		    			if(!showDeathsOnly){
+		    				return d.All;
+		    			}
+		    		}
 		    	})
 		    	.attr("font-family", "Open Sans")
 		    	.attr("font-weight", function (d) {
@@ -786,23 +834,47 @@ var gender=[50,150];
 		    		if(d.Line=="CR")
 		    			return parseInt(d.rY)-55;
 	    			else
-		    			return parseInt(d.rY)+75;
+		    			return parseInt(d.rY)+85;
 		    	})
 		    	.text(function (d) {
-		    		if(d.All==0) 
-		    			return "";
-		    		else 
-		    			return d.Deaths;
+		    		if(!showDeathsOnly){
+		    			if(d.Deaths==0){
+		    				return "";
+			    		}
+			    		else 
+			    			return d.Deaths;
+		    		}
+		    		else{
+		    			if(d.Deaths==0){
+		    				return "No fatalities";
+			    		}
+			    		else 
+			    			return d.Deaths;
+		    		}
 		    	})
 		    	.attr("font-family", "Open Sans")
-		    	.attr("font-weight", "light")
+		    	.attr("font-weight", function(d){
+		    		if(!showDeathsOnly){
+		    			return "light";
+		    		}
+		    		else{
+		    			if(d.Deaths==0)
+		    				return "light";
+		    			else
+		    				return "bold";
+		    		}
+		    	})
                 .attr("font-size", function (d) {
-                	// var size=Math.round(d.All/3);
-                	// if(size<9) size=9;
-                	// return size;
-                	return 16;
+                	if(!showDeathsOnly){
+	            		return 16;
+	            	}
+	            	else{
+	            		if(d.Deaths==0)
+	            			return 16;
+	            		return 25;
+	            	}
                 })
-                .attr("fill", "grey")
+                .attr("fill", "darkred")
                 .style("fill-opacity", "0.7")
                 .on("mouseover", function(d){
                 	d3.select(this)
@@ -946,7 +1018,7 @@ var gender=[50,150];
 			    g.selectAll("#figuresdeaths")
 			        .transition().duration(500)
 		    		// .attr("x", function(d){return lx+parseInt(d.rX)+d.All/2+30})
-		    		.attr("x", function(d){return lx+parseInt(d.rX)+70})
+		    		.attr("x", function(d){return lx+parseInt(d.rX)+70;})
 
 			    // g.selectAll("circle")
 			    //     .transition().duration(500)
@@ -968,9 +1040,14 @@ var gender=[50,150];
 			year=document.getElementById('years');
 			d1=year[year.selectedIndex].value;
 		}
+		else
 		if(n==1){
 			year=document.getElementById('years2');
 			d1=year[year.selectedIndex].value;
+		}
+		else
+		if(n==3){
+			d1=year;
 		}
 		else{
 			d1 = n;
@@ -1089,13 +1166,16 @@ var gender=[50,150];
 		    		if(d.Line == "CR")
 		    			return parseInt(d.rY)-d.All/2-40-10;
 		    		else
-		    			return parseInt(d.rY)+d.All/2+40+20;
+		    			return parseInt(d.rY)+d.All/2+40+30;
 		    	})	
 		    	// .attr("r", function(d){
 		    	// 	if(d.All==0) return 1; 
 		    	// 	return d.All/2;
 		    	// })
 		    	.attr("r", function(d){
+		    		if(showDeathsOnly){
+		    			return 0;
+		    		}
 		    		if(d.All==0) 
 		    			return 1; 
 		    		else
@@ -1116,12 +1196,36 @@ var gender=[50,150];
 		    	.attr("cx", function(d){return lx+parseInt(d.rX)+40})
 		    	
 		    	.attr("cy", function(d){
-		    		if(d.Line == "CR")
-		    			return parseInt(d.rY)-d.Deaths/2-40-10;
+		    		if(!showDeathsOnly){
+		    			if(d.Line == "CR"){
+			    			yy = parseInt(d.rY)-d.Deaths/2-40-10
+			    			console.log(yy)
+			    			return yy;
+			    		}
+			    		else{
+			    			yy = parseInt(d.rY)+d.Deaths/2+40+30;
+			    			console.log("w: "+yy)
+			    			return yy;
+			    		}
+		    		}
 		    		else
-		    			return parseInt(d.rY)+d.Deaths/2+40+20;
+		    		{
+			    		if(d.Line == "CR"){
+			    			return parseInt(d.rY)-(d.Deaths*2)-40-10;
+			    		}
+			    		else{
+			    			return parseInt(d.rY)+(d.Deaths*2)+40+30;
+			    		}
+		    		}
 		    	})
-		    	.attr("r", function(d){if(d.All==0) return 1; return d.Deaths/2})
+		    	.attr("r", function(d){
+		    		if(d.All==0) 
+		    			return 1; 
+		    		if(showDeathsOnly){
+		    			return d.Deaths*2;
+		    		}
+		    		return d.Deaths/2;
+		    	})
 		    	.attr("fill", "darkred")
 		    	.attr("fill-opacity","0.8")
 		    ;
@@ -1145,7 +1249,7 @@ var gender=[50,150];
 				.attr("y", function(d){if(d.Line=="CR")
 		    			return parseInt(d.rY)-35;
 		    		else
-		    			return parseInt(d.rY)+35;
+		    			return parseInt(d.rY)+45;
 		    	})
 				.attr("fill", "#31A2FD")
 		    ;
@@ -1178,7 +1282,7 @@ var gender=[50,150];
 				.attr("y", function(d){if(d.Line=="CR")
 		    			return parseInt(d.rY)-35;
 		    		else
-		    			return parseInt(d.rY)+35;
+		    			return parseInt(d.rY)+45;
 		    	})
 				.attr("fill", "#491B65")
 		    ;
@@ -1203,7 +1307,7 @@ var gender=[50,150];
 				.attr("y", function(d){if(d.Line=="CR")
 		    			return parseInt(d.rY)-20;
 		    		else
-		    			return parseInt(d.rY)+20;
+		    			return parseInt(d.rY)+30;
 		    	})
 				.attr("fill", "#CC9900")
 		    ;
@@ -1236,7 +1340,7 @@ var gender=[50,150];
 				.attr("y", function(d){if(d.Line=="CR")
 		    			return parseInt(d.rY)-20;
 		    		else
-		    			return parseInt(d.rY)+20;
+		    			return parseInt(d.rY)+30;
 		    	})
 				.attr("fill", "#AEAEAE")
 		    ;
@@ -1267,13 +1371,20 @@ var gender=[50,150];
 		    		if(d.Line=="CR")
 		    			return parseInt(d.rY)-75;
 	    			else
-		    			return parseInt(d.rY)+105;
+		    			return parseInt(d.rY)+115;
 		    	})
 		    	.text(function (d) {
-		    		if(d.All==0)
-		    			return "No incidents"
-		    		else
-		    			return d.All;
+		    		if(d.All==0){
+		    			if(!showDeathsOnly){
+		    				return "No incidents";
+		    			}
+		    			else return "";
+		    		}
+		    		else{
+		    			if(!showDeathsOnly){
+		    				return d.All;
+		    			}
+		    		}
 		    	})
 		    	.attr("font-family", "Open Sans")
 		    	.attr("font-weight", "Bold")
@@ -1298,23 +1409,48 @@ var gender=[50,150];
 		    		if(d.Line=="CR")
 		    			return parseInt(d.rY)-55;
 	    			else
-		    			return parseInt(d.rY)+75;
+		    			return parseInt(d.rY)+85;
 		    	})
 		    	.text(function (d) {
-		    		if(d.Deaths==0) 
-		    			return "";
-		    		else 
-		    			return d.Deaths;
+		    		if(!showDeathsOnly){
+		    			if(d.Deaths==0){
+		    				return "";
+			    		}
+			    		else 
+			    			return d.Deaths;
+		    		}
+		    		else{
+		    			if(d.Deaths==0){
+		    				return "No fatalities";
+			    		}
+			    		else 
+			    			return d.Deaths;
+		    		}
+		    		
 		    	})
 		    	.attr("font-family", "Open Sans")
-		    	.attr("font-weight", "light")
+		    	.attr("font-weight", function (d) {
+		    		if(!showDeathsOnly){
+		    			return "light";
+		    		}
+		    		else{
+		    			if(d.Deaths==0)
+		    				return "light";
+		    			else
+		    				return "bold";
+		    		}
+		    	})
 	            .attr("font-size", function (d) {
-	            	// var size=Math.round(d.All/3);
-	            	// if(size<9) size=9;
-	            	// return size;
-	            	return 16;
+	            	if(!showDeathsOnly){
+	            		return 16;
+	            	}
+	            	else{
+	            		if(d.Deaths==0)
+	            			return 12;
+	            		return 25;
+	            	}
 	            })
-	            .attr("fill", "grey")
+	            .attr("fill", "darkred")
 	            .style("fill-opacity", "0.7")
 		    	;
 
@@ -1344,7 +1480,7 @@ var gender=[50,150];
 		console.log(page);
 		if(page==1){
 			console.log(page);
-			Effect.Appear('selyears');
+			// Effect.Appear('selyears');
 		}
 		if(page==pages-1)
 			Effect.DropOut('finalmenu');
@@ -1386,7 +1522,7 @@ var gender=[50,150];
 			console.log(page);
 
 			if(page>1){
-				Effect.DropOut('selyears');
+				// Effect.DropOut('selyears');
 			}
 
 			if(x<=-(pages-1)*speed) {
@@ -1481,12 +1617,18 @@ var gender=[50,150];
 
 <div id="snippet" style="position: absolute; top:590px; left:400px; padding:5px; display: block; color: gold; font-weight:bold; font-size:25px">2014</div>
 
-<div id="selyears" style="position: absolute; top:450px; left:300px;">
- <select id="years" onchange="updateData('0')">
+<div id="selyears" style="position: absolute; top:500px; left:90px; font-size:small">
+<!--  <select id="years" onchange="updateData('0')">
 	<option value="2014">2014</option>
 	<option value="2013">2013</option>
 	<option value="2012">2012</option>
-</select>
+</select> -->
+<a href="#" onclick="updateData('2014')">2014</a>
+ | <a href="#" onclick="updateData('2013')">2013</a>
+ | <a href="#" onclick="updateData('2012')">2012</a> <br/>
+ <input type="checkbox" id='deathsonly' onClick="showDeaths()">Show only deaths</input><br/>
+ <span style="font-size:xx-small">(currently the Male/Female and Day/Night percentages are not updated for deaths)</span>
+
 </div>
 
 <div id="finalmenu" style="position: absolute; top:250px; left:900px; display: none">
@@ -1504,10 +1646,6 @@ var gender=[50,150];
 
 <div id="startskip" style="position: absolute; top:610px; left:80px; font-size:x-small">
 	<a href="#" onclick="skipToStart()">back to start</a> | <a href="#" onclick="skip()">skip to end</a>
- ||| <a href="#" onclick="updateData('2014')">2014</a>
- | <a href="#" onclick="updateData('2013')">2013</a>
- | <a href="#" onclick="updateData('2012')">2012</a>
-
 </div>
 
 
