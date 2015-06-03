@@ -4,15 +4,20 @@
     <meta charset="utf-8">      
     <title>Stations - D3</title>
 
-    <script type="text/javascript" src="d3/d3.js"></script>
+    
+    
+
+	<script type="text/javascript" src="d3/d3.js"></script>
    	<link type="text/css" rel="stylesheet" href="cal/cal-heatmap.css"/>
    	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
    	<link href='http://fonts.googleapis.com/css?family=Playfair+Display' rel='stylesheet' type='text/css'>
+   	<link href='http://fonts.googleapis.com/css?family=Lora' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="mystyle.css">
     <style type="text/css">
 	    body{
 			padding-top:20px;
 		    font-family: 'Open Sans', sans-serif;
+		    font-size: 12px;
 		    color: gray;
 		    /*background-color: #400000; 
 */		    background-color: #FFF; 		    
@@ -20,8 +25,8 @@
 
 		.cal-heatmap-container .q1
 		{
-			background-color: #200000;
-			fill: #200000
+			background-color: #ddd;
+			fill: #eee
 		}
 
 		/* unvisited link */
@@ -51,9 +56,9 @@
 
      <script type="text/javascript" src="cal/cal-heatmap.js"></script>
 
-     <script>
+     
+
 		
-     </script>
 
     
   </head>
@@ -127,10 +132,10 @@
 	function changeThePage(e){
 		var x = e.pageX;
 		
-		if(x<=clipWidth/8){
+		if(x<=clipWidth/10){
 			moveLeft();
 		}
-		if(x>=7*clipWidth/8){
+		if(x>=7*clipWidth/10){
 			moveRight();
 		};
    	}
@@ -157,18 +162,19 @@
     }
 
     function hidePopup(){
-    	Effect.Fade('popme',{ duration: 1.0, from: 1, to: 0 });
+    	Effect.Fade('popme',{ duration: 0.2, from: 1, to: 0 });
+    	popped = false;		
     }
     
     </script>
 
 
 	<div id="title" style="position: absolute; top:10px; left:20px;">
-		<svg width="300" height="325">
+		<svg width="320" height="325">
 			<circle cx="150" cy="80" r="55" stroke="blue" stroke-width="27" fill="white"/>
   			 <rect width="160" height="40" x="70" y="60" style="fill:rgb(255,0,0)" />
   			 <text x="103" y="85" fill="white" >Destinations</text>
-  			 <text x="32" y="170" fill="grey" style="font-family: 'Playfair Display', serif; font-size: x-small">
+  			 <text x="32" y="170" fill="grey" style="font-family: 'Lora', serif; font-size: 12px">
   								  A visual representation of the tragic situation of 
 		    <tspan x="20" y="190">accidents on the Mumbai Suburban Railway Network.</tspan>
 		    <tspan x="31" y="210">(Thane to CST Mumbai, Andheri to Churchgate)</tspan>		    
@@ -188,10 +194,10 @@ var gender=[50,150];
 	var clipWidth = window.innerWidth
 	|| document.documentElement.clientWidth
 	|| document.body.clientWidth;
-	clipWidth = clipWidth-20;
+	clipWidth = clipWidth;
 	console.log(clipWidth);
 	// var clipWidth = 1200;
-	var clipHeight = 800;
+	var clipHeight = 650;
 	width = 100;
 	var x=0;
 	var cx=0;
@@ -290,23 +296,20 @@ var gender=[50,150];
 					if(d.Type=="Slow") return "#99A6B0";
 					if(d.Type=="Fast") return "#BC5C3D";
 				})
-				// .style("fill-opacity", "0.8")
 				.on("click", function(d){
 					if(!popped){
 						var popme = document.getElementById('popme');               	
 	                	var st = document.getElementById('stationName');
 	                	st.innerHTML = d.Station;
 	                	dataV = "jsons/"+d.Station+"All.json"
-
 						showCalendar();
 						Effect.Appear('popme', {duration: 1.0} );
 						popped = true;
 					}
 					else{
 						Effect.Fade('popme');
-						popped = false;						
+						popped = false;					
 					}
-					// return false;
 				})
 				.on("mouseover", function(d){
                 	d3.select(this)
@@ -314,17 +317,9 @@ var gender=[50,150];
                 	d3.select(this)
                 	.append("title")
                 	.text(d.Type + " Station");
-          			// 
-    	
-                	// document.getElementById('popme').style.display = "block";
-                	showCalendar();
                 })
                 .on("mouseout", function(d){
                 	d3.select(this)
-                	// .style("fill-opacity", "0.8");
-
-                	// document.getElementById('popme').style.display = "none";
-
                 })
 		    ;
 
@@ -418,34 +413,12 @@ var gender=[50,150];
 						popped = false;
 					}
 
-                	// popme.style.display = "block";
-                	// console.log(x + " " + y)
-                	// popme.style = "position: absolute; top:"+(y+150)+"px; left:"+(x+30)+"px; border:1px solid red; color: red; padding:5px; display: none" ;
-                	
-                	// Effect.Appear('popme', {duration: 1.0} );
-
-                	// popme.style=('position', 'absolute' );
 
                 	//http://stackoverflow.com/questions/16770763/mouse-position-in-d3
                 	//http://stackoverflow.com/questions/14825864/jquery-show-a-hidden-div-at-mouse-position-when-a-link-is-clicked
 
                 	gender= [d.Male, d.Female];
                 	updatePie();
-     //            	console.log(gender[0], gender[1])
-     //            	var color = d3.scale.category10();
-					// var arc = d3.svg.arc()
-					//     .innerRadius(200)
-					//     .outerRadius(240)
-					//     .cornerRadius(20);
-					// var pie = d3.layout.pie()
-					//     .padAngle(.02);
-
-				 //    var pies = g.selectAll("path")
-					// .data(gender).enter();
-
-					// pies.insert("path")
-					//     .style("fill", function(d, i) { return color(i); })
-					//     .attr("d", arc);
 
 		    	
                 })
@@ -453,8 +426,6 @@ var gender=[50,150];
                 	d3.select(this)
                 	.style("fill-opacity", "0.6");
 
-                	// document.getElementById('popme').style.display = "none";
-                	// Effect.Fade('popme', {duration: 5.0, from: 1, to: 0} );
 
                 })
 		    	;	
@@ -795,24 +766,6 @@ var gender=[50,150];
 
 			
 
-		 //   	var arc = d3.svg.arc()
-			//     .innerRadius(radius - 40)
-			//     .outerRadius(radius)
-			//     .cornerRadius(20);
-
-			// var pie = d3.layout.pie()
-			//     .padAngle(.02);
-
-			// var color = d3.scale.category10();
-
-
-			// var pies = g.selectAll("path")
-			// .data(pie(data)).enter();
-
-			// pies
-			// .insert("path")
-			// .style("fill", function(d, i) { return color(i); })
-   //  		.attr("d", arc);
 
 	   	
 			rects
@@ -858,79 +811,89 @@ var gender=[50,150];
 		    var imgs = g.selectAll("img")
 			.data(data).enter();
 
-			// imgs.insert("svg:image")
-   //              .attr("id","maleicontest")
-   //              .attr("xlink:href", "images/female.svg")
-   //              .attr("x",  function(d){return lx+parseInt(d.rX)-20;})
-			// 	.attr("y", function(d){
-			// 		// return 100;
-			// 		if(d.Line=="CR")
-		 //    			return parseInt(d.rY)-35;
-		 //    		else
-		 //    			return parseInt(d.rY)+45;
-		 //    	})
-		 //    	.attr("width",20)
-		 //    	.attr("height",20)
-		 //    	;
 
             imgs.insert("svg:image")
                 .attr("id","maleicon")
-                .attr("xlink:href", "images/female.svg")
+                .attr("xlink:href", "images/male.svg")
                 .attr("x", function(d){return lx+parseInt(d.rX)-20;})
 				.attr("y", function(d){
 					// return 100;
 					if(d.Line=="CR")
 		    			return parseInt(d.rY)-35-8;
 		    		else
-		    			return parseInt(d.rY)+45+8;
+		    			return parseInt(d.rY)+35+8;
 		    	})
-		    	.attr("width",20)
-		    	.attr("height",20)
+		    	.attr("width", function(d){
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) 
+		    			{console.log("0000"); return 0;}
+		    		return 15;
+		    	})
+		    	.attr("height",function(d){
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		return 15;
+		    	})
 		    	;
 
             imgs.insert("svg:image")
                 .attr("id","femaleicon")
                 .attr("xlink:href", "images/female.svg")
-                .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+                .attr("x", function(d){return lx+parseInt(d.rX)+85;})
 				.attr("y", function(d){
 					// return 100;
 					if(d.Line=="CR")
 		    			return parseInt(d.rY)-35-8;
 		    		else
-		    			return parseInt(d.rY)+45+8;
+		    			return parseInt(d.rY)+35+8;
 		    	})
-		    	.attr("width",20)
-		    	.attr("height",20)
+		    	.attr("width",function(d){
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
+		    	.attr("height",function(d){
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
                 ;
 
 
             imgs.insert("svg:image")
                 // .append()
                 .attr("id","dayicon")
-                .attr("xlink:href", "images/female.svg")
+                .attr("xlink:href", "images/sun.svg")
                 .attr("x", function(d){return lx+parseInt(d.rX)-20;})
 				.attr("y", function(d){
 					if(d.Line=="CR")
 		    			return parseInt(d.rY)-35+10;
 		    		else
-		    			return parseInt(d.rY)+45-10;
+		    			return parseInt(d.rY)+35-10;
 		    	})
-		    	.attr("width",20)
-		    	.attr("height",20)
+		    	.attr("width",function(d){
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
+		    	.attr("height",function(d){
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
 		    	;
 
             imgs.insert("svg:image")
-                // .append()
                 .attr("id","nighticon")
-                .attr("xlink:href", "images/female.svg")
-                .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+                .attr("xlink:href", "images/moon.svg")
+                .attr("x", function(d){return lx+parseInt(d.rX)+85;})
 				.attr("y", function(d){if(d.Line=="CR")
 		    			return parseInt(d.rY)-35+10;
 		    		else
-		    			return parseInt(d.rY)+45-10;
+		    			return parseInt(d.rY)+35-10;
 		    	})
-		    	.attr("width",20)
-		    	.attr("height",20);
+		    	.attr("width",function(d){
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
+		    	.attr("height",function(d){
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0) {console.log("0000"); return 0;}
+		    		return 15
+		    	});
 
 		    rects
 		    .insert('rect') //gender
@@ -983,53 +946,7 @@ var gender=[50,150];
                 })
 		    ;
 
-		  //   rects
-		  //   .insert('rect') //gender
-		  //   	.attr("class", "area").attr("clip-path", "url(#clip)")
-		  //   	.attr("id", "gender1")
-		  //   	.attr("width", 10 )//function(d){return d.Male/2}
-		  //   	.attr("height", function(d){
-		  //   		total=parseInt(d.Male)+parseInt(d.Female);
-		  //   		if(total==0)
-		  //   			h=0;
-		  //   		else{
-		  //   			h=d.Male/(total)*10; 
-		  //   		}
-		  //   		return  Math.round(h);
-		  //   		})
-		  //   	.attr("x", function(d){return lx+parseInt(d.rX)-15;})
-				// .attr("y", function(d){return parseInt(d.rY)})
-				// .attr("fill", "blue")
-		  //   ;
-
-		    // function(d){}
-
-		  //   rects
-		  //   .insert('rect') //gender
-		  //   	.attr("class", "area").attr("clip-path", "url(#clip)")
-		  //   	.attr("id", "gender2")
-		  //   	.attr("width", 10 )//function(d){return d.Male/2}
-		  //   	.attr("height", function(d){
-		  //   		total=parseInt(d.Male)+parseInt(d.Female);
-		  //   		if(total==0)
-		  //   			h=0;
-		  //   		else{
-		  //   			h=d.Male/(total)*10;  
-		  //   		}
-		  //   		return Math.round(h);
-		  //   		})
-		  //   	.attr("x", function(d){return lx+parseInt(d.rX)+15;})
-				// .attr("y", function(d){
-				// 	t=parseInt(d.Male)+parseInt(d.Female);
-		  //   		if(total==0)
-		  //   			th=0;
-		  //   		else{
-		  //   			th=d.Male/(t)*10; 
-		  //   		}
-		  //   		console.log(h);
-				// 	return Math.round(parseInt(d.rY)+h)})
-				// .attr("fill", "green")
-		  //   ;
+		  
 
 		    rects
 		    .insert('rect') //day
@@ -1142,6 +1059,21 @@ var gender=[50,150];
                 .attr("font-size", "11px")
                 .attr("fill", "white")
                 .style("fill-opacity", "0.7")
+                .on("click", function(d){
+					if(!popped){
+						var popme = document.getElementById('popme');               	
+	                	var st = document.getElementById('stationName');
+	                	st.innerHTML = d.Station;
+	                	dataV = "jsons/"+d.Station+"All.json"
+						showCalendar();
+						Effect.Appear('popme', {duration: 1.0} );
+						popped = true;
+					}
+					else{
+						Effect.Fade('popme');
+						popped = false;					
+					}
+				})
 		    	;
 
 		   	text
@@ -1720,7 +1652,7 @@ var gender=[50,150];
 
 	    		g.selectAll("#femaleicon")
 	    		.transition().duration(500)
-			    .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+			    .attr("x", function(d){return lx+parseInt(d.rX)+85;})
 
 			    g.selectAll("#dayicon")
 	    		.transition().duration(500)
@@ -1728,7 +1660,7 @@ var gender=[50,150];
 
 	    		g.selectAll("#nighticon")
 	    		.transition().duration(500)
-			    .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+			    .attr("x", function(d){return lx+parseInt(d.rX)+85;})
 			    
 			};		
 	});
@@ -1834,18 +1766,7 @@ var gender=[50,150];
 					if(d.Type=="Fast") return "#BC5C3D";
 				})
 				
-		  //   	.attr("width","100")
-		  //   	.attr("height", "20")
-		  //   	.attr("rx", 6)
-				// .attr("ry", 6)
-		  //   	.attr("x", function(d){ return lx+parseInt(d.rX)-10})
-				// .attr("y", function(d){return parseInt(d.rY)})
-				// .attr("fill", function(d){
-				// 	if(d.Type=="Interchange") return "#8AB66D";
-				// 	if(d.Type=="Slow") return "#99A6B0";
-				// 	if(d.Type=="Fast") return "#BC5C3D"
-				// })
-		  //   ;
+		 
 
 		    g.selectAll("#l2")
 			.data(data).enter();
@@ -2646,17 +2567,23 @@ var gender=[50,150];
 				.data(data).enter();
 			   	g.selectAll("#maleicon")
 		        .transition().duration(500)
-	            .attr("xlink:href", "images/female.svg")
+	            .attr("xlink:href", "images/male.svg")
                 .attr("x", function(d){return lx+parseInt(d.rX)-20;})
 				.attr("y", function(d){
 					// return 100;
 					if(d.Line=="CR")
 		    			return parseInt(d.rY)-35-8;
 		    		else
-		    			return parseInt(d.rY)+45+8;
+		    			return parseInt(d.rY)+35+8;
 		    	})
-		    	.attr("width",20)
-		    	.attr("height",20)
+		    	.attr("width",function(d){
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
+		    	.attr("height",function(d){
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
 		    	;
 
              g.selectAll("#femaleicon")
@@ -2664,16 +2591,22 @@ var gender=[50,150];
 			   	g.selectAll("#femaleicon")
                 .attr("id","femaleicon")
                 .attr("xlink:href", "images/female.svg")
-                .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+                .attr("x", function(d){return lx+parseInt(d.rX)+85;})
 				.attr("y", function(d){
 					// return 100;
 					if(d.Line=="CR")
 		    			return parseInt(d.rY)-35-8;
 		    		else
-		    			return parseInt(d.rY)+45+8;
+		    			return parseInt(d.rY)+35+8;
 		    	})
-		    	.attr("width",20)
-		    	.attr("height",20)
+		    	.attr("width",function(d){
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
+		    	.attr("height",function(d){
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
                 ;
 
 
@@ -2681,31 +2614,43 @@ var gender=[50,150];
 				.data(data).enter();
 			   	g.selectAll("#dayicon")
                 .attr("id","dayicon")
-                .attr("xlink:href", "images/female.svg")
+                .attr("xlink:href", "images/sun.svg")
                 .attr("x", function(d){return lx+parseInt(d.rX)-20;})
 				.attr("y", function(d){
 					if(d.Line=="CR")
 		    			return parseInt(d.rY)-35+10;
 		    		else
-		    			return parseInt(d.rY)+45-10;
+		    			return parseInt(d.rY)+35-10;
 		    	})
-		    	.attr("width",20)
-		    	.attr("height",20)
+		    	.attr("width",function(d){
+		    		if(parseInt(d.Day)+parseInt(d.Night)==0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
+		    	.attr("height",function(d){
+		    		if(parseInt(d.Day)+parseInt(d.Night)==0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
 		    	;
 
              g.selectAll("#nighticon")
 				.data(data).enter();
 			   	g.selectAll("#nighticon")
                 .attr("id","nighticon")
-                .attr("xlink:href", "images/female.svg")
-                .attr("x", function(d){return lx+parseInt(d.rX)+80;})
+                .attr("xlink:href", "images/moon.svg")
+                .attr("x", function(d){return lx+parseInt(d.rX)+85;})
 				.attr("y", function(d){if(d.Line=="CR")
 		    			return parseInt(d.rY)-35+10;
 		    		else
-		    			return parseInt(d.rY)+45-10;
+		    			return parseInt(d.rY)+35-10;
 		    	})
-		    	.attr("width",20)
-		    	.attr("height",20);
+		    	.attr("width",function(d){
+		    		if(parseInt(d.Day)+parseInt(d.Night)==0) {console.log("0000"); return 0;}
+		    		return 15
+		    	})
+		    	.attr("height",function(d){
+		    		if(parseInt(d.Day)+parseInt(d.Night)==0) {console.log("0000"); return 0;}
+		    		return 15
+		    	});
 
 
 
@@ -2865,10 +2810,17 @@ var gender=[50,150];
 
 
 <div id="chart2" style="display:none"></div>
-<div id="popme" style="position: absolute; top:300px; left:200px; border:1px solid red; color: red; background-color: #100000; padding:5px; display: none;background-image: url(images/bg.jpg)" onClick="hidePopup()">
-<span id="stationName"></span></div>
+
 
 <div id="snippet" style="position: absolute; top:408px; left:560px; padding:5px; display: block; color: gold; font-weight:bold; font-size:20px">2014</div>
+
+<!-- <div id="popme" style="position: absolute; top:408px; left:260px; padding:5px; display: block; color: gold; font-weight:bold; font-size:20px;background-image: url(images/bg.jpg)"><span id="stationName"></span></div>
+ -->
+
+
+
+
+
 
 <div id="selyears" style="position: absolute; top:415px; left:20px; font-size:small;">
 <a href="#" onclick="updateData('2014')">2014</a>
@@ -2894,6 +2846,10 @@ var gender=[50,150];
 <div id="startskip" style="position: absolute; top:610px; left:80px; font-size:x-small;">
 	<a href="#" onclick="skipToStart()">back to start</a> | <a href="#" onclick="skip()">skip to end</a>
 </div>
+
+<div id="popme" style="position: absolute; top:300px; left:100px; border:0.5px solid lightgrey; box-shadow: 2px 2px 0px lightgrey; background-color: #FFF; padding:60px; display: none;background-image: url(images/bg.jpg)">
+	<span id="stationName"></span></br>
+	<span style="position: relative; top:-70px; left:850px;font-size: 10px" onClick="hidePopup()"><a href="#">Close</a></span></div>
 
 
 <script>
@@ -2957,7 +2913,4 @@ var gender=[50,150];
 
 </script>
 
-
-
-</body>
 <html>
