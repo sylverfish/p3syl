@@ -4,23 +4,54 @@
     <meta charset="utf-8">      
     <title>Stations - D3</title>
 
-    
+   	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     
 
 	<script type="text/javascript" src="d3/d3.js"></script>
    	<link type="text/css" rel="stylesheet" href="cal/cal-heatmap.css"/>
-   	<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,800,600,700' rel='stylesheet' type='text/css'>
    	<link href='http://fonts.googleapis.com/css?family=Playfair+Display' rel='stylesheet' type='text/css'>
    	<link href='http://fonts.googleapis.com/css?family=Lora' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="mystyle.css">
+	
+
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	  <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
+	  
+	<!-- http://jqueryui.com/datepicker/ -->
+
     <style type="text/css">
 	    body{
 			padding-top:20px;
 		    font-family: 'Open Sans', sans-serif;
 		    font-size: 12px;
-		    color: gray;
+		    color: #111;
 		    /*background-color: #400000; 
 */		    background-color: #FFF; 		    
+		}
+
+		.shadow { 
+			cursor:crosshair; 
+/*            -moz-box-shadow: -50px -50px 5px #888;
+            -webkit-box-shadow: -50px -50px 5px #888;*/
+            box-shadow: 5px -10px 5px #EEE; 
+        }   
+            /*http://stackoverflow.com/questions/6088409/svg-drop-shadow-using-css3*/
+
+		.cal-heatmap-container .subdomain-text {
+			font-size: 8px;
+			fill: #444;
+			pointer-events: none
 		}
 
 		.cal-heatmap-container .q1
@@ -49,6 +80,8 @@
 		    color: gray;
 		}
 
+		
+
     </style>
 
     <script src="javascripts/prototype.js" type="text/javascript"></script>
@@ -56,11 +89,18 @@
 
      <script type="text/javascript" src="cal/cal-heatmap.js"></script>
 
-     
+<script>
+	 	( function($) {
+	        // we can now rely on $ within the safety of our "bodyguard" function
+	        $(document).ready( function() { 
+	        	$( "#datepicker1" ).datepicker();
+	        	$( "#datepicker2" ).datepicker();
+	        } );
+	    } ) ( jQuery );
 
 		
-
-    
+	</script>	
+        
   </head>
   <!--onClick="changeThePage(event)" -->
 <body onkeydown="checkKey(event)"  style="padding:0; margin:0" onLoad="drawTheSvg()">
@@ -74,6 +114,18 @@
     var dScale = d3.scale.linear()
     .range([1, 40]);
 
+    var legendHidden=false;
+    function toggleLegend(){
+    	if(legendHidden){
+    		legendHidden = false;
+    		Effect.Appear('stationlegend');
+    		document.getElementById("showhidelegend").innerHTML = "Hide legend";
+    	}else{
+    		legendHidden = true;
+    		Effect.Fade('stationlegend');
+    		document.getElementById("showhidelegend").innerHTML = "Show legend";
+    	}
+    }
 
 	function skip(){
 		var n = pages-page;
@@ -131,6 +183,7 @@
 	}
 	function changeThePage(e){
 		var x = e.pageX;
+
 		
 		if(x<=clipWidth/10){
 			moveLeft();
@@ -146,7 +199,10 @@
     	// Effect.Fade('id_of_element', { duration: 3.0 });
     	if(!hidden){
     		Effect.Fade('title',{ duration: 1.0, from: 1, to: 0 });
+    		Effect.Fade('stationlegend',{ duration: 1.0, from: 1, to: 0 });
     		hidden=true;
+    		legendHidden = true;
+    		document.getElementById("showhidelegend").innerHTML = "Show legend";
     	}
 
     }
@@ -156,35 +212,124 @@
     function showLogo(){
     	//document.getElementById("title").style.display = "block";
     	Effect.Appear('title', { duration: 1.0 });
+    	Effect.Appear('stationlegend', { duration: 1.0 });
     	// Effect.Appear('selyears')
     	// document.getElementById("selyears").style.display = "block";
     	hidden = false;
+    	legendHidden = false;
+    	document.getElementById("showhidelegend").innerHTML = "Hide legend";
     }
 
     function hidePopup(){
+    	popped = false;	
     	Effect.Fade('popme',{ duration: 0.2, from: 1, to: 0 });
-    	popped = false;		
+    		
+    }
+
+    
+    var count=3;
+    var pageCt = 4;
+    var xes = [-4,-90,30,-50];
+    i=-1;
+    j=-1;
+    var snippets = [
+    				"Some statement 1",
+    				"",
+    				"Another statement","",
+    				"One more piece of interesting information","",
+    				"Something cool","",
+    				"Yet something more","",
+    				"Almost at the end","",
+    				"And something to conclude",""];
+    var xco = [530,530,20,20,40,40,40,480,480];
+    var yco = [530,530,300,300,200,200,530,530];
+    var playing=false;
+    function moveTrain(obj, mouseC){
+    	if((mouseC && !playing) || (!mouseC)){
+    		playing=true;
+	    	new Effect.Move(obj, { x: 220, y: 0 }); 
+	    	setTimeout(function(){ 
+	    		count--; 
+	    		if(count!=0) 
+	    			moveTrain(obj, false); 
+	    		var snippet = document.getElementById('snippet2');
+
+	    		if(j<10){
+	    				j++;
+	    			}
+	    		
+	    		if(count%2==0){
+	    			snippet.innerHTML=snippets[j];
+	    			snippet.style = "position: absolute; top:"+yco[j]+"px; left:"+xco[j]+"px; padding:5px; display: block; color:#99A6B0; font-weight: 800; font-size:20px; background-color: yellow";
+
+	    			
+
+	    			Effect.Appear("snippet2");
+
+	    		}	  
+	    		else{
+	    			Effect.Fade("snippet2");
+	    		}
+
+
+	    		if(count==0 && pageCt!=0 ){
+	    			if(i<3)
+	    				i++;
+	    			var train = document.getElementById('train');
+	    			train.style="position: absolute; top: 383px; left: "+xes[i]+"px; cursor: pointer";
+	    			console.log("xes="+xes[i]+"i="+i);
+	    			pageCt--;
+	    			moveRight();
+	    			count=4;
+	    			moveTrain(obj, false); 
+	    		}
+	    	}
+	    	, 2000);
+    	}
+    	
     }
     
+  //   function showMonthlyTotals(){
+  //   	inited = false;
+  //   	var popme = document.getElementById('popme');               	
+  //   	var st = document.getElementById('stationName');
+  //   	domainV="year";
+  //   	subDomainV="month";
+  //   	leg = [0,10,15,20,25]
+  //   	cellSizeV = 30;
+  //   	rangeV = 1;
+		// showCalendar();
+  //   }
     </script>
 
+    <div id="train" style="position: absolute; top:383px; left:520px; padding:5px; cursor:pointer; display:none" onClick="moveTrain(this, true)">
+    	<img src="images/train.svg" width="70px"/>
+    </div>
 
 	<div id="title" style="position: absolute; top:10px; left:20px;">
-		<svg width="320" height="325">
+		<center style="font-family: 'Lora', serif; font-size: 12px">
+		<img src="images/logo.png" width="160"/><br/>
+		A visual representation of the tragic situation of <br/>accidents on the Mumbai Suburban Railway Network. <br/>(Thane to CST Mumbai, Andheri to Churchgate)</center>
+		<!-- <svg width="320" height="325">
 			<circle cx="150" cy="80" r="55" stroke="blue" stroke-width="27" fill="white"/>
   			 <rect width="160" height="40" x="70" y="60" style="fill:rgb(255,0,0)" />
-  			 <text x="103" y="85" fill="white" >Destinations</text>
+  			 <text x="113" y="85" fill="white" >Destinations</text>
   			 <text x="32" y="170" fill="grey" style="font-family: 'Lora', serif; font-size: 12px">
   								  A visual representation of the tragic situation of 
 		    <tspan x="20" y="190">accidents on the Mumbai Suburban Railway Network.</tspan>
 		    <tspan x="31" y="210">(Thane to CST Mumbai, Andheri to Churchgate)</tspan>		    
-		</svg>	
-		<br/>
+		</svg> -->	
+		<br/><br/><br/><br/><br/><br/><br/><br/>
 		<span style="font-size: x-small; color: grey" >(Press arrow keys LEFT and RIGHT) Or click on the left or right of the page. <br/>Click on stations for more details.</style>
 	</div>
 	<div id="chart"  ></div>
 	<!--<div><span id="left">Left</span> | <span id="right">Right</span></div>-->
 
+
+	<div id="prev" onClick="moveLeft()" style="position: absolute; top:300px; left:10px;">
+		<img src="images/prev.svg" alt="prev"/></div>
+	<div id="next" onClick="moveRight()" style="position: absolute; top:300px; left:1200px;">
+		<img src="images/next.svg" alt="next"/></div>
 
 
 
@@ -285,7 +430,7 @@ var gender=[50,150];
 		    .insert('rect') //rect
 		    	.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "stationsrect")
-		    	.attr("width",100)
+		    	.attr("width",120)
 		    	.attr("height", 20)
 		    	.attr("rx", 6)
     			.attr("ry", 6)
@@ -296,19 +441,27 @@ var gender=[50,150];
 					if(d.Type=="Slow") return "#99A6B0";
 					if(d.Type=="Fast") return "#BC5C3D";
 				})
+				.attr("style","cursor:pointer")
 				.on("click", function(d){
 					if(!popped){
 						var popme = document.getElementById('popme');               	
 	                	var st = document.getElementById('stationName');
-	                	st.innerHTML = d.Station;
-	                	dataV = "jsons/"+d.Station+"All.json"
+	                	st.innerHTML = d.Station + " " + year;
+
+	                	if(!showDeathsOnly)
+	                		dataV = "jsons/"+d.Station+"All"+year+".json";
+	                	else
+		                	dataV = "jsons/"+d.Station+"Deaths"+year+".json";
+
 						showCalendar();
-						Effect.Appear('popme', {duration: 1.0} );
 						popped = true;
+						Effect.Appear('popme', {duration: 1.0} );
+						
 					}
 					else{
+						popped = false;	
 						Effect.Fade('popme');
-						popped = false;					
+										
 					}
 				})
 				.on("mouseover", function(d){
@@ -374,15 +527,16 @@ var gender=[50,150];
 			    		if(parseInt(d.All)==0) return 1; return parseInt(d.All)/2}
 			    	}
 		    	)
-		    	.attr("fill", "#FFCC00")
-		    	.attr("fill-opacity","0.6")
+		    	.attr("fill", "lightblue")//#FFCC00
+		    	.attr("fill-opacity","0.8")
+		    	.attr("style","cursor:pointer")
 		    	.on("mouseover", function(d){
                 	d3.select(this)
                 	.style("fill-opacity", "1");
 
                 	d3.select(this)
                 	.append("title")
-                	.text(d.All + " incidents, and "+d.Deaths +" deaths at "+d.Station);
+                	.text(d.All + " accidents, and "+d.Deaths +" deaths at "+d.Station + " (Click for more details)");
 				})
 		    	.on("click", function(d){
                 	d3.select(this)
@@ -390,7 +544,7 @@ var gender=[50,150];
 
                 	d3.select(this)
                 	.append("title")
-                	.text(d.All + " incidents, and "+d.Deaths +" deaths at "+d.Station);
+                	.text(d.All + " accidents, and "+d.Deaths +" deaths at "+d.Station + " (Click for more details)");
 
                 	var coordinates = [0, 0];
 					coordinates = d3.mouse(this);
@@ -402,15 +556,20 @@ var gender=[50,150];
                 	if(!popped){
                 		var popme = document.getElementById('popme');               	
 	                	var st = document.getElementById('stationName');
-	                	st.innerHTML = d.Station;
-	                	dataV = "jsons/"+d.Station+"All.json"
+	                	st.innerHTML = d.Station + " " + year;
+	                	if(!showDeathsOnly)
+	                		dataV = "jsons/"+d.Station+"All"+year+".json";
+	                	else
+		                	dataV = "jsons/"+d.Station+"Deaths"+year+".json";
                 		showCalendar();
+                		popped = true;
 						Effect.Appear('popme', {duration: 1.0} );
-						popped = true;
+						
 					}
 					else{
-						Effect.Fade('popme');
 						popped = false;
+						Effect.Fade('popme');
+						
 					}
 
 
@@ -424,7 +583,7 @@ var gender=[50,150];
                 })
                 .on("mouseout", function(d){
                 	d3.select(this)
-                	.style("fill-opacity", "0.6");
+                	.style("fill-opacity", "0.8");
 
 
                 })
@@ -474,33 +633,39 @@ var gender=[50,150];
 		    	})
 		    	.attr("fill", "darkred")
 		    	.attr("fill-opacity","0.8")
+		    	.attr("style","cursor:pointer")
 		    	.on("mouseover", function(d){
                 	d3.select(this)
                 	.style("fill-opacity", "1");
                 	d3.select(this)
                 	.append("title")
-                	.text(d.All + " incidents, and "+d.Deaths +" deaths at "+d.Station);
+                	.text(d.All + " accidents, and "+d.Deaths +" deaths at "+d.Station);
                 })
 		    	.on("click", function(d){
                 	d3.select(this)
                 	.style("fill-opacity", "1");
                 	d3.select(this)
                 	.append("title")
-                	.text(d.All + " incidents, and "+d.Deaths +" deaths at "+d.Station);
+                	.text(d.All + " accidents, and "+d.Deaths +" deaths at "+d.Station);
                 	// document.getElementById('popme').style.display = "block";
                 	if(!popped){
                 		var popme = document.getElementById('popme');               	
 	                	var st = document.getElementById('stationName');
-	                	st.innerHTML = d.Station;
-	                	dataV = "jsons/"+d.Station+"All.json"
+	                	st.innerHTML = d.Station + " " + year;
+	                	if(!showDeathsOnly)
+	                		dataV = "jsons/"+d.Station+"All"+year+".json";
+	                	else
+		                	dataV = "jsons/"+d.Station+"Deaths"+year+".json";
 
                 		showCalendar();
+                		popped = true;
 						Effect.Appear('popme', {duration: 1.0} );
-						popped = true;
+						
 					}
 					else{
-						Effect.Fade('popme');
 						popped = false;
+						Effect.Fade('popme');
+						
 					}
                 	// showCalendar();
                 })
@@ -543,7 +708,7 @@ var gender=[50,150];
 
             	d3.select(this)
             	.append("title")
-            	.text(d.All12 + " incidents at "+d.Station + " in 2012");
+            	.text(d.All12 + " accidents at "+d.Station + " in 2012"  + " (Click for more details)");
 			})
 			.on("mouseout", function(d){
             	d3.select(this)
@@ -626,7 +791,7 @@ var gender=[50,150];
 
             	d3.select(this)
             	.append("title")
-            	.text(d.All13 + " incidents at "+d.Station+" in 2013");
+            	.text(d.All13 + " accidents at "+d.Station+" in 2013"  + " (Click for more details)");
 			})
 			.on("mouseout", function(d){
             	d3.select(this)
@@ -710,7 +875,7 @@ var gender=[50,150];
 
             	d3.select(this)
             	.append("title")
-            	.text(d.All14 + " incidents at "+d.Station+" in 2014");
+            	.text(d.All14 + " accidents at "+d.Station+" in 2014"  + " (Click for more details)");
 			})
 			.on("mouseout", function(d){
             	d3.select(this)
@@ -824,14 +989,19 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+35+8;
 		    	})
 		    	.attr("width", function(d){
-		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) 
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0 || year=="2012to2014") 
 		    			{console.log("0000"); return 0;}
 		    		return 15;
 		    	})
 		    	.attr("height",function(d){
-		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0 || year=="2012to2014") {return 0;}
 		    		return 15;
 		    	})
+		    	.on("mouseover", function(d){
+                	d3.select(this)
+                	.append("title")
+                	.text(d.Male + " males involved in accidents");
+				})
 		    	;
 
             imgs.insert("svg:image")
@@ -846,13 +1016,18 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+35+8;
 		    	})
 		    	.attr("width",function(d){
-		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0 || year=="2012to2014") { return 0;}
 		    		return 15
 		    	})
 		    	.attr("height",function(d){
-		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0 || year=="2012to2014") {return 0;}
 		    		return 15
 		    	})
+		    	.on("mouseover", function(d){
+                	d3.select(this)
+                	.append("title")
+                	.text(d.Female + " females involved in accidents");
+				})
                 ;
 
 
@@ -868,13 +1043,18 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+35-10;
 		    	})
 		    	.attr("width",function(d){
-		    		if(parseInt(d.Day)+parseInt(d.Night)<=0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0 || year=="2012to2014") { return 0;}
 		    		return 15
 		    	})
 		    	.attr("height",function(d){
-		    		if(parseInt(d.Day)+parseInt(d.Night)<=0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0 || year=="2012to2014") { return 0;}
 		    		return 15
 		    	})
+		    	.on("mouseover", function(d){
+                	d3.select(this)
+                	.append("title")
+                	.text(d.Day +" accidents at daytime");
+				})
 		    	;
 
             imgs.insert("svg:image")
@@ -887,13 +1067,18 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+35-10;
 		    	})
 		    	.attr("width",function(d){
-		    		if(parseInt(d.Day)+parseInt(d.Night)<=0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0 || year=="2012to2014") { return 0;}
 		    		return 15
 		    	})
 		    	.attr("height",function(d){
-		    		if(parseInt(d.Day)+parseInt(d.Night)<=0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0 || year=="2012to2014") { return 0;}
 		    		return 15
-		    	});
+		    	})
+		    	.on("mouseover", function(d){
+                	d3.select(this)
+                	.append("title")
+                	.text(d.Night + " accidents at nighttime");
+				});
 
 		    rects
 		    .insert('rect') //gender
@@ -1043,7 +1228,19 @@ var gender=[50,150];
 		    ;
 
 
-			
+			var imgs = g.selectAll("img")
+			.data(data).enter();
+
+
+            imgs.insert("svg:image")
+                .attr("id","stationsymbol")
+                .attr("xlink:href", "images/stationsymbol.svg")
+                .attr("x", function(d){return lx+parseInt(d.rX)})
+				.attr("y",  function(d){ return parseInt(d.rY)+3})
+		    	.attr("width", 15)
+		    	.attr("height",15)
+		    	;
+
 
 		    var text = g.selectAll("text")
 				.data(data).enter();
@@ -1052,26 +1249,32 @@ var gender=[50,150];
 				.insert('text')
 				.attr("class", "area").attr("clip-path", "url(#clip)")
 		    	.attr("id", "stations")
-		    	.attr("x", function(d){return lx+parseInt(d.rX)})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+20})
 		    	.attr("y", function(d){return parseInt(d.rY)+15})
 		    	.text(function (d) {return d.Station;})
 		    	.attr("font-family", "sans-serif")
                 .attr("font-size", "11px")
                 .attr("fill", "white")
                 .style("fill-opacity", "0.7")
+                .attr("style","cursor:pointer")
                 .on("click", function(d){
 					if(!popped){
 						var popme = document.getElementById('popme');               	
 	                	var st = document.getElementById('stationName');
-	                	st.innerHTML = d.Station;
-	                	dataV = "jsons/"+d.Station+"All.json"
+	                	st.innerHTML = d.Station + " " + year;
+	                	if(!showDeathsOnly)
+	                		dataV = "jsons/"+d.Station+"All"+year+".json";
+	                	else
+		                	dataV = "jsons/"+d.Station+"Deaths"+year+".json";
 						showCalendar();
-						Effect.Appear('popme', {duration: 1.0} );
 						popped = true;
+						Effect.Appear('popme', {duration: 1.0} );
+						
 					}
 					else{
+						popped = false;		
 						Effect.Fade('popme');
-						popped = false;					
+									
 					}
 				})
 		    	;
@@ -1099,7 +1302,7 @@ var gender=[50,150];
 			    		{
 			    		if(d.All==0){
 			    			if(!showDeathsOnly){
-			    				return "No incidents";
+			    				return "No accidents";
 			    			}
 			    			else return "";
 			    		}
@@ -1137,7 +1340,7 @@ var gender=[50,150];
 
                 	d3.select(this)
                 	.append("title")
-                	.text("Incidents in a year");
+                	.text("accidents in a year");
                 })
                 .on("mouseout", function(d){
                 	d3.select(this)
@@ -1661,7 +1864,14 @@ var gender=[50,150];
 	    		g.selectAll("#nighticon")
 	    		.transition().duration(500)
 			    .attr("x", function(d){return lx+parseInt(d.rX)+85;})
+
+			    g.selectAll("#stationsymbol")
+	    		.transition().duration(500)
+			    .attr("x", function(d){return lx+parseInt(d.rX);})
 			    
+			     g.selectAll("#stations")
+	    		.transition().duration(500)
+			    .attr("x", function(d){return lx+parseInt(d.rX)+20;})
 			};		
 	});
 	}
@@ -1754,7 +1964,7 @@ var gender=[50,150];
 			.data(data).enter();
 			g.selectAll("#stationsrect")
 				.transition().duration(500)
-				.attr("width","100")
+				.attr("width","120")
 		    	.attr("height", "20")
 		    	.attr("rx", 6)
 				.attr("ry", 6)
@@ -1819,8 +2029,8 @@ var gender=[50,150];
 			    			return d.All/2;
 		    		}
 		    	})
-		    	.attr("fill", "#FFCC00")
-		    	.attr("fill-opacity","0.6")
+		    	.attr("fill", "lightblue")
+		    	.attr("fill-opacity","0.8")
 		    ;
 		    	
 		    	
@@ -2197,13 +2407,19 @@ var gender=[50,150];
 				// .attr("stroke-width","1")
 		    ;
 
+		    g.selectAll("#stationsymbol")
+			.data(data).enter();
+			g.selectAll("#stations")
+		        .transition().duration(500)
+		    	.attr("x", function(d){return lx+parseInt(d.rX)})
+		    	.attr("y", function(d){return parseInt(d.rY)+3})
+		    	;
+
 		    g.selectAll("#stations")
 			.data(data).enter();
 			g.selectAll("#stations")
 		        .transition().duration(500)
-				.attr("class", "area").attr("clip-path", "url(#clip)")
-		    	.attr("id", "stations")
-		    	.attr("x", function(d){return lx+parseInt(d.rX)})
+		    	.attr("x", function(d){return lx+parseInt(d.rX)+20})
 		    	.attr("y", function(d){return parseInt(d.rY)+15})
 		    	.text(function (d) {return d.Station;})
 		    	.attr("font-family", "sans-serif")
@@ -2233,7 +2449,7 @@ var gender=[50,150];
 		    		{
 			    		if(d.All==0){
 			    			if(!showDeathsOnly){
-			    				return "No incidents";
+			    				return "No accidents";
 			    			}
 			    			else return "";
 			    		}
@@ -2577,11 +2793,11 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+35+8;
 		    	})
 		    	.attr("width",function(d){
-		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0 || year=="2012to2014") { return 0;}
 		    		return 15
 		    	})
 		    	.attr("height",function(d){
-		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0 || year=="2012to2014") { return 0;}
 		    		return 15
 		    	})
 		    	;
@@ -2600,11 +2816,11 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+35+8;
 		    	})
 		    	.attr("width",function(d){
-		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0 || year=="2012to2014") { return 0;}
 		    		return 15
 		    	})
 		    	.attr("height",function(d){
-		    		if(parseInt(d.Male)+parseInt(d.Female)<=0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Male)+parseInt(d.Female)<=0 || year=="2012to2014") { return 0;}
 		    		return 15
 		    	})
                 ;
@@ -2623,11 +2839,11 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+35-10;
 		    	})
 		    	.attr("width",function(d){
-		    		if(parseInt(d.Day)+parseInt(d.Night)==0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0  || year=="2012to2014") { return 0;}
 		    		return 15
 		    	})
 		    	.attr("height",function(d){
-		    		if(parseInt(d.Day)+parseInt(d.Night)==0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0  || year=="2012to2014") { return 0;}
 		    		return 15
 		    	})
 		    	;
@@ -2644,11 +2860,11 @@ var gender=[50,150];
 		    			return parseInt(d.rY)+35-10;
 		    	})
 		    	.attr("width",function(d){
-		    		if(parseInt(d.Day)+parseInt(d.Night)==0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0  || year=="2012to2014") { return 0;}
 		    		return 15
 		    	})
 		    	.attr("height",function(d){
-		    		if(parseInt(d.Day)+parseInt(d.Night)==0) {console.log("0000"); return 0;}
+		    		if(parseInt(d.Day)+parseInt(d.Night)<=0  || year=="2012to2014") {return 0;}
 		    		return 15
 		    	});
 
@@ -2669,6 +2885,7 @@ var gender=[50,150];
 
 	function moveLeft(){
 		Effect.Appear('snippet', {duration: 0.8} );
+
 		
 		// Effect.Fade('popme');
 		// popped = false;	
@@ -2703,6 +2920,8 @@ var gender=[50,150];
     		cx=0;
     		showLogo();
 	    }
+
+	    if(!legendHidden){toggleLegend();}
 		update();
 	}
 
@@ -2739,6 +2958,7 @@ var gender=[50,150];
 			if(cx<=-pages*speed) {x=-pages*speed; l=-pages*speed;}
 
 			// console.log("R:"+x)
+			if(!legendHidden){toggleLegend();}
 		    update();
 	}
 
@@ -2812,7 +3032,9 @@ var gender=[50,150];
 <div id="chart2" style="display:none"></div>
 
 
-<div id="snippet" style="position: absolute; top:408px; left:560px; padding:5px; display: block; color: gold; font-weight:bold; font-size:20px">2014</div>
+<div id="snippet" style="position: absolute; top:408px; left:560px; padding:5px; display: block; color: #99A6B0; font-weight:bold; font-size:20px">2014</div>
+
+<div id="snippet2" style="position: absolute; top:508px; left:560px; padding:5px; display: none; color:#99A6B0; font-weight: 800; font-size:20px">Click on the train at Thane to travel the railway...</div>
 
 <!-- <div id="popme" style="position: absolute; top:408px; left:260px; padding:5px; display: block; color: gold; font-weight:bold; font-size:20px;background-image: url(images/bg.jpg)"><span id="stationName"></span></div>
  -->
@@ -2822,16 +3044,79 @@ var gender=[50,150];
 
 
 
-<div id="selyears" style="position: absolute; top:415px; left:20px; font-size:small;">
+<!-- <div id="selyears" style="position: absolute; top:15px; left:870px; font-size:small;">
 <a href="#" onclick="updateData('2014')">2014</a>
  | <a href="#" onclick="updateData('2013')">2013</a>
  | <a href="#" onclick="updateData('2012')">2012</a> 
  | <a href="#" onclick="updateData('All')">Compare all years</a>
- <input type="checkbox" id='deathsonly' onClick="showDeaths()">Show only deaths</input><br/>
+ <input type="checkbox" id='deathsonly' onClick="showDeaths()">Show only deaths</input><br/>			
+ </div> -->
+
+<div id="bgformenu" style="position: absolute; top:-50px; left:750px;" >
+	<svg width=490 height=130>
+			<rect x="0" y="0" width="490" height="130" rx="10" ry="10" fill="yellow"/>
+	</svg>
+</div>
+<div id="selyears" style="position: absolute; top:15px; left:770px; font-size:small;">
+	<table>
+		<tr>
+			<td valign="top">
+				<a href="#" onclick="updateData('2014')"><strong>2014</strong></a>
+				 | <a href="#" onclick="updateData('2013')"><strong>2013</strong></a>
+				 | <a href="#" onclick="updateData('2012')"><strong>2012</strong></a> 
+				 &nbsp;
+				 <select name="earlier">
+				 	<option>Earlier</option>
+				 	<option>2011</option><option>2010</option><option>2009</option><option>2008</option>
+				 	<option>2007</option><option>2006</option><option>2005</option><option>2005</option>
+				 	<option>2004</option><option>2003</option><option>2002</option><option>2001</option>
+				 	<option>2000</option><option>1999</option><option>1998</option><option>1997</option>
+				 </select>
+				 <br/><a href="#" onclick="updateData('All')">Compare all years</a><br/>
+				 <input type="checkbox" id='deathsonly' onClick="showDeaths()"/> &nbsp; Show only deaths<br/>
+			</td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td valign="top">Select range:<br/>
+				From date: <input type="text" id="datepicker1" size="10"><br/>
+				To date:  &nbsp;&nbsp;&nbsp; <input type="text" id="datepicker2" size="10">
+			</td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td valign="top">Select specific stations:<br/>
+				<select name="stations">
+				 	<option>All</option><option>Thane</option><option>Mulund</option><option>Nahur</option>
+				 	<option>Bhandup</option><option>Kanjurmarg</option><option>Vikhroli</option><option>Ghatkopar</option>
+				 	<option>Vidhyavihar</option><option>Kurla</option><option>Sion</option><option>Matung</option>
+				 	<option>Dadar C</option><option>Parel</option><option>Currey Road</option><option>Chinchpokli</option>
+				 	<option>Byculla</option><option>Sandhurst Road</option><option>Masjid</option><option>CST Mumbai</option>
+				 	<option>Andheri</option><option>Vile Parle</option><option>Santacruz</option><option>Khar</option>
+				 	<option>Bandra</option><option>Mahim</option><option>Matunga Road</option><option>Dadar West</option>
+				 	<option>Elphinstone Road</option><option>Lower Parel</option><option>Mahalaxmi</option><option>Mumbai Central</option><option>Grant Road</option><option>Charni Road</option><option>Marile Lines</option><option>Churchgate</option>
+				 </select>
+			</td>
+		</tr>
+	</table> 			
  </div>
 
+<div class="btn-group" data-toggle="buttons" style="position: absolute; top:15px; left:770px; font-size:small;display: none">
+	<label class="btn btn-default active">
+		<input type="radio"  name="line" value="1"  autocomplete="off">2012</input>
+	</label>
+	<label class="btn btn-default">
+		<input type="radio" name="line" value="2"  autocomplete="off">2013</input>
+	</label>
+	<label class="btn btn-default">
+	<input type="radio"  name="line" value="3" autocomplete="off">2014</input>
+	</label>
+	<label class="btn btn-default">
+	<ul class="dropdown-menu" role="menu">
+      <li><a href="#">Dropdown link</a></li>
+      <li><a href="#">Dropdown link</a></li>
+    </ul>
+</label>
+</div>
+
 <div id="finalmenu" style="position: absolute; top:250px; left:900px; display: none">
- <a href="#">View full map</a>
+ <!-- <a href="#">View full map</a> -->
  <br/><br/>
  Take a journey again for year 
  <select id="years2" onchange="updateData('1'); skipToStart(); ">
@@ -2839,53 +3124,112 @@ var gender=[50,150];
 	<option value="2013">2013</option>
 	<option value="2012">2012</option>
 </select>
-<br/><br/>
-<a href="indexWeek.html?d=month&sd=day">home.html</a>
+<br/>
+<a href="home.html">Explore further</a>
+</div>
+
+<div id="stationlegend" style="position: absolute; top:480px; left:80px; font-size:x-small;">
+	<svg width=200 height=150>
+		<g>
+			<rect x="0" y="0" width="110" height="20" rx="6" ry="6" fill="#8AB66D"/>
+			<text x="5" y="14" fill="#FFF">Interchange Station</text>
+		</g>
+		<g>
+			<rect x="0" y="25" width="110" height="20" rx="6" ry="6" fill="#99A6B0"/>
+			<text x="5" y="39" fill="#FFF">Slow Station</text>
+		</g>
+		<g>
+			<rect x="0" y="50" width="110" height="20" rx="6" ry="6" fill="#BC5C3D"/>
+			<text x="5" y="64" fill="#FFF">Fast Station</text>
+		</g>
+		<g>
+			<line x1=0 y1=81 x2=40 y2=81 stroke="lightblue" stroke-width=6 stroke-opacity="0.7"/>
+			<text x="45" y="84" fill="grey">Central Railway Line</a>
+		</g>
+		<g>
+			<line x1=0 y1=96 x2=40 y2=96 stroke="pink" stroke-width=6 stroke-opacity="0.7"/>
+			<text x="45" y="99" fill="grey">Western Railway Line</a>
+		</g>
+		<g>
+			<line x1=0 y1=111 x2=40 y2=111 stroke="grey" stroke-width=6 stroke-opacity="0.7"/>
+			<text x="45" y="114" fill="grey">Harbour Railway Line (other)</a>
+		</g>
+	</svg>
 </div>
 
 <div id="startskip" style="position: absolute; top:610px; left:80px; font-size:x-small;">
-	<a href="#" onclick="skipToStart()">back to start</a> | <a href="#" onclick="skip()">skip to end</a>
+	<a  id="showhidelegend" href="#" onClick="toggleLegend()" style="background-color: pink">Show legend</a> | 
+	<a href="#" onclick="skipToStart()">back to start</a> | <a href="#" onclick="skip()">skip to end</a> | <a href="home.html">Explore more data</a>
 </div>
 
-<div id="popme" style="position: absolute; top:300px; left:100px; border:0.5px solid lightgrey; box-shadow: 2px 2px 0px lightgrey; background-color: #FFF; padding:60px; display: none;background-image: url(images/bg.jpg)">
-	<span id="stationName"></span></br>
-	<span style="position: relative; top:-70px; left:850px;font-size: 10px" onClick="hidePopup()"><a href="#">Close</a></span></div>
+<div id="popme" style="position: absolute; top:100px; left:100px; border:0.5px solid lightgrey; box-shadow: 2px 2px 0px lightgrey; background-color: #FFF; padding:60px; display: none;background-image: url(images/bg.jpg)">
+	
+	<span id="stationName" style="font-weight:bold"></span><br/>
+	<span style="position: relative; top:-70px; left:770px;font-size: 10px" onClick="hidePopup()">
+		<a href="#">Close</a></span><br/>
+	<a href="#">Highlight holidays</a> <br/>
+	
+	<br/>Monthly:<div id="monthly"><span style="font-size: 10px">
+		</div>	
+
+	<br/>Monthly Totals: <div id="monthlytotal"></div>
+
+	<br/>Weekly Totals: <div id="weeklytotal">
+	<table style="color:#444"> <tr align="center">
+			<td style="background-color: darkred" width="20px", height="20p" > M </td>
+			<td style="background-color: darkred" width="20px", height="20p"> T </td>
+			<td style="background-color: darkred" width="20px", height="20p"> W </td>
+			<td style="background-color: red"	  width="20px", height="20p"> T </td>
+			<td style="background-color: pink"    width="20px", height="20p"> F </td>
+			<td style="background-color: red"     width="20px", height="20p"> S </td>
+			<td style="background-color: pink"    width="20px", height="20p"> S </td>
+		</tr></table>
+	</div>
+	<span style="position: relative; top:50px; left:760px;font-size: 10px">
+		<a href="#">Next station &gt;&gt;</a></span><br/>
+
+	<span style="position: relative; top:30px; left:-40px;font-size: 10px">
+		<a href="#">&lt;&lt; Previous station</a></span><br/>
+
+	
+</div>
 
 
 <script>
 	var calendar = new CalHeatMap();
+	var calendar2 = new CalHeatMap();
 	var itemNameV = "incident";
 	var verticalOrientationV = false;
 	var startDates = [2012, 2013, 2014];
 	var domainV = "month";
 	var domainDynamicDimensionV = false;
-	var domainGutterV = 2;
-	var domainMarginV = 2;
+	var domainGutterV = 0;
+	var domainMarginV = 0;
 	var subDomainV = "day";
 	var domainLabelFormatV = "%b-%y"; 
 	//subDomainTextFormat: "%d",
 	var rangeV = 12;
 	var leg = [0,1,2,4];
 	// var leg = [80,120,150,170];
-	var legendVerticalPositionV = "center";
-	var legendOrientationV = "vertical";
+	var legendVerticalPositionV = "bottom";
+	var legendOrientationV = "horizontal";
 	var cellSizeV = 9;
 	var dataV = "jsons/ThaneAll.json";
 	var inited=false;
 	function showCalendar(){
 		if(!inited){
 			calendar.init({
-			itemSelector: "#popme",
+			itemSelector: "#monthlytotal",
 			itemName: itemNameV,
 			verticalOrientation: verticalOrientationV,
 	    	data: dataV,
-	    	start: new Date(2014, 0),
+	    	start: new Date(year, 0),
 	    	domain: domainV,
 			domainLabelFormat: domainLabelFormatV,
 			domainDynamicDimension: domainDynamicDimensionV,
 			domainGutter: domainGutterV,
 		    domainMargin: domainMarginV,
-	    	subDomain: subDomainV,
+		   	subDomain: subDomainV,
 	    	considerMissingDataAsZero: true,
 	    	//rowLimit: 31,
 			//subDomainTextFormat: "%d",
@@ -2897,15 +3241,43 @@ var gender=[50,150];
 			legend: leg,
 			legendVerticalPosition: legendVerticalPositionV,
 			legendOrientation: legendOrientationV,
-			//legendMargin: [0,20,0,0],
+			legendCellSize: 12,
+			legendMargin: [10,0,0000,0], //top,right
 			cellSize: cellSizeV,
 			// legendColors: {
 			// 	empty: "green"
 			// }
 			});
+
+			calendar2.init({
+			itemSelector: "#monthly",
+			itemName: itemNameV,
+			verticalOrientation: verticalOrientationV,
+	    	data: dataV,
+	    	start: new Date(year, 0),
+	    	domain: "year",
+			// domainLabelFormat: domainLabelFormatV,
+			domainDynamicDimension: domainDynamicDimensionV,
+	    	subDomain: "month",
+	    	considerMissingDataAsZero: true,
+	    	range: 1,
+			legend: [0,5,10,15,20,25],
+			legendVerticalPosition: legendVerticalPositionV,
+			legendOrientation: legendOrientationV,
+			legendCellSize: 12,
+			subDomainTextFormat: "%b",
+			domainLabelFormat: "",
+			legendMargin: [10,0,0,0], //top,right
+			cellSize: 50,
+			// legendColors: {
+			// 	empty: "green"
+			// }
+			});
+
 			inited=true;
 		}else{
 			calendar.update(dataV);
+			calendar2.update(dataV);
 		}
 	
 	}

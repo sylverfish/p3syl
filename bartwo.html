@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    
+  <head>
+        
+    <meta charset="utf-8">
+        
+    <title>P3-Sample D3 Page</title>
+
+   <head>
+        
+    <meta charset="utf-8">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        
+    <link type="text/css" rel="stylesheet" href="cal/cal-heatmap.css"/>
+    <script type="text/javascript" src="d3/d3.js"></script>
+    <script type="text/javascript" src="cal/cal-heatmap.js"></script>
+    <script type="text/javascript" src="d3/d3.layout.js"></script>
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,800,600,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Playfair+Display' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Lora' rel='stylesheet' type='text/css'>
+
+
+
+    <title>Mumbai Railway Accidents - Home</title>
+    <style>
+     div.bar{
+        display: inline-block;
+        width: 2px;
+        height: 120px;
+        /*background-color: teal;*/
+        margin-right: 1px;
+     }
+    </style>
+    <style type="text/css">
+      body{
+      padding-top:20px;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 12px;
+        color: #111;
+        background-color: #FFF;   
+
+    }
+
+    .cal-heatmap-container .subdomain-text {
+      font-size: 8px;
+      fill: #444;
+      pointer-events: none
+    }
+    
+    .heading{
+      font-family: 'Open Sans', sans-serif;
+      font-weight: bold;
+      color: #99A6B0;
+      font-size: 30px;
+    }
+
+/*    http://viralpatel.net/blogs/css-radio-button-checkbox-background/*/   
+    /*
+      Hide radio button (the round disc)
+      we will use just the label to create pushbutton effect
+    */
+    input[type=radio] {
+        display:none; 
+        margin:10px;
+    }
+     
+    /*
+      Change the look'n'feel of labels (which are adjacent to radiobuttons).
+      Add some margin, padding to label
+    */
+    input[type=radio] + label {
+        display:inline-block;
+        margin:-2px;
+        padding: 4px 12px;
+        background-color: #e7e7e7;
+        border-color: #ddd;
+    }
+    /*
+     Change background color for label next to checked radio button
+     to make it look like highlighted button
+    */
+    input[type=radio]:checked + label { 
+       background-image: none;
+        background-color: PeachPuff; /*#d0d0d0; */
+    }
+  </style>
+  <link rel="stylesheet" href="mystyle.css">
+  <script src="javascripts/prototype.js" type="text/javascript"></script>
+  <script src="javascripts/scriptaculous.js" type="text/javascript"></script>
+
+  </head>
+    
+  <body>
+  <div id="bgformenu" style="position: absolute; top:-50px; left:130px;" >
+  <svg width=965 height=140>
+      <rect x="0" y="0" width="965" height="120" rx="10" ry="10" fill="yellow"/>
+  </svg>
+</div>
+<div id="selyears" style="position: absolute; top:15px; left:150px; font-size:small;">
+  <table>
+    <tr>
+      <td valign="top">
+        <select name="category" id="category" onChange="setData()">
+          <option>Daily</option>
+          <option>Monthly</option>
+          <option>Yearly</option>
+         </select>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <input type="radio" name="type" value="1" id="type1" onClick="parent.location='bartwo.html'"/> <label for="type1">&nbsp;Charts&nbsp;&nbsp;</label>
+        <input type="radio" name="type" value="2" id="type2" checked onClick="parent.location='calendar.html'"/> <label for="type2">&nbsp;Calendar</label>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <input type="checkbox" id='Death' name="Death" value="2" onChange="setData()"/>
+         &nbsp; Show only deaths
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <input type="radio" name="line" value="1" onChange="setData()" checked id="line1"/><label for="line1">Central</label> 
+        <input type="radio" name="line" value="2" onChange="setData()" id="line2"/><label for="line2">Western</label> 
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <input type="radio"  name="gender" value="1" onChange="setData()" id="gender1"/><label for="gender1">Male</label> 
+        <input type="radio"  name="gender" value="2" onChange="setData()" id="gender2"/><label for="gender2">Female</label> 
+        <input type="radio"  name="gender" value="3" onChange="setData()" checked id="gender3"/><label for="gender3">All genders</label>
+        <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="gender" value="4" onChange="setData()" id="gender4"/><label for="gender4">Compare</label>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <input type="radio" name="time" value="1" onChange="setData()" id="time1"/><label for="time1">Day</label>
+        <input type="radio" name="time" value="2" onChange="setData()" id="time2"/><label for="time2">Night</label>
+        <input type="radio" name="time" value="3" onChange="setData()" checked id="time3"/><label for="time3">All day</label>
+        <br/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="time" value="4" onChange="setData()" id="time4"/><label for="time4">Compare</label>
+      </td>
+    </tr>
+  </table>      
+ </div>
+
+ <div class="container" style="position: absolute; top:80px; left: 50px">
+  <div class="row">
+    <div >
+      <div id="chart2014"><br/>2014: &nbsp;&nbsp;&nbsp;&nbsp;</div>
+      <div id="chart2013"><br/>2013: &nbsp;&nbsp;&nbsp;&nbsp;</div>
+      <div id="chart2012"><br/>2012: &nbsp;&nbsp;&nbsp;&nbsp;</div>
+      </div>
+    </div>
+</div>
+
+
+
+  <script type="text/javascript">
+
+    d3.csv("data/bar/CRALLMFDN2014.csv", function(error, data){
+    if(error){
+        console.log(error);
+    }else{
+        console.log(data);
+        dataset = data;
+        d3.select("#chart2014").selectAll("p")
+        .data(dataset)
+        .enter()
+        .append("div")
+        .attr("class", "bar")
+        .style("height", function(d){
+          if(d.Count==0) return "6px";
+          return 5*d.Count + "px"})
+        .style("background-color", function(d){
+          if(d.Count==0) return "lightblue";
+          var str = d.Date;
+          if(parseInt(str.substring(3,5))%2==0) return "gold";
+          return "darkred";} 
+          )
+        .attr("title", function(d){
+          if(d.Count==0) return "0/unknown number of accidents on "+d.Date;
+          return d.Count + " accidents on "+d.Date})
+        ;
+      }
+    });
+
+    d3.csv("data/bar/CRALLMFDN2013.csv", function(error, data){
+    if(error){
+        console.log(error);
+    }else{
+        console.log(data);
+        dataset = data;
+        d3.select("#chart2013").selectAll("p")
+        .data(dataset)
+        .enter()
+        .append("div")
+        .attr("class", "bar")
+        .style("height", function(d){
+          if(d.Count==0) return "6px";
+          return 5*d.Count + "px"})
+        .style("background-color", function(d){
+          if(d.Count==0) return "lightblue";
+          var str = d.Date;
+          if(parseInt(str.substring(3,5))%2==0) return "gold";
+          return "darkred";} 
+          )
+        .attr("title", function(d){
+          if(d.Count==0) return "0/unknown number of accidents on "+d.Date;
+          return d.Count + " accidents on "+d.Date})
+        ;
+      }
+    }); 
+
+    d3.csv("data/bar/CRALLMFDN2012.csv", function(error, data){
+    if(error){
+        console.log(error);
+    }else{
+        console.log(data);
+        dataset = data;
+        d3.select("#chart2012").selectAll("p")
+        .data(dataset)
+        .enter()
+        .append("div")
+        .attr("class", "bar")
+        .style("height", function(d){
+          if(d.Count==0) return "6px";
+          return 5*d.Count + "px"})
+        .style("background-color", function(d){
+          if(d.Count==0) return "lightblue";
+          var str = d.Date;
+          if(parseInt(str.substring(3,5))%2==0) return "gold";
+          return "darkred";} 
+          )
+        .attr("title", function(d){
+          if(d.Count==0) return "0/unknown number of accidents on "+d.Date;
+          return d.Count + " accidents on "+d.Date})
+        ;
+      }
+    });      
+    </script>
+   
+  </body>
+
+</html>
