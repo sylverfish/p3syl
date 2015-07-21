@@ -26,7 +26,7 @@
 
 
 
-    <title>Mumbai Railway Accidents - Home</title>
+    <title>Destinations</title>
     <style type="text/css">
 	    body{
 			padding-top:20px;
@@ -164,7 +164,7 @@
 	;
 
 	var datas = [
-	"CRAllMFDN.json",
+	"CRAllFMDN.json",
 	"CRAllMDN.json",
 	"CRAllFMD.json",
 	"CRAllFMN.json",
@@ -173,7 +173,7 @@
 	"CRAllMN.json",
 	"CRAllFD.json",
 	"CRAllFN.json",
-	"WRAllMFDN.json",
+	"WRAllFMDN.json",
 	"WRAllMDN.json",
 	"WRAllFMD.json",
 	"WRAllFMN.json",
@@ -182,7 +182,7 @@
 	"WRAllMN.json",
 	"WRAllFD.json",
 	"WRAllFN.json",
-	"CRDeathsMFDN.json",
+	"CRDeathsFMDN.json",
 	"CRDeathsMDN.json",
 	"CRDeathsFMD.json",
 	"CRDeathsFMN.json",
@@ -191,7 +191,7 @@
 	"CRDeathsMN.json",
 	"CRDeathsFD.json",
 	"CRDeathsFN.json",
-	"WRDeathsMFDN.json",
+	"WRDeathsFMDN.json",
 	"WRDeathsMDN.json",
 	"WRDeathsFMD.json",
 	"WRDeathsFMN.json",
@@ -200,7 +200,7 @@
 	"WRDeathsMN.json",
 	"WRDeathsFD.json",
 	"WRDeathsFN.json",
-	"AllAllMFDN.json",
+	"AllAllFMDN.json",
 	"AllAllMDN.json",
 	"AllAllFMD.json",
 	"AllAllFMN.json",
@@ -209,7 +209,7 @@
 	"AllAllMN.json",
 	"AllAllFD.json",
 	"AllAllFN.json",
-	"AllDeathsMFDN.json",
+	"AllDeathsFMDN.json",
 	"AllDeathsMDN.json",
 	"AllDeathsFMD.json",
 	"AllDeathsFMN.json",
@@ -220,10 +220,11 @@
 	"AllDeathsFN.json"
 	];
 
+	var dataV2;
 
 
 	function setData(){
-		for (i = 0; i < 3; i++) {
+		for (i = 0; i < 6; i++) {
 	 		calendars[i] = calendars[i].destroy();
 	 		console.log("destroy")
 	 	}
@@ -233,6 +234,7 @@
 		var gender = document.getElementsByName("gender");
 		var time = document.getElementsByName("time");
 
+		
 		
 
 		var vLine="1", vDeath="1", vGender="3", vTime="3";
@@ -264,7 +266,7 @@
 			}
 		};
 
-		calendars = [new CalHeatMap(), new CalHeatMap(), new CalHeatMap()];
+		calendars = [new CalHeatMap(), new CalHeatMap(), new CalHeatMap(),new CalHeatMap(), new CalHeatMap(), new CalHeatMap()];
 		drawCalendars();
 		// for (i = 0; i < 3; i++) {
 	 // 		calendars[i].update(dataV);
@@ -417,6 +419,71 @@
 	    
 	}
 
+	function sortOutCompareMess(obj){
+		// var compareG = document.getElementsByName("gender");
+		// var compareT = document.getElementsByName("time");
+
+		if(obj.id=="gender4"){
+			if(document.getElementById("time4").checked==true)
+				document.getElementById("time3").checked=true;
+		}
+		else
+			if(obj.id=="time4"){
+				if(document.getElementById("gender4").checked==true)
+					document.getElementById("gender3").checked=true;
+			}
+
+	}
+
+	function getData(i) {
+		var compareG = document.getElementsByName("gender");
+		var compareT = document.getElementsByName("time");
+
+		var genderOrTime=-1; //or 1
+		if(compareG[3].checked==true){
+			genderOrTime=0;
+		}
+		else
+		if(compareT[3].checked==true){
+			genderOrTime=1;
+		}
+		else{
+			genderOrTime=-1;
+		}
+
+
+
+		var d=dataV;
+		// if(i%2==0){
+		// 	return dataV;
+		// }	
+		// else{
+			if(genderOrTime==0){
+				if(i%2==0){
+					if(dataV.indexOf("F") > -1){
+						d=dataV.replace("F","");
+					}
+				}else
+				if(dataV.indexOf("M") > -1){
+					d=dataV.replace("M","");
+				} 
+			}else if(genderOrTime==1){
+				if(i%2==0){
+					if(dataV.indexOf("N") > -1){
+						d=dataV.replace("N","");
+					}
+				}else
+				if(dataV.indexOf("DN") > -1){
+					d=dataV.replace("DN","N");
+				} 
+
+			}
+		
+		console.log("dv="+dataV+" d="+d);
+
+		return d;
+	}
+
 	//source: http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
 	function getSubDomain(name) {
 		var category = document.getElementById("category");
@@ -485,16 +552,54 @@
 
 
 	function getLegend(){
+
+		var d=1;
+		var g = document.getElementById('gender3').checked;
+		var t = document.getElementById('time3').checked;
+		if(!g && !t) d==1; else d=2;
+
 		if(subDomainV == "day" || subDomainV == "x_day"){
-			return [2, 5, 10, 15, 20];
+
+			return [2/d, 5/d, 10/d, 15/d, 20/d];
 		} else 
 		if(subDomainV == "month" || subDomainV == "x_month"){
-			return [80,100,120,140,160];
+			// male western 15
+			// female western 5
+
+			// central male 39
+			// central female 34
+			if(!document.getElementById('Death').checked){
+				if(document.getElementById('line2').checked){
+					if(!document.getElementById('gender3').checked)
+						return [1,4,7,9,12];
+					else
+						return [18,36,54,72,90];
+				}
+				else
+				if(document.getElementById('line1').checked){
+					if(document.getElementById('gender1').checked || document.getElementById('gender4').checked)
+						return [18,36,54,72,90];
+					if(document.getElementById('gender2').checked || document.getElementById('gender4').checked)
+						return [7,14,21,28	,35];
+					if(document.getElementById('gender3').checked && (document.getElementById('time1').checked || document.getElementById('time4').checked))
+						return [22,44,66,88,110];
+					if(document.getElementById('gender3').checked && (document.getElementById('time2').checked || document.getElementById('time4').checked))
+						return [12,24,36,48,60];
+				}
+				else
+				return [80,100,120,140,160];
+			}
+			else{
+				return [8,16,24,32,40]
+			}
 		} else
 		if(subDomainV == "week" || subDomainV == "x_week"){
-			return [5, 15, 30, 70, 100];
+			return [5/d, 15/d, 30/d, 70/d, 100/d];
 		}
-		return [2, 5, 10, 15, 20];
+		// if(subDomainV == "week" || subDomainV == "x_week"){
+		// 	return [5/d, 15/d, 30/d, 70/d, 100/d];
+		// }
+		return [2/d, 5/d, 10/d, 15/d, 20/d];
 	}
 
 	
@@ -549,14 +654,20 @@
 <script src="javascripts/scriptaculous.js" type="text/javascript"></script>
   </head>
 <body onLoad="drawCalendars()" >
-<div id="bgformenu" style="position: absolute; top:-50px; left:130px;" >
-	<svg width=965 height=140>
-			<rect x="0" y="0" width="965" height="120" rx="10" ry="10" fill="yellow"/>
+	
+
+<div id="bgformenu" style="position: absolute; top:-50px; left:80px;" >
+	<svg width=1045 height=140>
+			<rect x="0" y="0" width="1045" height="130" rx="10" ry="10" fill="yellow"/>
 	</svg>
 </div>
-<div id="selyears" style="position: absolute; top:15px; left:150px; font-size:small;">
+
+<div id="selyears" style="position: absolute; top:15px; left:100px; font-size:small;">
 	<table>
 		<tr>
+			<td width="75px">
+				<a href="home.html"><img src="images/logo.png" width="60px" style="position: relative; top:-10px;"/></a>
+			</td>
 			<td valign="top">
 				<select name="category" id="category" onChange="setData()">
 				 	<option>Daily</option>
@@ -585,7 +696,7 @@
 				<input type="radio"  name="gender" value="2" onChange="setData()" id="gender2"/><label for="gender2">Female</label> 
 				<input type="radio"  name="gender" value="3" onChange="setData()" checked id="gender3"/><label for="gender3">All genders</label>
 				<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="radio" name="gender" value="4" onChange="setData()" id="gender4"/><label for="gender4">Compare</label>
+				<input type="radio" name="gender" value="3" onChange="setData()" onClick="sortOutCompareMess(this)" id="gender4"/><label for="gender4">Compare</label>
 			</td>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			<td valign="top">
@@ -593,7 +704,7 @@
 				<input type="radio" name="time" value="2" onChange="setData()" id="time2"/><label for="time2">Night</label>
 				<input type="radio" name="time" value="3" onChange="setData()" checked id="time3"/><label for="time3">All day</label>
 				<br/>&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="radio" name="time" value="4" onChange="setData()" id="time4"/><label for="time4">Compare</label>
+				<input type="radio" name="time" value="3" onChange="setData()" onClick="sortOutCompareMess(this)" id="time4"/><label for="time4">Compare</label>
 			</td>
 		</tr>
 	</table> 			
@@ -603,8 +714,13 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div id="cal-heatmap1"><br/>2012</div>
-			<div id="cal-heatmap2"><br/>2013</div>
+			<div id="cal-heatmap1b" style="display:none"><br/>2012</div>
+			<hr width="800"/>
+			<div id="cal-heatmap2" ><br/>2013</div>
+			<div id="cal-heatmap2b" style="display:none"><br/>2013</div>
+			<hr width="800"/>
 			<div id="cal-heatmap3"><br/>2014</div>
+			<div id="cal-heatmap3b" style="display:none"><br/>2014</div>
 	  	</div>
   	</div>
 </div>
@@ -612,11 +728,11 @@
  
 
 <script>
-	var calendars = [new CalHeatMap(), new CalHeatMap(), new CalHeatMap()];
-	var itemSelectors = ["#cal-heatmap1", "#cal-heatmap2", "#cal-heatmap3"];
+	var calendars = [new CalHeatMap(), new CalHeatMap(), new CalHeatMap(), new CalHeatMap(), new CalHeatMap(), new CalHeatMap()];
+	var itemSelectors = ["#cal-heatmap1", "#cal-heatmap1b", "#cal-heatmap2", "#cal-heatmap2b", "#cal-heatmap3", "#cal-heatmap3b"];
 	var itemNameV = "incident";
 	var verticalOrientationV = false;
-	var startDates = [2012, 2013, 2014];
+	var startDates = [2012, 2012, 2013, 2013, 2014, 2014];
 	var domainV = getDomain();
 	var domainDynamicDimensionV = false;
 	var domainGutterV = 0;
@@ -630,15 +746,15 @@
 	var legendVerticalPositionV = "center";
 	var legendOrientationV = "vertical";
 	var cellSizeV = 9;
-	var dataV = "jsons/CRAllMFDN.json";
+	var dataV = "jsons/CRAllFMDN.json";
 
 	function drawCalendars(){
-		for (i = 0; i < 3; i++) {
+		for (i = 0; i < 6; i++) {
 	    	calendars[i].init({
 				itemSelector: itemSelectors[i],
 				itemName: itemNameV,
 				verticalOrientation: verticalOrientationV,
-		    	data: dataV,
+		    	data: getData(i),
 		    	start: new Date(startDates[i], 0),
 		    	domain: getDomain(),
 				domainLabelFormat: getFormat(),
@@ -661,21 +777,35 @@
 				cellSize: getCellSize(),
 				
 				onClick: function(date, nb) {
-					showInfo("There were <b>" +
-						(nb === null ? "unknown" : nb) + 
-						" </b> number of incidents on <b>" +
-						date +
-						"</b><br/>at The following stations: station: number, type of incident..."
-						);
+					parent.location='timeline2.html#30'
+					// showInfo("There were <b>" +
+					// 	(nb === null ? "unknown" : nb) + 
+					// 	" </b> number of incidents on <b>" +
+					// 	date +
+					// 	"</b><br/>at The following stations: station: number, type of incident..."
+					// 	);
 					// showInfo("You just clicked <br/>on <b>" +
 					// 	date + "</b> <br/>with <b>" +
 					//  	(nb === null ? "unknown" : nb) + "</b> incidents."
 					// );
+					
 				}
 		    });
+		}
+
+		if(document.getElementById('gender4').checked==true || document.getElementById('time4').checked==true){
+			document.getElementById('cal-heatmap1b').style="display:block";
+			document.getElementById('cal-heatmap2b').style="display:block";
+			document.getElementById('cal-heatmap3b').style="display:block";
+		}else{
+			document.getElementById('cal-heatmap1b').style="display:none";
+			document.getElementById('cal-heatmap2b').style="display:none";
+			document.getElementById('cal-heatmap3b').style="display:none";
 		}
 	}
 
 	</script>
+
+	
 </body>
 </html>

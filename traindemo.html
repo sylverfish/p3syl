@@ -127,6 +127,10 @@
     	}
     }
 
+    function showTrain(){
+    	document.getElementById('snippet2').style="display: block";
+    	document.getElementById('train').style="display: block";
+    }
 	function skip(){
 		var n = pages-page;
 		page=pages;
@@ -237,16 +241,16 @@
     i=-1;
     j=-1;
     var snippets = [
-    				"Some statement 1",
+    				"The Mumbai Suburban railway transports more than 7 million commuters daily",
     				"",
-    				"Another statement","",
-    				"One more piece of interesting information","",
-    				"Something cool","",
-    				"Yet something more","",
-    				"Almost at the end","",
-    				"And something to conclude",""];
-    var xco = [530,530,20,20,40,40,40,480,480];
-    var yco = [530,530,300,300,200,200,530,530];
+    				"But too many die! over 3000 a year! Why?","",
+    				"Most cases are due to trespassing or crossing the tracks. This can be prevented!","",
+    				"The railway is doing its bit in putting infrastructure to prevent crossing and making commute easier.","",
+    				"It's time you did your bit.","",
+    				"The little comfort of a short cut is not worth the risk.","",
+    				"Travel safe","", ".","",".","",".",""];
+    var xco = [530,530,20,20,40,40,40,40,40,530,530,20,20,40,40,40,40,40,40,40,40,40];
+    var yco = [530,530,300,300,200,200,530,530, 530,530,300,300,200,200,530,530,200,200,530,530];
     var playing=false;
     function moveTrain(obj, mouseC){
     	if((mouseC && !playing) || (!mouseC)){
@@ -258,7 +262,7 @@
 	    			moveTrain(obj, false); 
 	    		var snippet = document.getElementById('snippet2');
 
-	    		if(j<10){
+	    		if(j<20){
 	    				j++;
 	    			}
 	    		
@@ -306,7 +310,7 @@
   //   }
     </script>
 
-    <div id="train" style="position: absolute; top:383px; left:520px; padding:5px; cursor:pointer; display:none" onClick="moveTrain(this, true)">
+    <div id="train" style="position: absolute; top:383px; left:520px; padding:5px; cursor:pointer; " onClick="moveTrain(this, true)">
     	<img src="images/train.svg" width="70px"/>
     </div>
 
@@ -3041,7 +3045,7 @@ var gender=[50,150];
 
 <div id="snippet" style="position: absolute; top:408px; left:560px; padding:5px; display: block; color: #99A6B0; font-weight:bold; font-size:20px">2014</div>
 
-<div id="snippet2" style="position: absolute; top:508px; left:560px; padding:5px; display: none; color:#99A6B0; font-weight: 800; font-size:20px">Click on the train at Thane to travel the railway...</div>
+<div id="snippet2" style="position: absolute; top:508px; left:560px; padding:5px;  color:#99A6B0; font-weight: 800; font-size:20px">Click on the train at Thane to travel the railway...</div>
 
 <!-- <div id="popme" style="position: absolute; top:408px; left:260px; padding:5px; display: block; color: gold; font-weight:bold; font-size:20px;background-image: url(images/bg.jpg)"><span id="stationName"></span></div>
  -->
@@ -3167,7 +3171,7 @@ var gender=[50,150];
 
 <div id="startskip" style="position: absolute; top:610px; left:80px; font-size:x-small;">
 	<a  id="showhidelegend" href="#" onClick="toggleLegend()" style="background-color: pink">Show legend</a> | 
-	<a href="#" onclick="skipToStart()">back to start</a> | <a href="#" onclick="skip()">skip to end</a> | <a href="traindemo.html">train demo</a> | <a href="home.html">Explore more data</a>
+	<a href="#" onclick="skipToStart()">back to start</a> | <a href="#" onclick="skip()">skip to end</a> | <a href="#" onClick="showTrain()">train demo</a> | <a href="home.html">Explore more data</a>
 </div>
 
 <div id="popme" style="position: absolute; top:100px; left:100px; border:0.5px solid lightgrey; box-shadow: 2px 2px 0px lightgrey; background-color: #FFF; padding:60px; display: none;background-image: url(images/bg.jpg)">
